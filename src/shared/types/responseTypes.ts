@@ -1,5 +1,5 @@
-export type Respionse = filmsListResultItem[] | listResultItem[];
-export interface filmsListResultItem {
+export type Respionse = FilmsListResultItem[] | ListResultItem[];
+export interface FilmsListResultItem {
   properties: {
     producer: string;
     title: string;
@@ -10,13 +10,13 @@ export interface filmsListResultItem {
   };
 }
 
-export interface listResultItem {
+export interface ListResultItem {
   uid: string;
   name: string;
   url: string;
 }
 
-export interface peopleResult {
+export interface PeopleResult {
   properties: {
     name: string;
     gender: string;
@@ -30,7 +30,7 @@ export interface peopleResult {
   };
 }
 
-export interface vehiclesResult {
+export interface VehiclesResult {
   properties: {
     consumables: string;
     name: string;
@@ -46,7 +46,7 @@ export interface vehiclesResult {
   };
 }
 
-export interface starshipsResult {
+export interface StarshipsResult {
   properties: {
     consumables: string;
     name: string;
@@ -64,7 +64,7 @@ export interface starshipsResult {
   };
 }
 
-export interface speciesResult {
+export interface SpeciesResult {
   properties: {
     classification: string;
     name: string;
@@ -79,7 +79,7 @@ export interface speciesResult {
   };
 }
 
-export interface planetResult {
+export interface PlanetResult {
   properties: {
     climate: string;
     surface_water: string;
