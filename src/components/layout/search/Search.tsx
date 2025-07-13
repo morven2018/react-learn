@@ -135,39 +135,45 @@ class Search extends React.Component<SearchProps, SearchState> {
   }
 }
 
-export default React.forwardRef<SearchRefMethods, SearchProps>((props, ref) => {
-  const searchRef = React.useRef<Search>(null);
+const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
+  (props, ref) => {
+    const searchRef = React.useRef<Search>(null);
 
-  const handleLoadMore = async () => {
-    if (!searchRef.current) return;
+    const handleLoadMore = async () => {
+      if (!searchRef.current) return;
 
-    const { onLoading, onError, onSearchResults, onHasMore } = props;
+      const { onLoading, onError, onSearchResults, onHasMore } = props;
 
-    searchRef.current.setState({ isLoading: true });
-    onLoading(true);
-    onError(null);
+      searchRef.current.setState({ isLoading: true });
+      onLoading(true);
+      onError(null);
 
-    try {
-      const response = await CharacterApiService.loadMore();
-      if (searchRef.current) {
-        onSearchResults(response?.docs || [], false);
-        onHasMore(CharacterApiService.hasMore());
+      try {
+        const response = await CharacterApiService.loadMore();
+        if (searchRef.current) {
+          onSearchResults(response?.docs || [], false);
+          onHasMore(CharacterApiService.hasMore());
+        }
+      } catch (error) {
+        if (searchRef.current) {
+          onError(
+            error instanceof Error ? error : new Error('Load more failed')
+          );
+        }
+      } finally {
+        if (searchRef.current) {
+          searchRef.current.setState({ isLoading: false });
+          onLoading(false);
+        }
       }
-    } catch (error) {
-      if (searchRef.current) {
-        onError(error instanceof Error ? error : new Error('Load more failed'));
-      }
-    } finally {
-      if (searchRef.current) {
-        searchRef.current.setState({ isLoading: false });
-        onLoading(false);
-      }
-    }
-  };
+    };
 
-  React.useImperativeHandle(ref, () => ({
-    handleLoadMore,
-  }));
+    React.useImperativeHandle(ref, () => ({
+      handleLoadMore,
+    }));
 
-  return <Search ref={searchRef} {...props} />;
-});
+    return <Search ref={searchRef} {...props} />;
+  }
+);
+
+export default SearchWithRef;
