@@ -9,11 +9,21 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
-  errorTime?: string;
   hasLoggedError?: boolean;
 }
 
 const defaultErrorMessage = 'Unknown error occurred';
+
+const DATE_FORMAT_OPTIONS: Intl.DateTimeFormatOptions = {
+  weekday: 'long',
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+  hour: '2-digit',
+  minute: '2-digit',
+  second: '2-digit',
+  hour12: false,
+};
 
 class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
@@ -43,7 +53,6 @@ class ErrorBoundary extends React.Component<
           event.reason instanceof Error
             ? event.reason
             : new Error(String(event.reason)),
-        errorTime: this.getFormattedTime(),
         hasLoggedError: false,
       });
     };
@@ -67,37 +76,25 @@ class ErrorBoundary extends React.Component<
     return {
       hasError: true,
       error,
-      errorTime: new Date().toLocaleString(),
       hasLoggedError: false,
     };
   }
 
   componentDidCatch() {
     this.setState({
-      errorTime: this.getFormattedTime(),
       hasLoggedError: false,
     });
   }
 
   private getFormattedTime(): string {
     const now = new Date();
-    return now.toLocaleString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit',
-      hour12: false,
-    });
+    return now.toLocaleString('en-US', DATE_FORMAT_OPTIONS);
   }
 
   handleReset = () => {
     this.setState({
       hasError: false,
       error: undefined,
-      errorTime: undefined,
       hasLoggedError: false,
     });
   };
@@ -106,7 +103,7 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       if (!this.state.hasLoggedError && this.state.error) {
         console.error('Error caught by boundary:', {
-          time: this.state.errorTime,
+          time: this.getFormattedTime(),
           message: this.state.error.message,
           stack: this.state.error.stack,
         });
