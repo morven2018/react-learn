@@ -1,4 +1,5 @@
 import CharacterApiService from '@services/api/apiService';
+import LoadingOverlay from '@components/ui/loading-overlay/LoadingOverlay';
 import React from 'react';
 import { Term } from '@services/localStorage/LastTerm';
 import type { Person } from '@shared/types/responseTypes';
@@ -129,6 +130,7 @@ class Search extends React.Component<SearchProps, SearchState> {
 
     return (
       <section className="search-container">
+        <LoadingOverlay visible={isLoading} />
         <form onSubmit={this.handleSubmit}>
           <input
             type="text"
