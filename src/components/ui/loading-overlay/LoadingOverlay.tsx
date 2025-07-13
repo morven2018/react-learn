@@ -14,9 +14,7 @@ class LoadingOverlay extends React.Component<LoadingOverlayProps> {
 
     return (
       <div className={styles.overlay}>
-        <div className="loading-content">
-          <Spinner />
-        </div>
+        <Spinner />
       </div>
     );
   }

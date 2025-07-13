@@ -7,6 +7,8 @@ interface CardItemProps {
   character: Person;
 }
 
+const emptyLink = '#';
+
 class Card extends React.Component<CardItemProps> {
   render() {
     const { character } = this.props;
@@ -16,7 +18,7 @@ class Card extends React.Component<CardItemProps> {
         <h3 className={style.name}>{character.name}</h3>
         <CharacterCharacteristics character={character} />
         <a
-          href={character.wikiUrl ?? '#'}
+          href={character.wikiUrl ?? emptyLink}
           aria-disabled={!character.wikiUrl}
           target="_blank"
           rel="noopener noreferrer"

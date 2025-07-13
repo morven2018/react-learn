@@ -6,6 +6,7 @@ const API_BASE = import.meta.env.VITE_API_URL;
 const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY;
 const API_KEY_SECONDARY = import.meta.env.VITE_API_KEY2;
 const BASE_LIMIT = 20;
+const ERROR_TYPES_COUNT = 5;
 
 const HTTP_STATUS = {
   BAD_REQUEST: 400,
@@ -141,7 +142,7 @@ class CharacterApiService {
   }
 
   static async triggerTestError(): Promise<never> {
-    const errorType = getRandomInt(1, 5);
+    const errorType = getRandomInt(1, ERROR_TYPES_COUNT);
 
     const errors = [
       () => this.createError(CUSTOM_ERROR_CODES.NETWORK_ERROR),

@@ -17,6 +17,8 @@ interface SearchComponentMethods {
   handleLoadMore: () => Promise<void>;
 }
 
+const SCROLL_LOAD_THRESHOLD = 100;
+
 class Main extends React.Component<Record<string, never>, MainState> {
   private readonly searchRef: React.RefObject<SearchComponentMethods | null>;
 
@@ -48,7 +50,7 @@ class Main extends React.Component<Record<string, never>, MainState> {
     const { isFetchingMore, hasMoreItems } = this.state;
     return (
       window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - 100 &&
+        document.documentElement.offsetHeight - SCROLL_LOAD_THRESHOLD &&
       !isFetchingMore &&
       hasMoreItems
     );

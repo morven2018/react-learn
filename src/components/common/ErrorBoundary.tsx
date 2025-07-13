@@ -13,6 +13,8 @@ interface ErrorBoundaryState {
   hasLoggedError?: boolean;
 }
 
+const defaultErrorMessage = 'Unknown error occurred';
+
 class ErrorBoundary extends React.Component<
   ErrorBoundaryProps,
   ErrorBoundaryState
@@ -117,7 +119,7 @@ class ErrorBoundary extends React.Component<
             <h2 className={style.header}>Something went wrong</h2>
 
             <div className={style.errorMessage}>
-              {this.state.error?.message || 'Unknown error occurred'}
+              {this.state.error?.message ?? defaultErrorMessage}
             </div>
 
             <button onClick={this.handleReset} className={style.retryButton}>
