@@ -1,0 +1,44 @@
+@use '@assets/styles/globals.scss' as *;
+
+.header {
+  max-width: $max-width;
+  margin: 0 auto 10px;
+  padding: $base-padding;
+
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  border: 2px solid $base-border;
+  border-radius: $border-radius;
+
+  font-family: $font-medieval;
+
+  .h1 {
+    font-size: $header-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $header-typography-mobile;
+    }
+  }
+
+  .subheader {
+    font-size: $subheader-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $subheader-typography-mobile;
+    }
+  }
+
+  .whiteTree {
+    height: calc(2 * $header-typography);
+    width: auto;
+
+    @media (max-width: $breakpoint) {
+      height: $header-typography;
+    }
+  }
+}
