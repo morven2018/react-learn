@@ -32,6 +32,11 @@ input {
   font-size: $controls-typography;
 
   &:focus {
+    outline: 3px solid $primary-light;
+    outline-offset: -1px;
+  }
+
+  &:hover {
     outline: 3px solid $hover-border;
     outline-offset: -1px;
   }
