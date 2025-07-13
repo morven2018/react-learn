@@ -10,7 +10,6 @@ interface MainState {
   characters: Person[];
   isLoading: boolean;
   isFetchingMore: boolean;
-  error: Error | null;
   hasMoreItems: boolean;
 }
 
@@ -27,7 +26,6 @@ class Main extends React.Component<Record<string, never>, MainState> {
       characters: [],
       isLoading: false,
       isFetchingMore: false,
-      error: null,
       hasMoreItems: false,
     };
     this.searchRef = React.createRef();
@@ -63,7 +61,10 @@ class Main extends React.Component<Record<string, never>, MainState> {
         await this.searchRef.current.handleLoadMore();
       }
     } catch (error) {
-      this.setState({ error: error as Error });
+      if (error instanceof Error) {
+        throw new Error(error.message);
+      }
+      throw new Error('Unknown error');
     } finally {
       this.setState({ isFetchingMore: false });
     }
@@ -78,7 +79,7 @@ class Main extends React.Component<Record<string, never>, MainState> {
   }
 
   render() {
-    const { characters, isLoading, isFetchingMore, error } = this.state;
+    const { characters, isLoading, isFetchingMore } = this.state;
 
     return (
       <main className={style.mainSection}>
@@ -87,7 +88,6 @@ class Main extends React.Component<Record<string, never>, MainState> {
             ref={this.searchRef}
             onSearchResults={this.handleSearchResults}
             onLoading={(loading) => this.setState({ isLoading: loading })}
-            onError={(err) => this.setState({ error: err })}
             onHasMore={(hasMore) => this.setState({ hasMoreItems: hasMore })}
           />
 
@@ -95,8 +95,6 @@ class Main extends React.Component<Record<string, never>, MainState> {
             characters={characters}
             isLoading={isLoading}
             isFetchingMore={isFetchingMore}
-            error={error}
-            onDismissError={() => this.setState({ error: null })}
           />
 
           <ErrorTestButton />

@@ -7,8 +7,6 @@ interface ResultsProps {
   characters: Person[];
   isLoading: boolean;
   isFetchingMore: boolean;
-  error: Error | null;
-  onDismissError: () => void;
 }
 
 interface ResultsState {
@@ -42,8 +40,7 @@ class Results extends React.Component<ResultsProps, ResultsState> {
   }
 
   render() {
-    const { characters, isLoading, error, isFetchingMore, onDismissError } =
-      this.props;
+    const { characters, isLoading, isFetchingMore } = this.props;
     const { shouldResetList } = this.state;
     const displayCharacters = shouldResetList ? [] : characters;
 
@@ -51,13 +48,6 @@ class Results extends React.Component<ResultsProps, ResultsState> {
       <div className={style.resultsContainer}>
         {isLoading && !isFetchingMore && (
           <div className={style.messageIndicator}>Loading characters...</div>
-        )}
-
-        {error && (
-          <div className={style.errorContainer}>
-            Error: {error.message}
-            <button onClick={onDismissError}>Retry</button>
-          </div>
         )}
 
         {displayCharacters.length > 0 && (

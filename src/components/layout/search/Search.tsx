@@ -8,7 +8,6 @@ import type { Person } from '@shared/types/responseTypes';
 interface SearchProps {
   onSearchResults: (results: Person[], isNewSearch: boolean) => void;
   onLoading: (isLoading: boolean) => void;
-  onError: (error: Error | null) => void;
   onHasMore: (hasMore: boolean) => void;
 }
 
@@ -72,7 +71,6 @@ class Search extends React.Component<SearchProps, SearchState> {
 
     this.setState({ isLoading: true });
     this.props.onLoading(true);
-    this.props.onError(null);
     Term.setTermToLS(term);
 
     try {
@@ -83,11 +81,7 @@ class Search extends React.Component<SearchProps, SearchState> {
         this.props.onHasMore(CharacterApiService.hasMore());
       }
     } catch (error) {
-      if (this.isMounted) {
-        this.props.onError(
-          error instanceof Error ? error : new Error('Search failed')
-        );
-      }
+      throw new Error(error instanceof Error ? error.message : 'Unknown error');
     } finally {
       if (this.isMounted) {
         this.setState({ isLoading: false });
@@ -142,11 +136,10 @@ const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
     const handleLoadMore = async () => {
       if (!searchRef.current) return;
 
-      const { onLoading, onError, onSearchResults, onHasMore } = props;
+      const { onLoading, onSearchResults, onHasMore } = props;
 
       searchRef.current.setState({ isLoading: true });
       onLoading(true);
-      onError(null);
 
       try {
         const response = await CharacterApiService.loadMore();
@@ -154,12 +147,8 @@ const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
           onSearchResults(response?.docs || [], false);
           onHasMore(CharacterApiService.hasMore());
         }
-      } catch (error) {
-        if (searchRef.current) {
-          onError(
-            error instanceof Error ? error : new Error('Load more failed')
-          );
-        }
+      } catch {
+        throw new Error('Load more failed');
       } finally {
         if (searchRef.current) {
           searchRef.current.setState({ isLoading: false });
