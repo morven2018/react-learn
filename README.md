@@ -1,6 +1,4 @@
-# react-learn
-
-# Star Wars Character Search (Class Components)
+# Lord of the Rings Character Search (Class Components)
 
 A React app for searching characters from the Lord of the Rings universe using The One API.
 
