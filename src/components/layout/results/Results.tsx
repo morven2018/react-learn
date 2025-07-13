@@ -1,5 +1,6 @@
 import CardList from '@components/ui/character-list/CardList';
 import React from 'react';
+import style from './Results.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface ResultsProps {
@@ -10,28 +11,64 @@ interface ResultsProps {
   onDismissError: () => void;
 }
 
-class Results extends React.Component<ResultsProps> {
+interface ResultsState {
+  shouldResetList: boolean;
+}
+
+class Results extends React.Component<ResultsProps, ResultsState> {
+  constructor(props: ResultsProps) {
+    super(props);
+    this.state = {
+      shouldResetList: true,
+    };
+  }
+
+  componentDidUpdate(prevProps: ResultsProps) {
+    if (
+      prevProps.isLoading &&
+      !this.props.isLoading &&
+      !this.props.isFetchingMore
+    ) {
+      this.setState({ shouldResetList: false });
+    }
+
+    if (
+      !prevProps.isLoading &&
+      this.props.isLoading &&
+      !this.props.isFetchingMore
+    ) {
+      this.setState({ shouldResetList: true });
+    }
+  }
+
   render() {
     const { characters, isLoading, error, isFetchingMore, onDismissError } =
       this.props;
+    const { shouldResetList } = this.state;
+    const displayCharacters = shouldResetList ? [] : characters;
 
     return (
-      <div>
+      <div className={style.resultsContainer}>
         {isLoading && !isFetchingMore && (
-          <div className="loading-indicator">Loading characters...</div>
+          <div className={style.messageIndicator}>Loading characters...</div>
         )}
 
         {error && (
-          <div>
+          <div className={style.errorContainer}>
             Error: {error.message}
             <button onClick={onDismissError}>Retry</button>
           </div>
         )}
 
-        {characters.length > 0 ? (
-          <CardList characters={characters} isFetchingMore={isFetchingMore} />
-        ) : (
-          !isLoading && <div>No data found</div>
+        {displayCharacters.length > 0 && (
+          <CardList
+            characters={displayCharacters}
+            isFetchingMore={isFetchingMore}
+          />
+        )}
+
+        {!isLoading && displayCharacters.length === 0 && !shouldResetList && (
+          <div className={style.messageIndicator}>No data found</div>
         )}
       </div>
     );
