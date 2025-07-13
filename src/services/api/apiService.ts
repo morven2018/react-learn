@@ -1,3 +1,4 @@
+import getRandomInt from '@shared/lib/randomNumber';
 import { Term } from '@services/localStorage/LastTerm';
 import type { ApiResponse } from '@shared/types/responseTypes';
 
@@ -63,15 +64,18 @@ class CharacterApiService {
   }
 
   static async loadMore(): Promise<ApiResponse | null> {
-    if (
-      !this.lastResponse ||
-      this.lastResponse.page >= this.lastResponse.pages
-    ) {
-      return null;
-    }
+    if (!this.lastResponse) return null;
 
     const nextPage = this.lastResponse.page + 1;
-    return this.searchCharacters(this.lastQuery, nextPage);
+    if (nextPage > this.lastResponse.pages) return null;
+
+    try {
+      const response = await this.searchCharacters(this.lastQuery, nextPage);
+      return response;
+    } catch (error) {
+      console.error('Load more failed:', error);
+      throw error;
+    }
   }
 
   static hasMore(): boolean {
@@ -87,7 +91,7 @@ class CharacterApiService {
   }
 
   static async triggerTestError(): Promise<never> {
-    const errorType = Math.floor(Math.random() * 3) + 1;
+    const errorType = getRandomInt(1, 3);
     const timestamp = Date.now();
 
     const generateErrors: Record<number, () => Promise<never>> = {

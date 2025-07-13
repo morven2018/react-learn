@@ -1,3 +1,4 @@
+import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/buttons/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
@@ -12,10 +13,14 @@ interface MainState {
   hasMoreItems: boolean;
 }
 
-class Main extends React.Component<{}, MainState> {
-  private readonly searchRef: React.RefObject<any>;
+interface SearchComponentMethods {
+  handleLoadMore: () => Promise<void>;
+}
 
-  constructor(props: {}) {
+class Main extends React.Component<Record<string, never>, MainState> {
+  private readonly searchRef: React.RefObject<SearchComponentMethods | null>;
+
+  constructor(props: Record<string, never>) {
     super(props);
     this.state = {
       characters: [],
@@ -28,8 +33,9 @@ class Main extends React.Component<{}, MainState> {
   }
 
   handleSearchResults = (results: Person[], isNewSearch: boolean) => {
-    this.setState((prev) => ({
-      characters: isNewSearch ? results : [...prev.characters, ...results],
+    this.setState((prevState) => ({
+      characters: isNewSearch ? results : [...prevState.characters, ...results],
+      hasMoreItems: CharacterApiService.hasMore(),
     }));
   };
 

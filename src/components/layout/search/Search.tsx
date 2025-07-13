@@ -11,6 +11,10 @@ interface SearchProps {
   onHasMore: (hasMore: boolean) => void;
 }
 
+interface SearchRefMethods {
+  handleLoadMore: () => Promise<void>;
+}
+
 interface SearchState {
   termValue: string;
   isInitialLoad: boolean;
@@ -99,6 +103,33 @@ class Search extends React.Component<SearchProps, SearchState> {
     this.handleSearch(this.state.termValue);
   };
 
+  /*public handleLoadMore = async () => {
+    if (!this.isMounted) return;
+
+    this.setState({ isLoading: true });
+    this.props.onLoading(true);
+    this.props.onError(null);
+
+    try {
+      const response = await CharacterApiService.loadMore();
+      if (this.isMounted && response) {
+        this.props.onSearchResults(response.docs || [], false);
+        this.props.onHasMore(CharacterApiService.hasMore());
+      }
+    } catch (error) {
+      if (this.isMounted) {
+        this.props.onError(
+          error instanceof Error ? error : new Error('Load more failed')
+        );
+      }
+    } finally {
+      if (this.isMounted) {
+        this.setState({ isLoading: false });
+        this.props.onLoading(false);
+      }
+    }
+  };*/
+
   render() {
     const { termValue, isLoading } = this.state;
 
@@ -122,4 +153,39 @@ class Search extends React.Component<SearchProps, SearchState> {
   }
 }
 
-export default Search;
+export default React.forwardRef<SearchRefMethods, SearchProps>((props, ref) => {
+  const searchRef = React.useRef<Search>(null);
+
+  const handleLoadMore = async () => {
+    if (!searchRef.current) return;
+
+    const { onLoading, onError, onSearchResults, onHasMore } = props;
+
+    searchRef.current.setState({ isLoading: true });
+    onLoading(true);
+    onError(null);
+
+    try {
+      const response = await CharacterApiService.loadMore();
+      if (searchRef.current) {
+        onSearchResults(response?.docs || [], false);
+        onHasMore(CharacterApiService.hasMore());
+      }
+    } catch (error) {
+      if (searchRef.current) {
+        onError(error instanceof Error ? error : new Error('Load more failed'));
+      }
+    } finally {
+      if (searchRef.current) {
+        searchRef.current.setState({ isLoading: false });
+        onLoading(false);
+      }
+    }
+  };
+
+  React.useImperativeHandle(ref, () => ({
+    handleLoadMore,
+  }));
+
+  return <Search ref={searchRef} {...props} />;
+});
