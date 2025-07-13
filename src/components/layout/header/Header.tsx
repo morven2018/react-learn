@@ -7,7 +7,7 @@ class Header extends React.Component {
       <header>
         <img src={logo} alt="Star Wars" />
         <div>
-          <h2>Between Middle Earth, Arda, And Beleriand.</h2>
+          <h2>Middle Earth</h2>
           <h3>Search.</h3>
         </div>
       </header>
