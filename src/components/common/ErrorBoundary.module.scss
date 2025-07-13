@@ -23,13 +23,12 @@
 
   .header {
     font-size: $header-typography;
+    font-family: $font-medieval;
+    color: $hover-border;
 
     @media (max-width: $breakpoint) {
       font-size: $header-typography-mobile;
     }
-
-    font-family: $font-medieval;
-    color: $hover-border;
   }
 
   .errorDetails {
