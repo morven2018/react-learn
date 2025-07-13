@@ -9,6 +9,8 @@ interface ErrorBoundaryProps {
 interface ErrorBoundaryState {
   hasError: boolean;
   error?: Error;
+  errorTime?: string;
+  hasLoggedError?: boolean;
 }
 
 class ErrorBoundary extends React.Component<
@@ -39,6 +41,8 @@ class ErrorBoundary extends React.Component<
           event.reason instanceof Error
             ? event.reason
             : new Error(String(event.reason)),
+        errorTime: this.getFormattedTime(),
+        hasLoggedError: false,
       });
     };
 
@@ -58,26 +62,64 @@ class ErrorBoundary extends React.Component<
   }
 
   static getDerivedStateFromError(error: Error): ErrorBoundaryState {
-    return { hasError: true, error };
+    return {
+      hasError: true,
+      error,
+      errorTime: new Date().toLocaleString(),
+      hasLoggedError: false,
+    };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+  componentDidCatch() {
+    this.setState({
+      errorTime: this.getFormattedTime(),
+      hasLoggedError: false,
+    });
+  }
+
+  private getFormattedTime(): string {
+    const now = new Date();
+    return now.toLocaleString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      hour12: false,
+    });
   }
 
   handleReset = () => {
-    this.setState({ hasError: false, error: undefined });
+    this.setState({
+      hasError: false,
+      error: undefined,
+      errorTime: undefined,
+      hasLoggedError: false,
+    });
   };
 
   render() {
     if (this.state.hasError) {
+      if (!this.state.hasLoggedError && this.state.error) {
+        console.error('Error caught by boundary:', {
+          time: this.state.errorTime,
+          message: this.state.error.message,
+          stack: this.state.error.stack,
+        });
+        this.setState({ hasLoggedError: true });
+      }
+
       return (
         this.props.fallback || (
           <div className={style.errorBoundary}>
             <h2 className={style.header}>Something went wrong</h2>
-            <div className={style.errorDetails}>
-              {this.state.error?.toString()}
+
+            <div className={style.errorMessage}>
+              {this.state.error?.message || 'Unknown error occurred'}
             </div>
+
             <button onClick={this.handleReset} className={style.retryButton}>
               Retry
             </button>
