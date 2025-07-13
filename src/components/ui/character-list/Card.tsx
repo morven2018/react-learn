@@ -1,3 +1,4 @@
+import CharacterCharacteristics from './CharacterCharacteristics';
 import React from 'react';
 import type { Person } from '@shared/types/responseTypes';
 
@@ -12,11 +13,7 @@ class Card extends React.Component<CardItemProps> {
     return (
       <li key={character.name}>
         <h3>{character.name}</h3>
-        <p>Race: {character.race ?? 'unknown'}</p>
-        <p>Gender: {character.gender ?? 'unknown'}</p>
-        <p>Birth: {character.birth ?? 'unknown'}</p>
-        <p>Death: {character.death ?? 'unknown'}</p>
-        <p>Realm: {character.realm ?? 'unknown'}</p>
+        <CharacterCharacteristics character={character} />
         <a
           href={character.wikiUrl ?? '#'}
           aria-disabled={!character.wikiUrl}
