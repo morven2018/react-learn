@@ -49,7 +49,7 @@ class CharacterApiService {
 
     if (name) {
       queryParams.append('name', `/${name}/i`);
-      Term.setTemToLS(name);
+      Term.setTermToLS(name);
       this.lastQuery = name;
     }
 

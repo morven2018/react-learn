@@ -5,7 +5,7 @@ export class Term {
     return localStorage.getItem(term) ?? undefined;
   }
 
-  public static setTemToLS(newTerm: string): void {
+  public static setTermToLS(newTerm: string): void {
     localStorage.setItem(term, newTerm);
   }
 }

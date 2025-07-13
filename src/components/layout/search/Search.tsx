@@ -69,7 +69,7 @@ class Search extends React.Component<SearchProps, SearchState> {
     this.setState({ isLoading: true });
     this.props.onLoading(true);
     this.props.onError(null);
-    Term.setTemToLS(term);
+    Term.setTermToLS(term);
 
     try {
       const response = await CharacterApiService.searchCharacters(term);
