@@ -24,7 +24,7 @@ class Results extends React.Component<ResultsProps> {
         {error && (
           <div>
             Error: {error.message}
-            <button onClick={onDismissError}>Dismiss</button>
+            <button onClick={onDismissError}>Retry</button>
           </div>
         )}
 

@@ -88,32 +88,6 @@ class Search extends React.Component<SearchProps, SearchState> {
     }
   };
 
-  handleLoadMore = async () => {
-    if (!this.isMounted || !CharacterApiService.hasMore()) return;
-
-    this.setState({ isLoading: true });
-    this.props.onLoading(true);
-    try {
-      const response = await CharacterApiService.loadMore();
-
-      if (response && this.isMounted) {
-        this.props.onSearchResults(response.docs, false);
-        this.props.onHasMore(CharacterApiService.hasMore());
-      }
-    } catch (error) {
-      if (this.isMounted) {
-        this.props.onError(
-          error instanceof Error ? error : new Error('Load more failed')
-        );
-      }
-    } finally {
-      if (this.isMounted) {
-        this.setState({ isLoading: false });
-        this.props.onLoading(false);
-      }
-    }
-  };
-
   handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
     this.setState({ termValue: value });

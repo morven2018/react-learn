@@ -85,6 +85,45 @@ class CharacterApiService {
       ? this.lastResponse.page * this.lastResponse.limit
       : 0;
   }
+
+  static async triggerTestError(): Promise<never> {
+    const errorType = Math.floor(Math.random() * 3) + 1;
+    const timestamp = Date.now();
+
+    const generateErrors: Record<number, () => Promise<never>> = {
+      1: async (): Promise<never> => {
+        throw new Error(`Network Error: Failed to fetch (test ${timestamp})`);
+      },
+      2: async (): Promise<never> => {
+        const url = `${API_BASE}invalid-endpoint-test-${timestamp}`;
+        try {
+          const response = await this.authorizedFetch(url);
+          throw new Error(`API returned unexpected status: ${response.status}`);
+        } catch (err) {
+          throw new Error(
+            `API Error: ${err instanceof Error ? err.message : 'Unknown error'}`
+          );
+        }
+      },
+      3: async (): Promise<never> => {
+        const url = `${API_BASE}character?force_error=true&test_id=${timestamp}`;
+        try {
+          const response = await this.authorizedFetch(url);
+          const data = await response.json();
+
+          throw new Error(
+            data.message || `Invalid data format (test ${timestamp})`
+          );
+        } catch (err) {
+          throw new Error(
+            `Data Error: ${err instanceof Error ? err.message : 'Invalid response'}`
+          );
+        }
+      },
+    };
+
+    return generateErrors[errorType]();
+  }
 }
 
 export default CharacterApiService;

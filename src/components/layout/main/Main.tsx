@@ -1,3 +1,4 @@
+import ErrorTestButton from '@components/ui/buttons/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
 import Search from '@components/layout/search/Search';
@@ -74,21 +75,24 @@ class Main extends React.Component<{}, MainState> {
 
     return (
       <main>
-        <Search
-          ref={this.searchRef}
-          onSearchResults={this.handleSearchResults}
-          onLoading={(loading) => this.setState({ isLoading: loading })}
-          onError={(err) => this.setState({ error: err })}
-          onHasMore={(hasMore) => this.setState({ hasMoreItems: hasMore })}
-        />
+        <div>
+          <Search
+            ref={this.searchRef}
+            onSearchResults={this.handleSearchResults}
+            onLoading={(loading) => this.setState({ isLoading: loading })}
+            onError={(err) => this.setState({ error: err })}
+            onHasMore={(hasMore) => this.setState({ hasMoreItems: hasMore })}
+          />
 
-        <Results
-          characters={characters}
-          isLoading={isLoading}
-          isFetchingMore={isFetchingMore}
-          error={error}
-          onDismissError={() => this.setState({ error: null })}
-        />
+          <Results
+            characters={characters}
+            isLoading={isLoading}
+            isFetchingMore={isFetchingMore}
+            error={error}
+            onDismissError={() => this.setState({ error: null })}
+          />
+        </div>
+        <ErrorTestButton />
       </main>
     );
   }
