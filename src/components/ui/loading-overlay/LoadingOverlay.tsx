@@ -1,6 +1,6 @@
 import React from 'react';
 import Spinner from './spinner/Spinner';
-import styles from './LoadingOverlay.module.scss';
+import styles from './spinner/Spinner.module.scss';
 
 const message = 'Loading...';
 
