@@ -3,6 +3,7 @@
 .list {
   display: flex;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 40px 20px;
 }
 
@@ -36,22 +37,30 @@
     margin: $small-padding 0;
     padding: 0;
     list-style: none;
-    font-size: 0.9rem;
+    font-size: $text-typography;
 
-    li {
+    .characteristicItem,
+    .unknownItem {
       display: flex;
-      justify-content: space-between;
+      justify-content: flex-start;
+      gap: 10px;
       padding: 6px 0;
       border-bottom: 1px dashed rgba($base-border, 0.2);
 
       span:first-child {
-        color: $gold;
         margin-right: 10px;
+        font-weight: 500;
       }
 
       span:last-child {
         text-align: right;
-        color: $secondary-light;
+        font-weight: 300;
+      }
+    }
+
+    .unknownItem {
+      span {
+        color: $unknown;
       }
     }
   }

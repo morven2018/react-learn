@@ -1,4 +1,5 @@
 import React from 'react';
+import style from './CharacterLst.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface CharacterCharacteristicsProps {
@@ -19,11 +20,14 @@ const CharacterCharacteristics: React.FC<CharacterCharacteristicsProps> = ({
   ];
 
   return (
-    <ul>
+    <ul className={style.characteristics}>
       {characteristics.map(({ label, value }) => {
         const displayValue = value || (showUnknown ? 'unknown' : null);
         return displayValue ? (
-          <li key={label}>
+          <li
+            key={label}
+            className={value ? style.characteristicItem : style.unknownItem}
+          >
             <span>{label}:</span>
             <span>{displayValue}</span>
           </li>
