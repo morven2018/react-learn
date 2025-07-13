@@ -1,4 +1,4 @@
-@import '@assets/styles/globals.scss';
+@use '@assets/styles/globals.scss' as *;
 
 :root {
   font-family: $font-base;

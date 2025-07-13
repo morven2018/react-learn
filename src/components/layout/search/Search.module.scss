@@ -1,4 +1,5 @@
-@import '@assets/styles/globals.scss';
+@use '@assets/styles/globals.scss' as *;
+
 .searchComponent {
   padding: $base-padding $big-padding;
 
