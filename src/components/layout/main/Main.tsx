@@ -12,6 +12,7 @@ interface MainState {
   isFetchingMore: boolean;
   error: Error | null;
   hasMoreItems: boolean;
+  isInitialLoad: boolean;
 }
 
 interface SearchComponentMethods {
@@ -29,6 +30,7 @@ class Main extends React.Component<Record<string, never>, MainState> {
       isFetchingMore: false,
       error: null,
       hasMoreItems: false,
+      isInitialLoad: true,
     };
     this.searchRef = React.createRef();
   }
@@ -37,6 +39,7 @@ class Main extends React.Component<Record<string, never>, MainState> {
     this.setState((prevState) => ({
       characters: isNewSearch ? results : [...prevState.characters, ...results],
       hasMoreItems: CharacterApiService.hasMore(),
+      isInitialLoad: false,
     }));
   };
 
@@ -78,7 +81,8 @@ class Main extends React.Component<Record<string, never>, MainState> {
   }
 
   render() {
-    const { characters, isLoading, isFetchingMore, error } = this.state;
+    const { characters, isLoading, isFetchingMore, error, isInitialLoad } =
+      this.state;
 
     return (
       <main className={style.mainSection}>

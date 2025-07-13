@@ -2,8 +2,6 @@ import React from 'react';
 import Spinner from './spinner/Spinner';
 import styles from './spinner/Spinner.module.scss';
 
-const message = 'Loading...';
-
 interface LoadingOverlayProps {
   visible: boolean;
 }
@@ -18,7 +16,6 @@ class LoadingOverlay extends React.Component<LoadingOverlayProps> {
       <div className={styles.overlay}>
         <div className="loading-content">
           <Spinner />
-          {message && <span className="loading-text">{message}</span>}
         </div>
       </div>
     );

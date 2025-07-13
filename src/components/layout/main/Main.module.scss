@@ -10,7 +10,6 @@ $bg-image: url('@assets/images/background.png');
   border-radius: $border-radius;
 
   background: $bg-image repeat-y top center / 300% auto;
-  opacity: 0.5;
 
   .mainContent {
     padding: $base-padding $small-padding;
@@ -18,5 +17,7 @@ $bg-image: url('@assets/images/background.png');
     display: flex;
     flex-direction: column;
     gap: $base-padding;
+
+    background-color: $shadow;
   }
 }

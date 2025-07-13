@@ -1,0 +1,87 @@
+@import '@assets/styles/globals.scss';
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px 20px;
+}
+
+.loadMore {
+  font-family: $font-medieval;
+  font-size: $card-header;
+  padding-bottom: $small-padding;
+  text-align: center;
+}
+
+.card {
+  max-width: 300px;
+  width: 100%;
+  padding: $base-padding;
+
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+
+  color: $secondary-light;
+  font-family: $font-base;
+
+  .name {
+    font-family: $font-medieval;
+    font-size: $card-header;
+    padding-bottom: $small-padding;
+    text-align: center;
+  }
+
+  .characteristics {
+    margin: $small-padding 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.9rem;
+
+    li {
+      display: flex;
+      justify-content: space-between;
+      padding: 6px 0;
+      border-bottom: 1px dashed rgba($base-border, 0.2);
+
+      span:first-child {
+        color: $gold;
+        margin-right: 10px;
+      }
+
+      span:last-child {
+        text-align: right;
+        color: $secondary-light;
+      }
+    }
+  }
+
+  .wiki-link {
+    display: block;
+    text-align: center;
+    margin-top: $small-padding;
+    padding: 8px;
+    background: linear-gradient(to right, rgba($gold, 0.1), rgba($gold, 0.05));
+    color: $gold;
+    border: 1px solid $base-border;
+    border-radius: $border-radius;
+    text-decoration: none;
+    transition: all 0.2s ease;
+
+    &:hover:not(.disabled) {
+      background: rgba($gold, 0.2);
+      border-color: $hover-border;
+    }
+
+    &.disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      color: rgba($gold, 0.5);
+    }
+  }
+
+  @media (max-width: $breakpoint) {
+    max-width: 100%;
+    padding: $small-padding;
+  }
+}

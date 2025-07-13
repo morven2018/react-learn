@@ -1,5 +1,6 @@
 import Card from './Card';
 import React from 'react';
+import style from './CharacterLst.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface CardListProps {
@@ -10,23 +11,13 @@ interface CardListProps {
 const CardList: React.FC<CardListProps> = ({ characters, isFetchingMore }) => {
   return (
     <>
-      {characters.length !== 0 ? (
-        <>
-          <ul>
-            {characters.map((character) => (
-              <Card key={character.name} character={character} />
-            ))}
-          </ul>
-          {isFetchingMore && (
-            <div className="loading-more">Loading more characters...</div>
-          )}
-        </>
-      ) : (
-        <div>Not data is found</div>
-      )}
-
+      <ul className={style.list}>
+        {characters.map((character) => (
+          <Card key={character.name} character={character} />
+        ))}
+      </ul>
       {isFetchingMore && (
-        <div className="loading-more">Loading more characters...</div>
+        <div className={style.loadMore}>Loading more characters...</div>
       )}
     </>
   );
