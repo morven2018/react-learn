@@ -24,7 +24,7 @@ class Search extends React.Component<SearchProps, SearchState> {
   constructor(props: SearchProps) {
     super(props);
     this.state = {
-      termValue: Term.getTermFromLS() || '-1',
+      termValue: Term.getTermFromLS() ?? '',
       isInitialLoad: true,
       isLoading: false,
     };
