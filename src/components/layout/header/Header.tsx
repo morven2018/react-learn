@@ -1,12 +1,15 @@
 import React from 'react';
-import logo from '@assets/images/name.png';
+import logo from '@assets/images/image.png';
 
 class Header extends React.Component {
   render() {
     return (
       <header>
         <img src={logo} alt="Star Wars" />
-        <h2>Search</h2>
+        <div>
+          <h2>Between Middle Earth, Arda, And Beleriand.</h2>
+          <h3>Search.</h3>
+        </div>
       </header>
     );
   }
