@@ -65,27 +65,22 @@
     }
   }
 
-  .wiki-link {
+  .wikiLink,
+  .disableLink {
     display: block;
-    text-align: center;
-    margin-top: $small-padding;
-    padding: 8px;
-    background: linear-gradient(to right, rgba($gold, 0.1), rgba($gold, 0.05));
-    color: $gold;
-    border: 1px solid $base-border;
-    border-radius: $border-radius;
+    height: 40px;
+
+    text-align: right;
+    color: $unknown;
     text-decoration: none;
+  }
+
+  .wikiLink {
+    color: $gold;
     transition: all 0.2s ease;
 
-    &:hover:not(.disabled) {
-      background: rgba($gold, 0.2);
-      border-color: $hover-border;
-    }
-
-    &.disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      color: rgba($gold, 0.5);
+    &:hover {
+      font-size: 110%;
     }
   }
 

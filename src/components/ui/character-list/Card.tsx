@@ -20,7 +20,7 @@ class Card extends React.Component<CardItemProps> {
           aria-disabled={!character.wikiUrl}
           target="_blank"
           rel="noopener noreferrer"
-          className={`wiki-link ${!character.wikiUrl ? 'disabled' : ''}`}
+          className={character.wikiUrl ? style.wikiLink : style.disableLink}
           onClick={(e) => !character.wikiUrl && e.preventDefault()}
         >
           See More Info
