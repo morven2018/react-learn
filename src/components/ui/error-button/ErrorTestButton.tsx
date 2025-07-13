@@ -1,5 +1,6 @@
 import CharacterApiService from '@services/api/apiService';
 import React from 'react';
+import style from './ErrorTestButton.module.scss';
 
 class ErrorTestButton extends React.Component {
   triggerError = async () => {
@@ -7,7 +8,13 @@ class ErrorTestButton extends React.Component {
   };
 
   render() {
-    return <button onClick={this.triggerError}>Generate Error</button>;
+    return (
+      <div className={style.buttonWrapper}>
+        <button onClick={this.triggerError} className={style.errorButton}>
+          Generate Error
+        </button>
+      </div>
+    );
   }
 }
 

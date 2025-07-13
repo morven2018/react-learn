@@ -12,7 +12,7 @@ $bg-image: url('@assets/images/background.png');
   background: $bg-image repeat-y top center / 300% auto;
 
   .mainContent {
-    padding: $base-padding $small-padding;
+    padding: $base-padding $small-padding 100px;
 
     display: flex;
     flex-direction: column;
