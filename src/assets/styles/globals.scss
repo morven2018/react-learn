@@ -2,7 +2,12 @@
 
 $primary-black: #000;
 $primary-light: rgba(255, 255, 255, 0.87);
+$secondary-light: rgba(255, 255, 255, 1);
+$search-background: rgba(255, 255, 255, 0.25);
 $base-border: #6a5332;
+$button: rgba(0, 0, 0, 0.87);
+$input: rgba(0, 0, 0, 0.7);
+$hover-border: gold;
 
 $max-width: 1200px;
 
@@ -20,3 +25,5 @@ $header-typography: 48px;
 $header-typography-mobile: 24px;
 $subheader-typography: 36px;
 $subheader-typography-mobile: 18px;
+$controls-typography: 18px;
+$text-typography: 16px;

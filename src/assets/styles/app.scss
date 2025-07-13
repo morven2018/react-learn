@@ -22,3 +22,17 @@
 .app {
   padding: 0;
 }
+
+button,
+input {
+  color: $secondary-light;
+  padding: 10px 12px;
+  border: 1px solid $base-border;
+  border-radius: $border-radius;
+  font-size: $controls-typography;
+
+  &:focus {
+    outline: 3px solid $hover-border;
+    outline-offset: -1px;
+  }
+}

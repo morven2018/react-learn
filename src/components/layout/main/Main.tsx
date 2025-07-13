@@ -1,8 +1,9 @@
 import CharacterApiService from '@services/api/apiService';
-import ErrorTestButton from '@components/ui/buttons/ErrorTestButton';
+import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
 import Search from '@components/layout/search/Search';
+import style from './Main.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface MainState {
@@ -80,8 +81,8 @@ class Main extends React.Component<Record<string, never>, MainState> {
     const { characters, isLoading, isFetchingMore, error } = this.state;
 
     return (
-      <main>
-        <div>
+      <main className={style.mainSection}>
+        <div className={style.mainContent}>
           <Search
             ref={this.searchRef}
             onSearchResults={this.handleSearchResults}
@@ -97,8 +98,9 @@ class Main extends React.Component<Record<string, never>, MainState> {
             error={error}
             onDismissError={() => this.setState({ error: null })}
           />
+
+          <ErrorTestButton />
         </div>
-        <ErrorTestButton />
       </main>
     );
   }

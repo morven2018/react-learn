@@ -1,0 +1,22 @@
+@import '@assets/styles/globals.scss';
+
+$bg-image: url('@assets/images/background.png');
+
+.mainSection {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0;
+
+  border-radius: $border-radius;
+
+  background: $bg-image repeat-y top center / 300% auto;
+  opacity: 0.5;
+
+  .mainContent {
+    padding: $base-padding $small-padding;
+
+    display: flex;
+    flex-direction: column;
+    gap: $base-padding;
+  }
+}

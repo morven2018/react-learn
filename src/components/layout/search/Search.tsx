@@ -1,6 +1,7 @@
 import CharacterApiService from '@services/api/apiService';
 import LoadingOverlay from '@components/ui/loading-overlay/LoadingOverlay';
 import React from 'react';
+import style from './Search.module.scss';
 import { Term } from '@services/localStorage/LastTerm';
 import type { Person } from '@shared/types/responseTypes';
 
@@ -20,6 +21,9 @@ interface SearchState {
   isInitialLoad: boolean;
   isLoading: boolean;
 }
+
+const placeholderValue = 'Search characters by name...';
+const ariaValue = 'Search characters';
 
 class Search extends React.Component<SearchProps, SearchState> {
   private isMounted = false;
@@ -107,17 +111,22 @@ class Search extends React.Component<SearchProps, SearchState> {
     const { termValue, isLoading } = this.state;
 
     return (
-      <section className="search-container">
+      <section className={style.searchComponent}>
         <LoadingOverlay visible={isLoading} />
-        <form onSubmit={this.handleSubmit}>
+        <form onSubmit={this.handleSubmit} className={style.form}>
           <input
             type="text"
             value={termValue}
             onChange={this.handleInputChange}
-            placeholder="Search characters by name..."
-            aria-label="Search characters"
+            placeholder={placeholderValue}
+            aria-label={ariaValue}
+            className={style.input}
           />
-          <button type="submit" disabled={isLoading}>
+          <button
+            type="submit"
+            disabled={isLoading}
+            className={style.searchButton}
+          >
             {isLoading ? 'Searching...' : 'Search'}
           </button>
         </form>
