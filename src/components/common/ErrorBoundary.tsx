@@ -1,4 +1,5 @@
 import React from 'react';
+import style from './ErrorBoundary.module.scss';
 
 interface ErrorBoundaryProps {
   children: React.ReactNode;
@@ -72,10 +73,14 @@ class ErrorBoundary extends React.Component<
     if (this.state.hasError) {
       return (
         this.props.fallback || (
-          <div>
-            <h2>Something went wrong</h2>
-            <pre>{this.state.error?.toString()}</pre>
-            <button onClick={this.handleReset}>Retry</button>
+          <div className={style.errorBoundary}>
+            <h2 className={style.header}>Something went wrong</h2>
+            <div className={style.errorDetails}>
+              {this.state.error?.toString()}
+            </div>
+            <button onClick={this.handleReset} className={style.retryButton}>
+              Retry
+            </button>
           </div>
         )
       );
