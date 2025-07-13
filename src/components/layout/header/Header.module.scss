@@ -2,7 +2,7 @@
 
 .header {
   max-width: $max-width;
-  margin: 0 auto;
+  margin: 0 auto 10px;
   padding: $base-padding;
 
   display: flex;
@@ -11,6 +11,9 @@
   align-items: center;
   justify-content: center;
   gap: 20px;
+
+  border: 2px solid $base-border;
+  border-radius: $border-radius;
 
   font-family: $font-medieval;
 
