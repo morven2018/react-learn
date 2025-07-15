@@ -1,8 +1,10 @@
+import path from 'path';
 import react from '@vitejs/plugin-react';
+import tsconfigPaths from 'vite-tsconfig-paths';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths()],
   test: {
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.js'],
@@ -17,6 +19,15 @@ export default defineConfig({
         lines: 50,
       },
       include: ['src/**/*.{js,jsx,ts,tsx}'],
+    },
+  },
+
+  resolve: {
+    alias: {
+      '@assets': path.resolve(__dirname, './src/assets'),
+      '@components': path.resolve(__dirname, './src/components'),
+      '@services': path.resolve(__dirname, './src/services'),
+      '@shared': path.resolve(__dirname, './src/shared'),
     },
   },
 });
