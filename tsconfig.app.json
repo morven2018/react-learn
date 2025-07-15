@@ -24,6 +24,7 @@
     "noUncheckedSideEffectImports": true,
 
     "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
@@ -31,5 +32,5 @@
       "@services/*": ["./src/services/*"]
     }
   },
-  "include": ["src"]
+  "include": ["src", "test"]
 }
