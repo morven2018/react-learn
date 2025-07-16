@@ -35,14 +35,13 @@ describe('CharacterApiService', () => {
     CharacterApiService['currentApiKey'] = import.meta.env.VITE_API_KEY;
 
     global.fetch = vi.fn(() => {
-      const response = {
-        ok: true,
-        status: 200,
-        statusText: 'OK',
-        headers: new Headers({ 'Content-Type': 'application/json' }),
-        json: () => Promise.resolve(mockApiResponse),
-      };
-      return Promise.resolve(response as Response);
+      return Promise.resolve(
+        new Response(JSON.stringify(mockApiResponse), {
+          status: 200,
+          statusText: 'OK',
+          headers: { 'Content-Type': 'application/json' },
+        })
+      );
     });
   });
 
