@@ -2,7 +2,7 @@ import Header from '@components/layout/header/Header';
 import { render, screen } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 
-describe('VoidCart Component', () => {
+describe('Header Component', () => {
   it('renders image, title and subtitle', () => {
     render(<Header />);
 
