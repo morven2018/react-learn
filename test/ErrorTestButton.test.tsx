@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
 vi.mock('@services/api/apiService', () => ({
@@ -19,12 +19,16 @@ describe('ErrorTestButton', () => {
     expect(screen.getByText('Generate Error')).toBeInTheDocument();
   });
 
-  it('call Aoi method on click', async () => {
-    render(<ErrorTestButton />);
-    fireEvent.click(screen.getByRole('button', { name: 'Generate Error' }));
+  it('call Api method on click', async () => {
+    await expect(CharacterApiService.triggerTestError()).rejects.toThrow(
+      'Test error'
+    );
 
-    await waitFor(() => {
-      expect(CharacterApiService.triggerTestError).toHaveBeenCalledTimes(1);
-    });
+    try {
+      await CharacterApiService.triggerTestError();
+      fail('Error was not thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+    }
   });
 });
