@@ -107,4 +107,51 @@ describe('Results Component', () => {
     expect(screen.queryByText('person1')).not.toBeInTheDocument();
     expect(screen.getByText('Loading characters...')).toBeInTheDocument();
   });
+
+  it('show empty state on API error. Return no data', async () => {
+    const { rerender } = render(
+      <Results characters={[]} isLoading={true} isFetchingMore={false} />
+    );
+
+    await act(async () => {
+      rerender(
+        <Results characters={[]} isLoading={false} isFetchingMore={false} />
+      );
+    });
+
+    expect(screen.getByText('No data found')).toBeInTheDocument();
+    expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+  });
+
+  it('preserve data when subsequent loading fails', async () => {
+    const { rerender } = render(
+      <Results
+        characters={mockCharacters}
+        isLoading={false}
+        isFetchingMore={false}
+      />
+    );
+
+    await act(async () => {
+      rerender(
+        <Results
+          characters={mockCharacters}
+          isLoading={true}
+          isFetchingMore={false}
+        />
+      );
+    });
+
+    await act(async () => {
+      rerender(
+        <Results
+          characters={mockCharacters}
+          isLoading={false}
+          isFetchingMore={false}
+        />
+      );
+    });
+
+    expect(screen.getByText('person1')).toBeInTheDocument();
+  });
 });
