@@ -11,7 +11,7 @@ vi.mock('react-dom/client', () => ({
   })),
 }));
 
-describe('Application bootstrap', () => {
+describe('app', () => {
   let rootElement: HTMLElement;
 
   beforeEach(() => {
