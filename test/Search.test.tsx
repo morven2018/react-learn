@@ -1,6 +1,6 @@
 import * as CharacterApiService from '@services/api/apiService';
 import * as LastTerm from '@services/localStorage/LastTerm';
-import React from 'react';
+import React, { act } from 'react';
 import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
@@ -68,8 +68,10 @@ describe('Search Component', () => {
     vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
   });
 
-  it('renders correctly', () => {
-    render(<Search {...mockProps} />);
+  it('renders correctly', async () => {
+    await act(async () => {
+      render(<Search {...mockProps} />);
+    });
 
     expect(
       screen.getByRole('textbox', { name: 'Search characters' })
@@ -99,13 +101,11 @@ describe('Search Component', () => {
     }
 
     const input = screen.getByRole('textbox', { name: 'Search characters' });
-    fireEvent.change(input, { target: { value: 'test' } });
 
-    const submitEvent = new Event('submit', {
-      bubbles: true,
-      cancelable: true,
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'test' } });
+      fireEvent.submit(form);
     });
-    form.dispatchEvent(submitEvent);
 
     await waitFor(() => {
       expect(CharacterApiService.default.searchCharacters).toHaveBeenCalledWith(
@@ -145,9 +145,14 @@ describe('Search Component', () => {
 
     it('provide the handleLoadMore method', async () => {
       const ref = React.createRef<SearchRefMethods>();
-      render(<Search {...mockProps} ref={ref} />);
 
-      await ref.current?.handleLoadMore?.();
+      await act(async () => {
+        render(<Search {...mockProps} ref={ref} />);
+      });
+
+      await act(async () => {
+        await ref.current?.handleLoadMore?.();
+      });
 
       expect(CharacterApiService.default.loadMore).toHaveBeenCalled();
       expect(mockProps.onSearchResults).toHaveBeenCalledWith(person, false);
