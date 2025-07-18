@@ -57,8 +57,6 @@ describe('Card Component', () => {
   it('renders a disabled link if wikiUrl is missing', () => {
     render(<Card character={mockCharacterNoWikiUrl} />);
 
-    screen.debug();
-
     const link = screen.getByText('See More Info').closest('a');
     expect(link).toBeInTheDocument();
     expect(link).toHaveAttribute('aria-disabled', 'true');
