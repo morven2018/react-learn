@@ -3,7 +3,24 @@ import * as LastTerm from '@services/localStorage/LastTerm';
 import React from 'react';
 import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { type Mock, vi } from 'vitest';
+import { vi } from 'vitest';
+
+const person = [
+  {
+    name: 'person1',
+    wikiUrl: '',
+    race: '',
+    gender: '',
+    birth: '',
+    death: '',
+    realm: '',
+    height: '',
+    hair: '',
+    spouse: '',
+  },
+];
+
+const apiResponse = { docs: person, total: 1, limit: 20, page: 1, pages: 1 };
 
 vi.mock('@services/api/apiService', () => {
   const mockApi = {
@@ -38,17 +55,17 @@ describe('Search Component', () => {
   beforeEach(() => {
     vi.clearAllMocks();
 
-    (CharacterApiService.default.searchCharacters as Mock).mockResolvedValue({
-      docs: [{ id: '1', name: 'Character 1' }],
-    });
+    vi.spyOn(CharacterApiService.default, 'searchCharacters').mockResolvedValue(
+      apiResponse
+    );
 
-    (CharacterApiService.default.loadMore as Mock).mockResolvedValue({
-      docs: [{ id: '2', name: 'Character 2' }],
-    });
+    vi.spyOn(CharacterApiService.default, 'loadMore').mockResolvedValue(
+      apiResponse
+    );
 
-    (CharacterApiService.default.hasMore as Mock).mockReturnValue(true);
+    vi.spyOn(CharacterApiService.default, 'hasMore').mockReturnValue(true);
 
-    (LastTerm.Term.getTermFromLS as Mock).mockReturnValue('');
+    vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
   });
 
   it('renders correctly', () => {
@@ -61,7 +78,7 @@ describe('Search Component', () => {
   });
 
   it('load initial data on mount', async () => {
-    (LastTerm.Term.getTermFromLS as Mock).mockReturnValue('test');
+    vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('test');
 
     render(<Search {...mockProps} />);
 
@@ -69,10 +86,7 @@ describe('Search Component', () => {
       expect(CharacterApiService.default.searchCharacters).toHaveBeenCalledWith(
         'test'
       );
-      expect(mockProps.onSearchResults).toHaveBeenCalledWith(
-        [{ id: '1', name: 'Character 1' }],
-        true
-      );
+      expect(mockProps.onSearchResults).toHaveBeenCalledWith(person, true);
     });
   });
 
@@ -101,8 +115,9 @@ describe('Search Component', () => {
   });
 
   it('show loading state', async () => {
-    (
-      CharacterApiService.default.searchCharacters as jest.Mock
+    vi.spyOn(
+      CharacterApiService.default,
+      'searchCharacters'
     ).mockImplementation(() => new Promise(() => {}));
 
     render(<Search {...mockProps} />);
@@ -135,10 +150,7 @@ describe('Search Component', () => {
       await ref.current?.handleLoadMore?.();
 
       expect(CharacterApiService.default.loadMore).toHaveBeenCalled();
-      expect(mockProps.onSearchResults).toHaveBeenCalledWith(
-        [{ id: '2', name: 'Character 2' }],
-        false
-      );
+      expect(mockProps.onSearchResults).toHaveBeenCalledWith(person, false);
     });
   });
 });
