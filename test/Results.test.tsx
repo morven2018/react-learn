@@ -1,6 +1,6 @@
 import Results from '@components/layout/results/Results';
 import type { Person } from '@shared/types/responseTypes';
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, type RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';
 
 vi.mock('@components/ui/character-list/CardList', () => ({
@@ -13,50 +13,59 @@ vi.mock('@components/ui/character-list/CardList', () => ({
   ),
 }));
 
-const mockCharacters: Person[] = [
-  {
-    name: 'person1',
-    wikiUrl: '',
-    race: '',
-    gender: '',
-    birth: '',
-    death: '',
-    realm: '',
-    height: '',
-    hair: '',
-    spouse: '',
-  },
-  {
-    name: 'person2',
-    wikiUrl: '',
-    race: '',
-    gender: '',
-    birth: '',
-    death: '',
-    realm: '',
-    height: '',
-    hair: '',
-    spouse: '',
-  },
+const createMockPerson = (name: string): Person => ({
+  name,
+  wikiUrl: '',
+  race: '',
+  gender: '',
+  birth: '',
+  death: '',
+  realm: '',
+  height: '',
+  hair: '',
+  spouse: '',
+});
+
+const mockCharacters = [
+  createMockPerson('person1'),
+  createMockPerson('person2'),
 ];
 
 const renderResults = (props: {
   characters: Person[];
   isLoading: boolean;
   isFetchingMore: boolean;
-}) => render(<Results {...props} />);
+}): RenderResult => {
+  return render(<Results {...props} />);
+};
 
 const rerenderResults = (
-  rerender: (element: React.ReactElement) => void,
+  rerender: (ui: React.ReactElement) => void,
   props: {
     characters: Person[];
     isLoading: boolean;
     isFetchingMore: boolean;
   }
-) => {
+): void => {
   act(() => {
     rerender(<Results {...props} />);
   });
+};
+
+const expectLoadingState = () => {
+  expect(screen.getByText('Loading characters...')).toBeInTheDocument();
+  expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+};
+
+const expectEmptyState = () => {
+  expect(screen.getByText('No data found')).toBeInTheDocument();
+  expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+};
+
+const expectCharactersVisible = () => {
+  expect(screen.getByTestId('card-list')).toBeInTheDocument();
+  expect(screen.getByText('person1')).toBeInTheDocument();
+  expect(screen.getByText('person2')).toBeInTheDocument();
 };
 
 describe('Results Component', () => {
@@ -64,13 +73,12 @@ describe('Results Component', () => {
     vi.clearAllMocks();
   });
 
-  it('render loading state', () => {
+  it('should render loading state', () => {
     renderResults({ characters: [], isLoading: true, isFetchingMore: false });
-    expect(screen.getByText('Loading characters...')).toBeInTheDocument();
-    expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+    expectLoadingState();
   });
 
-  it('show empty message after loading with no data', async () => {
+  it('show empty message after loading with no data', () => {
     const { rerender } = renderResults({
       characters: [],
       isLoading: true,
@@ -81,12 +89,10 @@ describe('Results Component', () => {
       isLoading: false,
       isFetchingMore: false,
     });
-
-    expect(screen.getByText('No data found')).toBeInTheDocument();
-    expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+    expectEmptyState();
   });
 
-  it('display characters after loading finish', async () => {
+  it('display characters after loading finish', () => {
     const { rerender } = renderResults({
       characters: [],
       isLoading: true,
@@ -97,13 +103,10 @@ describe('Results Component', () => {
       isLoading: false,
       isFetchingMore: false,
     });
-
-    expect(screen.getByTestId('card-list')).toBeInTheDocument();
-    expect(screen.getByText('person1')).toBeInTheDocument();
-    expect(screen.getByText('person2')).toBeInTheDocument();
+    expectCharactersVisible();
   });
 
-  it('reset content on new search start', async () => {
+  it('reset content on new search start', () => {
     const { rerender } = renderResults({
       characters: mockCharacters,
       isLoading: false,
@@ -114,12 +117,10 @@ describe('Results Component', () => {
       isLoading: true,
       isFetchingMore: false,
     });
-
-    expect(screen.queryByText('person1')).not.toBeInTheDocument();
-    expect(screen.getByText('Loading characters...')).toBeInTheDocument();
+    expectLoadingState();
   });
 
-  it('show empty state on API error. Return no data', async () => {
+  it('show empty state on API error. Return no data', () => {
     const { rerender } = renderResults({
       characters: [],
       isLoading: true,
@@ -130,12 +131,10 @@ describe('Results Component', () => {
       isLoading: false,
       isFetchingMore: false,
     });
-
-    expect(screen.getByText('No data found')).toBeInTheDocument();
-    expect(screen.queryByTestId('card-list')).not.toBeInTheDocument();
+    expectEmptyState();
   });
 
-  it('preserve data when subsequent loading fails', async () => {
+  it('preserve data when subsequent loading fails', () => {
     const { rerender } = renderResults({
       characters: mockCharacters,
       isLoading: false,
@@ -151,7 +150,6 @@ describe('Results Component', () => {
       isLoading: false,
       isFetchingMore: false,
     });
-
-    expect(screen.getByText('person1')).toBeInTheDocument();
+    expectCharactersVisible();
   });
 });
