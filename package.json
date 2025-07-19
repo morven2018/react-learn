@@ -12,7 +12,8 @@
     "preview": "vite preview",
     "prepare": "husky",
     "test": "vitest",
-    "test:coverage": "vitest run --coverage"
+    "test:coverage": "vitest run --coverage",
+    "postinstall": "husky"
   },
   "dependencies": {
     "react": "^19.1.0",
