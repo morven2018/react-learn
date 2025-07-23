@@ -8,13 +8,21 @@ export const AboutPage = () => {
         <h2>About page</h2>
         <p>
           <span>Done by Alena Pudina</span>
-          <a href="https://github.com/morven2018" target="_blank">
+          <a
+            href="https://github.com/morven2018"
+            target="_blank"
+            rel="noreferrer"
+          >
             <img src={git} alt="git logo" />
           </a>
         </p>
         <div>
           Completed as part of the course{' '}
-          <a href="https://rs.school/courses/reactjs" target="_blank">
+          <a
+            href="https://rs.school/courses/reactjs"
+            target="_blank"
+            rel="noreferrer"
+          >
             React Course <img src={rss} alt="rss logo" />
           </a>
         </div>
@@ -22,5 +30,4 @@ export const AboutPage = () => {
     </main>
   );
 };
-
 export default AboutPage;
