@@ -1,9 +1,23 @@
+import git from '@assets/logo/git.svg';
+import rss from '@assets/logo/rss.svg';
+
 export const AboutPage = () => {
   return (
     <main>
       <div>
-        <h2>about.</h2>
-        <button onClick={() => {}}>home</button>
+        <h2>About page</h2>
+        <p>
+          <span>Done by Alena Pudina</span>
+          <a href="https://github.com/morven2018" target="_blank">
+            <img src={git} alt="git logo" />
+          </a>
+        </p>
+        <div>
+          Completed as part of the course{' '}
+          <a href="https://rs.school/courses/reactjs" target="_blank">
+            React Course <img src={rss} alt="rss logo" />
+          </a>
+        </div>
       </div>
     </main>
   );
