@@ -6,7 +6,7 @@
   padding: $base-padding;
 
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   flex-wrap: nowrap;
   align-items: center;
   justify-content: center;
@@ -34,11 +34,7 @@
   }
 
   .whiteTree {
-    height: calc(2 * $header-typography);
+    height: $header-typography;
     width: auto;
-
-    @media (max-width: $breakpoint) {
-      height: $header-typography;
-    }
   }
 }
