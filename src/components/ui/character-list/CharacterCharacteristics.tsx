@@ -7,38 +7,37 @@ interface CharacterCharacteristicsProps {
   showUnknown?: boolean;
 }
 
-class CharacterCharacteristics extends React.Component<CharacterCharacteristicsProps> {
-  private readonly LABELS = {
-    RACE: 'Race',
-    GENDER: 'Gender',
-    BIRTH: 'Birth',
-    DEATH: 'Death',
-    REALM: 'Realm',
-  };
-
-  render() {
-    const { character, showUnknown = true } = this.props;
-
-    return (
-      <ul className={style.characteristics}>
-        {Object.entries(this.LABELS).map(([key, label]) => {
-          const value = character[key.toLowerCase() as keyof Person];
-
-          return (
-            (value || showUnknown) && (
-              <li
-                key={label}
-                className={value ? style.characteristicItem : style.unknownItem}
-              >
-                <span>{label}:</span>
-                <span>{value ?? 'unknown'}</span>
-              </li>
-            )
-          );
-        })}
-      </ul>
-    );
-  }
+enum CharacterLabels {
+  race = 'Race',
+  gender = 'Gender',
+  birth = 'Birth',
+  death = 'Death',
+  realm = 'Realm',
 }
+
+const CharacterCharacteristics: React.FC<CharacterCharacteristicsProps> = ({
+  character,
+  showUnknown = true,
+}) => {
+  return (
+    <ul className={style.characteristics}>
+      {Object.entries(CharacterLabels).map(([key, label]) => {
+        const value = character[key.toLowerCase() as keyof Person];
+
+        return (
+          (value || showUnknown) && (
+            <li
+              key={label}
+              className={value ? style.characteristicItem : style.unknownItem}
+            >
+              <span>{label}:</span>
+              <span>{value ?? 'unknown'}</span>
+            </li>
+          )
+        );
+      })}
+    </ul>
+  );
+};
 
 export default CharacterCharacteristics;
