@@ -1,0 +1,23 @@
+@use '@assets/styles/globals.scss' as *;
+
+$bg-image: url('@assets/images/background.png');
+
+.mainSection {
+  max-width: $max-width;
+  margin: 0 auto;
+  padding: 0;
+
+  border-radius: $border-radius;
+
+  background: $bg-image repeat-y top center / 300% auto;
+
+  .mainContent {
+    padding: $base-padding $small-padding 100px;
+
+    display: flex;
+    flex-direction: column;
+    gap: $base-padding;
+
+    background-color: $shadow;
+  }
+}
