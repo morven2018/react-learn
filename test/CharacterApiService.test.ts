@@ -65,7 +65,7 @@ describe('CharacterApiService', () => {
       const init = call[1] ?? {};
 
       expect(url).toBe(
-        'https://the-one-api.dev/v2/character?name=%2Ftest%2Fi&limit=20&page=1'
+        'https://the-one-api.dev/v2/character?name=%2Ftest%2Fi&limit=12&page=1'
       );
 
       const headers = new Headers(init.headers);
@@ -89,7 +89,7 @@ describe('CharacterApiService', () => {
       const url = call[0];
       const init = call[1] ?? {};
 
-      expect(url).toBe('https://the-one-api.dev/v2/character?limit=20&page=1');
+      expect(url).toBe('https://the-one-api.dev/v2/character?limit=12&page=1');
 
       const headers = new Headers(init.headers);
 
@@ -150,53 +150,84 @@ describe('CharacterApiService', () => {
       const [url] = loadMoreCall;
 
       expect(url).toBe(
-        'https://the-one-api.dev/v2/character?name=%2Ftest%2Fi&limit=20&page=2'
+        'https://the-one-api.dev/v2/character?name=%2Ftest%2Fi&limit=12&page=2'
       );
 
       expect(result).toEqual(mockApiResponse);
     });
   });
 
-  describe('hasMore', () => {
-    it('should return true when more pages are available', async () => {
-      await CharacterApiService.searchCharacters('test');
-      expect(CharacterApiService.hasMore()).toBe(true);
-    });
+  it('should load second page if it available', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify(mockApiResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
 
-    it('should return false when no more pages are available', async () => {
-      vi.mocked(fetch).mockResolvedValueOnce(
-        new Response(
-          JSON.stringify({
-            ...mockApiResponse,
-            pages: 1,
-          }),
-          {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' },
-          }
-        )
-      );
+    await CharacterApiService.searchCharacters('test');
 
-      await CharacterApiService.searchCharacters('test');
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response(JSON.stringify(mockApiResponse), {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      })
+    );
 
-      expect(CharacterApiService.hasMore()).toBe(false);
-    });
+    const result = await CharacterApiService.loadPage(2);
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    const loadMoreCall = vi.mocked(fetch).mock.calls[1];
+    const [url] = loadMoreCall;
+
+    expect(url).toBe(
+      'https://the-one-api.dev/v2/character?name=%2Ftest%2Fi&limit=12&page=2'
+    );
+
+    expect(result).toEqual(mockApiResponse);
+  });
+});
+
+describe('hasMore', () => {
+  it('should return true when more pages are available', async () => {
+    await CharacterApiService.searchCharacters('test');
+    expect(CharacterApiService.hasMore()).toBe(true);
   });
 
-  describe('getLoadedCount', () => {
-    it('should return correct count after search', async () => {
-      await CharacterApiService.searchCharacters('test');
-      expect(CharacterApiService.getLoadedCount()).toBe(20);
-    });
+  it('should return false when no more pages are available', async () => {
+    vi.mocked(fetch).mockResolvedValueOnce(
+      new Response(
+        JSON.stringify({
+          ...mockApiResponse,
+          pages: 1,
+        }),
+        {
+          status: 200,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      )
+    );
+
+    await CharacterApiService.searchCharacters('test');
+
+    expect(CharacterApiService.hasMore()).toBe(false);
   });
+});
 
-  describe('triggerTestError', () => {
-    it('should throw a random error', async () => {
-      vi.mocked(getRandomInt).mockReturnValue(3);
+describe('getLoadedCount', () => {
+  it('should return correct count after search', async () => {
+    await CharacterApiService.searchCharacters('test');
+    expect(CharacterApiService.getLoadedCount()).toBe(12);
+  });
+});
 
-      await expect(CharacterApiService.triggerTestError()).rejects.toThrow(
-        '1001. Invalid Data - Incorrect data format'
-      );
-    });
+describe('triggerTestError', () => {
+  it('should throw a random error', async () => {
+    vi.mocked(getRandomInt).mockReturnValue(3);
+
+    await expect(CharacterApiService.triggerTestError()).rejects.toThrow(
+      '1001. Invalid Data - Incorrect data format'
+    );
   });
 });

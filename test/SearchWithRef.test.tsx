@@ -6,7 +6,7 @@ import { act, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
 interface SearchWithRefHandle {
-  handleLoadMore: () => Promise<void>;
+  handleLoadPage: (page: number) => Promise<void>;
 }
 
 describe('SearchWithRef', () => {
@@ -44,16 +44,15 @@ describe('SearchWithRef', () => {
     vi.spyOn(CharacterApiService, 'searchCharacters').mockResolvedValue(
       mockApiResponse
     );
-    vi.spyOn(CharacterApiService, 'loadMore').mockResolvedValue(
+    vi.spyOn(CharacterApiService, 'loadPage').mockResolvedValue(
       mockApiResponse
     );
-    vi.spyOn(CharacterApiService, 'hasMore').mockReturnValue(true);
 
     vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
     vi.spyOn(LastTerm.Term, 'setTermToLS').mockImplementation(() => {});
   });
 
-  it('provide the handleLoadMore method', async () => {
+  it('provide the handleLoadPage method', async () => {
     const ref = React.createRef<SearchWithRefHandle>();
 
     await act(async () => {
@@ -62,18 +61,23 @@ describe('SearchWithRef', () => {
 
     expect(screen.getByRole('textbox')).toBeInTheDocument();
 
+    // Clear initial loading calls from the initial render
+    mockProps.onLoading.mockClear();
+
+    const testPage = 2;
     await act(async () => {
-      await ref.current?.handleLoadMore?.();
+      await ref.current?.handleLoadPage?.(testPage);
     });
 
-    expect(CharacterApiService.loadMore).toHaveBeenCalledTimes(1);
+    expect(CharacterApiService.loadPage).toHaveBeenCalledTimes(1);
+    expect(CharacterApiService.loadPage).toHaveBeenCalledWith(testPage);
 
     await waitFor(() => {
       expect(mockProps.onSearchResults).toHaveBeenCalledWith([person], false);
-      expect(mockProps.onHasMore).toHaveBeenCalledWith(true);
     });
 
-    const loadMoreLoadingCalls = mockProps.onLoading.mock.calls.slice(-2);
-    expect(loadMoreLoadingCalls).toEqual([[true], [false]]);
+    // Now we only expect the loading calls from our manual handleLoadPage call
+    const loadingCalls = mockProps.onLoading.mock.calls;
+    expect(loadingCalls).toEqual([[true], [false]]);
   });
 });

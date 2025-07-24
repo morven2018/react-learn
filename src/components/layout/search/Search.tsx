@@ -80,7 +80,6 @@ const Search = forwardRef<SearchHandle, SearchProps>(
 
       if (recentSearch) {
         setTermValue(recentSearch);
-        handleSearch(recentSearch);
       }
 
       handleSearch(recentSearch);
