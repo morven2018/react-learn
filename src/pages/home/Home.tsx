@@ -2,7 +2,7 @@ import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
-import SearchWithRef from '@shared/search/SearchWithRef';
+import SearchWithRef from '@components/layout/search/SearchWithRef';
 import style from './Home.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
