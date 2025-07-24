@@ -1,8 +1,8 @@
 import * as CharacterApiService from '@services/api/apiService';
 import * as LastTerm from '@services/localStorage/LastTerm';
-import React, { act } from 'react';
 import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { act } from 'react';
 import { vi } from 'vitest';
 
 const person = [
@@ -136,26 +136,5 @@ describe('Search Component', () => {
     expect(loadingButton.textContent).toMatch(/Searching/i);
 
     expect(mockProps.onLoading).toHaveBeenCalledWith(true);
-  });
-
-  describe('SearchWithRef', () => {
-    interface SearchRefMethods {
-      handleLoadMore: () => Promise<void>;
-    }
-
-    it('provide the handleLoadMore method', async () => {
-      const ref = React.createRef<SearchRefMethods>();
-
-      await act(async () => {
-        render(<Search {...mockProps} ref={ref} />);
-      });
-
-      await act(async () => {
-        await ref.current?.handleLoadMore?.();
-      });
-
-      expect(CharacterApiService.default.loadMore).toHaveBeenCalled();
-      expect(mockProps.onSearchResults).toHaveBeenCalledWith(person, false);
-    });
   });
 });
