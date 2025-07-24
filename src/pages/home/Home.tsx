@@ -3,7 +3,7 @@ import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
 import Search from '@components/layout/search/Search';
-import style from './Main.module.scss';
+import style from './Home.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface MainState {

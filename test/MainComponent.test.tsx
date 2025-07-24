@@ -1,4 +1,4 @@
-import Main from '@components/layout/main/Main';
+import Main from 'src/pages/home/Home';
 import type { Person } from '@shared/types/responseTypes';
 import { act, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';

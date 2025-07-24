@@ -1,7 +1,7 @@
 import './App.css';
 import AboutPage from './pages/about/about';
 import Header from '@components/layout/header/Header';
-import Main from '@components/layout/main/Main';
+import Main from 'src/pages/home/Home';
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import { NotFoundPage } from './pages/not-found/not-found';
