@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Results from '@components/layout/results/Results';
 import SearchWithRef from '@components/layout/search/SearchWithRef';
 import style from './Home.module.scss';
@@ -8,46 +8,24 @@ import type { Person } from '@shared/types/responseTypes';
 
 const SCROLL_LOAD_THRESHOLD = 100;
 
-interface MainState {
-  characters: Person[];
-  isLoading: boolean;
-  isFetchingMore: boolean;
-  hasMoreItems: boolean;
-}
-
 interface SearchComponentMethods {
   handleLoadMore: () => Promise<void>;
 }
 
-class Main extends React.Component<Record<string, never>, MainState> {
-  private readonly searchRef: React.RefObject<SearchComponentMethods | null>;
+const Home: React.FC = () => {
+  const [characters, setCharacters] = useState<Person[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [hasMoreItems, setHasMoreItems] = useState(false);
 
-  constructor(props: Record<string, never>) {
-    super(props);
-    this.state = {
-      characters: [],
-      isLoading: false,
-      isFetchingMore: false,
-      hasMoreItems: false,
-    };
-    this.searchRef = React.createRef();
-  }
+  const searchRef = useRef<SearchComponentMethods | null>(null);
 
-  handleSearchResults = (results: Person[], isNewSearch: boolean) => {
-    this.setState((prevState) => ({
-      characters: isNewSearch ? results : [...prevState.characters, ...results],
-      hasMoreItems: CharacterApiService.hasMore(),
-    }));
+  const handleSearchResults = (results: Person[], isNewSearch: boolean) => {
+    setCharacters((prev) => (isNewSearch ? results : [...prev, ...results]));
+    setHasMoreItems(CharacterApiService.hasMore());
   };
 
-  handleScroll = () => {
-    if (this.shouldLoadMore()) {
-      this.loadMore();
-    }
-  };
-
-  shouldLoadMore = (): boolean => {
-    const { isFetchingMore, hasMoreItems } = this.state;
+  const shouldLoadMore = (): boolean => {
     return (
       window.innerHeight + document.documentElement.scrollTop >=
         document.documentElement.offsetHeight - SCROLL_LOAD_THRESHOLD &&
@@ -56,11 +34,11 @@ class Main extends React.Component<Record<string, never>, MainState> {
     );
   };
 
-  loadMore = async () => {
-    this.setState({ isFetchingMore: true });
+  const loadMore = async () => {
+    setIsFetchingMore(true);
     try {
-      if (this.searchRef.current) {
-        await this.searchRef.current.handleLoadMore();
+      if (searchRef.current) {
+        await searchRef.current.handleLoadMore();
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -68,42 +46,43 @@ class Main extends React.Component<Record<string, never>, MainState> {
       }
       throw new Error('Unknown error');
     } finally {
-      this.setState({ isFetchingMore: false });
+      setIsFetchingMore(false);
     }
   };
 
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll);
-  }
+  const handleScroll = () => {
+    if (shouldLoadMore()) {
+      loadMore();
+    }
+  };
 
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll);
-  }
+  useEffect(() => {
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [isFetchingMore, hasMoreItems]);
 
-  render() {
-    const { characters, isLoading, isFetchingMore } = this.state;
+  return (
+    <main className={style.mainSection}>
+      <div className={style.mainContent}>
+        <SearchWithRef
+          ref={searchRef}
+          onSearchResults={handleSearchResults}
+          onLoading={setIsLoading}
+          onHasMore={setHasMoreItems}
+        />
 
-    return (
-      <main className={style.mainSection}>
-        <div className={style.mainContent}>
-          <SearchWithRef
-            ref={this.searchRef}
-            onSearchResults={this.handleSearchResults}
-            onLoading={(loading) => this.setState({ isLoading: loading })}
-            onHasMore={(hasMore) => this.setState({ hasMoreItems: hasMore })}
-          />
+        <Results
+          characters={characters}
+          isLoading={isLoading}
+          isFetchingMore={isFetchingMore}
+        />
 
-          <Results
-            characters={characters}
-            isLoading={isLoading}
-            isFetchingMore={isFetchingMore}
-          />
+        <ErrorTestButton />
+      </div>
+    </main>
+  );
+};
 
-          <ErrorTestButton />
-        </div>
-      </main>
-    );
-  }
-}
-
-export default Main;
+export default Home;
