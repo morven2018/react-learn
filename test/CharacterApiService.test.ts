@@ -20,9 +20,9 @@ vi.mock('@services/localStorage/LastTerm', () => ({
 }));
 
 const mockApiResponse = {
-  docs: [{ id: '1', name: 'Character 1' }],
+  docs: [{ _id: '1', name: 'Character 1' }],
   total: 1,
-  limit: 20,
+  limit: 12,
   page: 1,
   pages: 2,
 };

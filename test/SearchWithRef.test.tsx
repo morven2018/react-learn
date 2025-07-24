@@ -11,6 +11,7 @@ interface SearchWithRefHandle {
 
 describe('SearchWithRef', () => {
   const person = {
+    _id: '',
     name: 'person1',
     wikiUrl: '',
     race: '',

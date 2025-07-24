@@ -14,6 +14,7 @@ vi.mock('@components/ui/character-list/CardList', () => ({
 }));
 
 const createMockPerson = (name: string): Person => ({
+  _id: '',
   name,
   wikiUrl: '',
   race: '',

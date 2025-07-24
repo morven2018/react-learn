@@ -5,6 +5,7 @@ import { render, screen } from '@testing-library/react';
 describe('CardList Component', () => {
   const mockCharacters: Person[] = [
     {
+      _id: '',
       name: 'person1',
       wikiUrl: '',
       race: '',
@@ -17,6 +18,7 @@ describe('CardList Component', () => {
       spouse: '',
     },
     {
+      _id: '',
       name: 'person2',
       wikiUrl: '',
       race: '',

@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react';
 
 describe('CharacterCharacteristics', () => {
   const mockCharacter: Person = {
+    _id: '',
     name: '',
     wikiUrl: '',
     race: 'Elf',

@@ -1,4 +1,5 @@
 export interface Person {
+  _id: string;
   name: string;
   wikiUrl: string;
   race: string | null;

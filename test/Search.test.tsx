@@ -7,6 +7,7 @@ import { vi } from 'vitest';
 
 const person = [
   {
+    _id: '',
     name: 'person1',
     wikiUrl: '',
     race: '',

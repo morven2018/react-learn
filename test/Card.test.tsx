@@ -5,6 +5,7 @@ import { vi } from 'vitest';
 
 describe('Card Component', () => {
   const mockCharacter: Person = {
+    _id: '',
     name: 'Aragorn',
     wikiUrl: 'https://lotr.fandom.com/wiki/Aragorn',
     race: '',
@@ -18,6 +19,7 @@ describe('Card Component', () => {
   };
 
   const mockCharacterNoWikiUrl: Person = {
+    _id: '',
     name: 'Gothmog',
     wikiUrl: '',
     race: '',
