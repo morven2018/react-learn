@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
-import Pagination from '@components/ui/pagination/pagination';
+import Pagination from '@components/ui/pagination/Pagination';
 import React, { useCallback, useRef, useState } from 'react';
 import Results from '@components/layout/results/Results';
 import SearchWithRef from '@components/layout/search/SearchWithRef';
@@ -58,7 +58,6 @@ const Home: React.FC = () => {
           ref={searchRef}
           onSearchResults={handleSearchResults}
           onLoading={setIsLoading}
-          //   onHasMore={setHasMoreItems}
         />
 
         <Results
