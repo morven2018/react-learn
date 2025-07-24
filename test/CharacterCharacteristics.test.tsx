@@ -38,6 +38,7 @@ describe('CharacterCharacteristics', () => {
 
   it('shows "unknown" for missing fields', () => {
     const incompleteCharacter: Person = {
+      _id: '',
       name: '',
       wikiUrl: '',
       race: 'Human',
