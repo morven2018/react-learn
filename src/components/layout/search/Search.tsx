@@ -16,7 +16,6 @@ import {
 interface SearchProps {
   onSearchResults: (results: Person[], isNewSearch: boolean) => void;
   onLoading: (isLoading: boolean) => void;
-  onHasMore: (hasMore: boolean) => void;
 }
 
 export interface SearchHandle {
@@ -24,7 +23,7 @@ export interface SearchHandle {
 }
 
 const Search = forwardRef<SearchHandle, SearchProps>(
-  ({ onSearchResults, onLoading, onHasMore }, ref) => {
+  ({ onSearchResults, onLoading }, ref) => {
     const [termValue, setTermValue] = useState(Term.getTermFromLS() ?? '');
     const [isLoading, setIsLoading] = useState(false);
     const debounceTimer = useRef<NodeJS.Timeout | null>(null);
@@ -38,19 +37,24 @@ const Search = forwardRef<SearchHandle, SearchProps>(
     };
 
     const handleSearch = useCallback(
-      async (term: string = '') => {
+      async (term: string = '', page?: number) => {
         if (!isMounted.current) return;
 
         setIsLoading(true);
         onLoading(true);
-        Term.setTermToLS(term);
+
+        if (page === undefined) {
+          Term.setTermToLS(term);
+        }
 
         try {
-          const response = await CharacterApiService.searchCharacters(term);
+          const response = await CharacterApiService.searchCharacters(
+            term,
+            page
+          );
 
           if (isMounted.current) {
-            onSearchResults(response?.docs || [], true);
-            onHasMore(CharacterApiService.hasMore());
+            onSearchResults(response?.docs || [], page === undefined);
           }
         } catch (error) {
           throw new Error(
@@ -63,7 +67,7 @@ const Search = forwardRef<SearchHandle, SearchProps>(
           }
         }
       },
-      [onHasMore, onLoading, onSearchResults]
+      [onLoading, onSearchResults]
     );
 
     useImperativeHandle(ref, () => ({
@@ -77,9 +81,9 @@ const Search = forwardRef<SearchHandle, SearchProps>(
       if (recentSearch) {
         setTermValue(recentSearch);
         handleSearch(recentSearch);
-      } else {
-        handleSearch('');
       }
+
+      handleSearch(recentSearch);
 
       return () => {
         isMounted.current = false;

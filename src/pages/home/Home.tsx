@@ -1,67 +1,55 @@
 import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
-import React, { useEffect, useRef, useState } from 'react';
+import Pagination from '@components/ui/pagination/pagination';
+import React, { useCallback, useRef, useState } from 'react';
 import Results from '@components/layout/results/Results';
 import SearchWithRef from '@components/layout/search/SearchWithRef';
 import style from './Home.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
-const SCROLL_LOAD_THRESHOLD = 100;
-
 interface SearchComponentMethods {
-  handleLoadMore: () => Promise<void>;
+  handleSearch: (term: string) => Promise<void>;
+  handleLoadPage: (page: number) => Promise<void>;
 }
 
 const Home: React.FC = () => {
   const [characters, setCharacters] = useState<Person[]>([]);
   const [isLoading, setIsLoading] = useState(false);
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [hasMoreItems, setHasMoreItems] = useState(false);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
   const searchRef = useRef<SearchComponentMethods | null>(null);
 
-  const handleSearchResults = (results: Person[], isNewSearch: boolean) => {
-    setCharacters((prev) => (isNewSearch ? results : [...prev, ...results]));
-    setHasMoreItems(CharacterApiService.hasMore());
-  };
-
-  const shouldLoadMore = (): boolean => {
-    return (
-      window.innerHeight + document.documentElement.scrollTop >=
-        document.documentElement.offsetHeight - SCROLL_LOAD_THRESHOLD &&
-      !isFetchingMore &&
-      hasMoreItems
-    );
-  };
-
-  const loadMore = async () => {
-    setIsFetchingMore(true);
-    try {
-      if (searchRef.current) {
-        await searchRef.current.handleLoadMore();
+  const handleSearchResults = useCallback(
+    (results: Person[], isNewSearch: boolean) => {
+      setCharacters(results);
+      setCurrentPage(1);
+      if (isNewSearch) {
+        setTotalPages(CharacterApiService.getTotalPages());
       }
-    } catch (error) {
-      if (error instanceof Error) {
-        throw new Error(error.message);
+    },
+    []
+  );
+
+  const handleLoadPage = useCallback(
+    async (page: number) => {
+      if (isLoading || page === currentPage || page < 1 || page > totalPages)
+        return;
+
+      setIsLoading(true);
+      try {
+        if (searchRef.current) {
+          await searchRef.current.handleLoadPage(page);
+          setCurrentPage(page);
+        }
+      } catch (error) {
+        console.error('Error loading page:', error);
+      } finally {
+        setIsLoading(false);
       }
-      throw new Error('Unknown error');
-    } finally {
-      setIsFetchingMore(false);
-    }
-  };
-
-  const handleScroll = () => {
-    if (shouldLoadMore()) {
-      loadMore();
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
-  }, [isFetchingMore, hasMoreItems]);
+    },
+    [isLoading, currentPage, totalPages]
+  );
 
   return (
     <main className={style.mainSection}>
@@ -70,13 +58,20 @@ const Home: React.FC = () => {
           ref={searchRef}
           onSearchResults={handleSearchResults}
           onLoading={setIsLoading}
-          onHasMore={setHasMoreItems}
+          //   onHasMore={setHasMoreItems}
         />
 
         <Results
           characters={characters}
           isLoading={isLoading}
-          isFetchingMore={isFetchingMore}
+          isFetchingMore={false}
+        />
+
+        <Pagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          isLoading={isLoading}
+          onPageChange={handleLoadPage}
         />
 
         <ErrorTestButton />

@@ -33,6 +33,7 @@
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
       "@shared/*": ["./src/shared/*"],
+      "@pages/*": ["./src/pages/*"],
       "@services/*": ["./src/services/*"]
     }
   },

@@ -5,7 +5,7 @@ import type { ApiResponse } from '@shared/types/responseTypes';
 const API_BASE = 'https://the-one-api.dev/v2/';
 const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY;
 const API_KEY_SECONDARY = import.meta.env.VITE_API_KEY2;
-const BASE_LIMIT = 20;
+const BASE_LIMIT = 12;
 const ERROR_TYPES_COUNT = 5;
 
 enum HttpStatus {
@@ -111,6 +111,13 @@ class CharacterApiService {
     }
 
     return this.lastResponse;
+  }
+  static async loadPage(page: number): Promise<ApiResponse> {
+    return this.searchCharacters(this.lastQuery, page);
+  }
+
+  static getTotalPages(): number {
+    return this.lastResponse?.pages || 1;
   }
 
   static async loadMore(): Promise<ApiResponse> {
