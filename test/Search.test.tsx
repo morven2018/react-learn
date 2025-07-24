@@ -2,7 +2,6 @@ import * as CharacterApiService from '@services/api/apiService';
 import * as LastTerm from '@services/localStorage/LastTerm';
 import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
-import { act } from 'react';
 import { vi } from 'vitest';
 
 const person = [
@@ -24,25 +23,28 @@ const person = [
 const apiResponse = { docs: person, total: 1, limit: 20, page: 1, pages: 1 };
 
 vi.mock('@services/api/apiService', () => {
-  const mockApi = {
-    searchCharacters: vi.fn(),
-    loadMore: vi.fn(),
-    hasMore: vi.fn(),
-  };
   return {
-    __esModule: true,
-    default: mockApi,
+    default: {
+      searchCharacters: vi.fn(),
+    },
   };
 });
 
 vi.mock('@services/localStorage/LastTerm', () => {
-  const mockTerm = {
-    getTermFromLS: vi.fn(),
-    setTermToLS: vi.fn(),
-  };
   return {
-    __esModule: true,
-    Term: mockTerm,
+    Term: {
+      getTermFromLS: vi.fn(),
+      setTermToLS: vi.fn(),
+    },
+  };
+});
+
+vi.mock('@components/hooks/useRestoreSearchTerm', () => {
+  return {
+    useRestoreSearchTerm: () => ({
+      termValue: '',
+      updateTermValue: vi.fn(),
+    }),
   };
 });
 
@@ -50,48 +52,34 @@ describe('Search Component', () => {
   const mockProps = {
     onSearchResults: vi.fn(),
     onLoading: vi.fn(),
-    onHasMore: vi.fn(),
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-
     vi.spyOn(CharacterApiService.default, 'searchCharacters').mockResolvedValue(
       apiResponse
     );
-
-    vi.spyOn(CharacterApiService.default, 'loadMore').mockResolvedValue(
-      apiResponse
-    );
-
-    vi.spyOn(CharacterApiService.default, 'hasMore').mockReturnValue(true);
-
     vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
   });
 
-  it('renders correctly', async () => {
-    await act(async () => {
-      render(<Search {...mockProps} />);
-    });
+  it('renders correctly', () => {
+    render(<Search {...mockProps} />);
+    const input = screen.getByPlaceholderText('Search characters...');
+    expect(input).toBeInTheDocument();
+    expect(input).toHaveAttribute('type', 'text');
 
-    expect(
-      screen.getByRole('textbox', { name: 'Search characters' })
-    ).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /Search/i })).toBeInTheDocument();
+    const button = screen.getByRole('button', { name: /Search/i });
+    expect(button).toBeInTheDocument();
+    expect(button).toHaveTextContent('Search');
   });
 
   it('load initial data on mount', async () => {
-    vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('test');
-
-    const searchSpy = vi
-      .spyOn(CharacterApiService.default, 'searchCharacters')
-      .mockResolvedValue(apiResponse);
-
+    const searchSpy = vi.spyOn(CharacterApiService.default, 'searchCharacters');
     render(<Search {...mockProps} />);
 
     await waitFor(() => {
       expect(searchSpy).toHaveBeenCalledTimes(1);
-      expect(searchSpy).toHaveBeenCalledWith('test', undefined);
+      expect(searchSpy).toHaveBeenCalledWith('');
     });
 
     await waitFor(() => {
@@ -99,7 +87,7 @@ describe('Search Component', () => {
     });
   });
 
-  it('show loading state', async () => {
+  it('shows loading state', async () => {
     vi.spyOn(
       CharacterApiService.default,
       'searchCharacters'
@@ -107,9 +95,14 @@ describe('Search Component', () => {
 
     render(<Search {...mockProps} />);
 
-    const formElement = document.querySelector('form');
+    const input = screen.getByPlaceholderText('Search characters...');
+    fireEvent.change(input, { target: { value: 'test' } });
+
+    const formElement = screen
+      .getByRole('button', { name: /Searching/i })
+      .closest('form');
     if (!formElement) {
-      throw new Error('Form is mot found');
+      throw new Error('Form not found');
     }
     fireEvent.submit(formElement);
 
@@ -119,7 +112,31 @@ describe('Search Component', () => {
 
     expect(loadingButton).toBeDisabled();
     expect(loadingButton.textContent).toMatch(/Searching/i);
-
     expect(mockProps.onLoading).toHaveBeenCalledWith(true);
+  });
+
+  it('update input value on typing', () => {
+    render(<Search {...mockProps} />);
+    const input = screen.getByPlaceholderText('Search characters...');
+    fireEvent.change(input, { target: { value: 'test' } });
+    expect(input).toHaveValue('test');
+  });
+
+  it('handle search on form submit', async () => {
+    const searchSpy = vi.spyOn(CharacterApiService.default, 'searchCharacters');
+    const { container } = render(<Search {...mockProps} />);
+
+    const input = screen.getByPlaceholderText('Search characters...');
+    fireEvent.change(input, { target: { value: 'test' } });
+
+    const form = container.querySelector('form');
+    if (!form) {
+      throw new Error('Form is mot found');
+    }
+    fireEvent.submit(form);
+
+    await waitFor(() => {
+      expect(searchSpy).toHaveBeenCalledWith('test');
+    });
   });
 });
