@@ -8,41 +8,38 @@ const API_KEY_SECONDARY = import.meta.env.VITE_API_KEY2;
 const BASE_LIMIT = 20;
 const ERROR_TYPES_COUNT = 5;
 
-const HTTP_STATUS = {
-  BAD_REQUEST: 400,
-  UNAUTHORIZED: 401,
-  FORBIDDEN: 403,
-  NOT_FOUND: 404,
-  TOO_MANY_REQUESTS: 429,
-  INTERNAL_SERVER_ERROR: 500,
-  SERVICE_UNAVAILABLE: 503,
-};
-
-const CUSTOM_ERROR_CODES = {
-  NETWORK_ERROR: 1000,
-  INVALID_DATA: 1001,
-  API_ERROR: 1002,
-  UNKNOWN_ERROR: 9999,
-};
+enum HttpStatus {
+  BadRequest = 400,
+  Unauthorized = 401,
+  Forbidden = 403,
+  NotFound = 404,
+  TooManyRequests = 429,
+  InternalServerError = 500,
+  ServiceUnavailable = 503,
+}
+enum CustomErrorCode {
+  NetworkError = 1000,
+  InvalidData = 1001,
+  ApiError = 1002,
+  UnknownError = 9999,
+}
 
 const ERROR_MESSAGES: { [key: number]: string } = {
-  [HTTP_STATUS.BAD_REQUEST]:
+  [HttpStatus.BadRequest]:
     '400. Bad Request - The server cannot process the request',
-  [HTTP_STATUS.UNAUTHORIZED]: '401. Unauthorized - Authentication required',
-  [HTTP_STATUS.FORBIDDEN]: '403. Forbidden - Insufficient permissions',
-  [HTTP_STATUS.NOT_FOUND]: '404. Not Found - Resource does not exist',
-  [HTTP_STATUS.TOO_MANY_REQUESTS]:
-    '429. Too Many Requests - Rate limit exceeded',
-  [HTTP_STATUS.INTERNAL_SERVER_ERROR]:
+  [HttpStatus.Unauthorized]: '401. Unauthorized - Authentication required',
+  [HttpStatus.Forbidden]: '403. Forbidden - Insufficient permissions',
+  [HttpStatus.NotFound]: '404. Not Found - Resource does not exist',
+  [HttpStatus.TooManyRequests]: '429. Too Many Requests - Rate limit exceeded',
+  [HttpStatus.InternalServerError]:
     '500. Internal Server Error - Server encountered an error',
-  [HTTP_STATUS.SERVICE_UNAVAILABLE]:
+  [HttpStatus.ServiceUnavailable]:
     '503. Service Unavailable - Temporary maintenance',
-  [CUSTOM_ERROR_CODES.NETWORK_ERROR]:
+  [CustomErrorCode.NetworkError]:
     '1000. Network Error - Connection problem or timeout',
-  [CUSTOM_ERROR_CODES.INVALID_DATA]:
-    '1001. Invalid Data - Incorrect data format',
-  [CUSTOM_ERROR_CODES.API_ERROR]: '1002. API Error - External service failure',
-  [CUSTOM_ERROR_CODES.UNKNOWN_ERROR]:
+  [CustomErrorCode.InvalidData]: '1001. Invalid Data - Incorrect data format',
+  [CustomErrorCode.ApiError]: '1002. API Error - External service failure',
+  [CustomErrorCode.UnknownError]:
     '9999. Unknown Error - Unexpected situation occurred',
 };
 
@@ -53,7 +50,7 @@ class CharacterApiService {
 
   private static createError(code: number): Error {
     const message =
-      ERROR_MESSAGES[code] || ERROR_MESSAGES[CUSTOM_ERROR_CODES.UNKNOWN_ERROR];
+      ERROR_MESSAGES[code] || ERROR_MESSAGES[CustomErrorCode.UnknownError];
     const fullMessage = message;
     return new Error(fullMessage);
   }
@@ -71,7 +68,7 @@ class CharacterApiService {
       const response = await fetch(url, { headers });
 
       if (
-        response.status === HTTP_STATUS.UNAUTHORIZED &&
+        response.status === HttpStatus.Unauthorized &&
         retry &&
         API_KEY_SECONDARY
       ) {
@@ -86,7 +83,7 @@ class CharacterApiService {
       return response;
     } catch (error) {
       if (error instanceof Error) throw error;
-      throw this.createError(CUSTOM_ERROR_CODES.NETWORK_ERROR);
+      throw this.createError(CustomErrorCode.NetworkError);
     }
   }
 
@@ -110,7 +107,7 @@ class CharacterApiService {
     this.lastResponse = await response.json();
 
     if (!this.lastResponse?.docs) {
-      throw this.createError(CUSTOM_ERROR_CODES.INVALID_DATA);
+      throw this.createError(CustomErrorCode.InvalidData);
     }
 
     return this.lastResponse;
@@ -118,12 +115,12 @@ class CharacterApiService {
 
   static async loadMore(): Promise<ApiResponse> {
     if (!this.lastResponse) {
-      throw this.createError(HTTP_STATUS.BAD_REQUEST);
+      throw this.createError(HttpStatus.BadRequest);
     }
 
     const nextPage = this.lastResponse.page + 1;
     if (nextPage > this.lastResponse.pages) {
-      throw this.createError(HTTP_STATUS.BAD_REQUEST);
+      throw this.createError(HttpStatus.BadRequest);
     }
 
     return this.searchCharacters(this.lastQuery, nextPage);
@@ -145,11 +142,11 @@ class CharacterApiService {
     const errorType = getRandomInt(1, ERROR_TYPES_COUNT);
 
     const errors = [
-      () => this.createError(CUSTOM_ERROR_CODES.NETWORK_ERROR),
-      () => this.createError(HTTP_STATUS.INTERNAL_SERVER_ERROR),
-      () => this.createError(CUSTOM_ERROR_CODES.INVALID_DATA),
-      () => this.createError(HTTP_STATUS.UNAUTHORIZED),
-      () => this.createError(HTTP_STATUS.NOT_FOUND),
+      () => this.createError(CustomErrorCode.NetworkError),
+      () => this.createError(HttpStatus.InternalServerError),
+      () => this.createError(CustomErrorCode.InvalidData),
+      () => this.createError(HttpStatus.Unauthorized),
+      () => this.createError(HttpStatus.NotFound),
     ];
 
     throw errors[errorType - 1]();

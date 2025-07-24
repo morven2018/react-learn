@@ -50,14 +50,14 @@ class Results extends React.Component<ResultsProps, ResultsState> {
           <div className={style.messageIndicator}>Loading characters...</div>
         )}
 
-        {displayCharacters.length > 0 && (
+        {!!displayCharacters.length && (
           <CardList
             characters={displayCharacters}
             isFetchingMore={isFetchingMore}
           />
         )}
 
-        {!isLoading && displayCharacters.length === 0 && !shouldResetList && (
+        {!isLoading && !displayCharacters.length && !shouldResetList && (
           <div className={style.messageIndicator}>No data found</div>
         )}
       </div>

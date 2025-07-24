@@ -23,17 +23,18 @@ class CharacterCharacteristics extends React.Component<CharacterCharacteristicsP
       <ul className={style.characteristics}>
         {Object.entries(this.LABELS).map(([key, label]) => {
           const value = character[key.toLowerCase() as keyof Person];
-          const displayValue = value || (showUnknown ? 'unknown' : null);
 
-          return displayValue ? (
-            <li
-              key={label}
-              className={value ? style.characteristicItem : style.unknownItem}
-            >
-              <span>{label}:</span>
-              <span>{displayValue}</span>
-            </li>
-          ) : null;
+          return (
+            (value || showUnknown) && (
+              <li
+                key={label}
+                className={value ? style.characteristicItem : style.unknownItem}
+              >
+                <span>{label}:</span>
+                <span>{value ?? 'unknown'}</span>
+              </li>
+            )
+          );
         })}
       </ul>
     );
