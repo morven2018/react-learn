@@ -5,7 +5,6 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const UNAUTHORIZED = 401;
 
-vi.stubEnv('VITE_API_URL', 'https://the-one-api.dev/v2/');
 vi.stubEnv('VITE_API_KEY', 'oJHunt00vrX9Yile7Jny');
 vi.stubEnv('VITE_API_KEY2', 'secondary_key');
 

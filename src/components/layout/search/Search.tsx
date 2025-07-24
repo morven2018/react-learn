@@ -21,9 +21,6 @@ interface SearchState {
   isLoading: boolean;
 }
 
-const placeholderValue = 'Search characters by name...';
-const ariaValue = 'Search characters';
-
 class Search extends React.Component<SearchProps, SearchState> {
   private isMounted = false;
   private debounceTimer: NodeJS.Timeout | null = null;
@@ -112,8 +109,8 @@ class Search extends React.Component<SearchProps, SearchState> {
             type="text"
             value={termValue}
             onChange={this.handleInputChange}
-            placeholder={placeholderValue}
-            aria-label={ariaValue}
+            placeholder="Search characters by name..."
+            aria-label="Search characters"
             className={style.input}
           />
           <button
