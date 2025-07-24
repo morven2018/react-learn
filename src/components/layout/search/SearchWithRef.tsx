@@ -10,7 +10,6 @@ interface SearchRefMethods {
 interface SearchProps {
   onSearchResults: (results: Person[], isNewSearch: boolean) => void;
   onLoading: (isLoading: boolean) => void;
-  // onHasMore: (hasMore: boolean) => void;
 }
 
 const SearchWithRef = forwardRef<SearchRefMethods, SearchProps>(
