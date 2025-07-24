@@ -1,7 +1,7 @@
 import CharacterApiService from '@services/api/apiService';
-import React from 'react';
 import Search from './Search';
 import type { Person } from '@shared/types/responseTypes';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
 
 interface SearchRefMethods {
   handleLoadMore: () => Promise<void>;
@@ -13,16 +13,17 @@ interface SearchProps {
   onHasMore: (hasMore: boolean) => void;
 }
 
-const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
+const SearchWithRef = forwardRef<SearchRefMethods, SearchProps>(
   (props, ref) => {
-    const searchRef = React.useRef<Search>(null);
+    const searchRef = useRef<{
+      handleSearch: (term?: string) => Promise<void>;
+    }>(null);
 
     const handleLoadMore = async () => {
       if (!searchRef.current) return;
 
       const { onLoading, onSearchResults, onHasMore } = props;
 
-      searchRef.current.setState({ isLoading: true });
       onLoading(true);
 
       try {
@@ -34,14 +35,11 @@ const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
       } catch {
         throw new Error('Load more failed');
       } finally {
-        if (searchRef.current) {
-          searchRef.current.setState({ isLoading: false });
-          onLoading(false);
-        }
+        onLoading(false);
       }
     };
 
-    React.useImperativeHandle(ref, () => ({
+    useImperativeHandle(ref, () => ({
       handleLoadMore,
     }));
 

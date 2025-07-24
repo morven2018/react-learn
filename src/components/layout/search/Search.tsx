@@ -1,9 +1,17 @@
 import CharacterApiService from '@services/api/apiService';
 import LoadingOverlay from '@components/ui/loading-overlay/LoadingOverlay';
-import React from 'react';
 import style from './Search.module.scss';
 import { Term } from '@services/localStorage/LastTerm';
 import type { Person } from '@shared/types/responseTypes';
+
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
 
 interface SearchProps {
   onSearchResults: (results: Person[], isNewSearch: boolean) => void;
@@ -11,100 +19,92 @@ interface SearchProps {
   onHasMore: (hasMore: boolean) => void;
 }
 
-interface SearchState {
-  termValue: string;
-  isInitialLoad: boolean;
-  isLoading: boolean;
+export interface SearchHandle {
+  handleSearch: (term?: string) => Promise<void>;
 }
 
-class Search extends React.Component<SearchProps, SearchState> {
-  private isMounted = false;
-  private debounceTimer: NodeJS.Timeout | null = null;
+const Search = forwardRef<SearchHandle, SearchProps>(
+  ({ onSearchResults, onLoading, onHasMore }, ref) => {
+    const [termValue, setTermValue] = useState(Term.getTermFromLS() ?? '');
+    const [isLoading, setIsLoading] = useState(false);
+    const debounceTimer = useRef<NodeJS.Timeout | null>(null);
+    const isMounted = useRef(true);
 
-  constructor(props: SearchProps) {
-    super(props);
-    this.state = {
-      termValue: Term.getTermFromLS() ?? '',
-      isInitialLoad: true,
-      isLoading: false,
+    const clearDebounceTimer = () => {
+      if (debounceTimer.current) {
+        clearTimeout(debounceTimer.current);
+        debounceTimer.current = null;
+      }
     };
-  }
 
-  componentDidMount() {
-    this.isMounted = true;
-    this.loadInitialData();
-  }
+    const handleSearch = useCallback(
+      async (term: string = '') => {
+        if (!isMounted.current) return;
 
-  componentWillUnmount() {
-    this.isMounted = false;
-    this.clearDebounceTimer();
-  }
+        setIsLoading(true);
+        onLoading(true);
+        Term.setTermToLS(term);
 
-  private clearDebounceTimer() {
-    if (this.debounceTimer) {
-      clearTimeout(this.debounceTimer);
-      this.debounceTimer = null;
-    }
-  }
+        try {
+          const response = await CharacterApiService.searchCharacters(term);
 
-  private async loadInitialData() {
-    const recentSearch = Term.getTermFromLS();
-    if (recentSearch) {
-      this.setState({ termValue: recentSearch }, () => {
-        this.handleSearch(recentSearch);
-      });
-    } else {
-      await this.handleSearch('');
-    }
-    this.setState({ isInitialLoad: false });
-  }
+          if (isMounted.current) {
+            onSearchResults(response?.docs || [], true);
+            onHasMore(CharacterApiService.hasMore());
+          }
+        } catch (error) {
+          throw new Error(
+            error instanceof Error ? error.message : 'Unknown error'
+          );
+        } finally {
+          if (isMounted.current) {
+            setIsLoading(false);
+            onLoading(false);
+          }
+        }
+      },
+      [onHasMore, onLoading, onSearchResults]
+    );
 
-  handleSearch = async (term: string = '') => {
-    if (!this.isMounted) return;
+    useImperativeHandle(ref, () => ({
+      handleSearch,
+    }));
 
-    this.setState({ isLoading: true });
-    this.props.onLoading(true);
-    Term.setTermToLS(term);
+    useEffect(() => {
+      isMounted.current = true;
+      const recentSearch = Term.getTermFromLS();
 
-    try {
-      const response = await CharacterApiService.searchCharacters(term);
-
-      if (this.isMounted) {
-        this.props.onSearchResults(response?.docs || [], true);
-        this.props.onHasMore(CharacterApiService.hasMore());
+      if (recentSearch) {
+        setTermValue(recentSearch);
+        handleSearch(recentSearch);
+      } else {
+        handleSearch('');
       }
-    } catch (error) {
-      throw new Error(error instanceof Error ? error.message : 'Unknown error');
-    } finally {
-      if (this.isMounted) {
-        this.setState({ isLoading: false });
-        this.props.onLoading(false);
-      }
-    }
-  };
 
-  handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const value = event.target.value;
-    this.setState({ termValue: value });
-  };
+      return () => {
+        isMounted.current = false;
+        clearDebounceTimer();
+      };
+    }, [handleSearch]);
 
-  handleSubmit = (event: React.FormEvent) => {
-    event.preventDefault();
-    this.clearDebounceTimer();
-    this.handleSearch(this.state.termValue);
-  };
+    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setTermValue(event.target.value);
+    };
 
-  render() {
-    const { termValue, isLoading } = this.state;
+    const handleSubmit = (event: React.FormEvent) => {
+      event.preventDefault();
+      clearDebounceTimer();
+      handleSearch(termValue);
+    };
 
     return (
       <section className={style.searchComponent}>
         <LoadingOverlay visible={isLoading} />
-        <form onSubmit={this.handleSubmit} className={style.form}>
+        <form onSubmit={handleSubmit} className={style.form}>
           <input
             type="text"
             value={termValue}
-            onChange={this.handleInputChange}
+            onChange={handleInputChange}
             placeholder="Search characters by name..."
             aria-label="Search characters"
             className={style.input}
@@ -120,6 +120,8 @@ class Search extends React.Component<SearchProps, SearchState> {
       </section>
     );
   }
-}
+);
+
+Search.displayName = 'Search';
 
 export default Search;
