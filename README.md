@@ -2,6 +2,8 @@
 
 A React app for searching characters from the Lord of the Rings universe using The One API.
 
+### ⚠️ Note this api require the key: Please add a valid authentication key (shown below) to your .env file.
+
 ## Features
 
 - Class components with lifecycle methods
@@ -19,7 +21,14 @@ A React app for searching characters from the Lord of the Rings universe using T
 - Navigate to the project directory: $ cd react-learn
 - Install dependencies: $ npm install
 - Switch to the corresponding branch
-- Rename .env.example to .env or copy contents from .env.example to a new .env file
+- Environment setup:
+  - Rename .env.example to .env OR Create new .env file and copy contents from .env.example
+  - Insert valid authentication keys in the designated fields
+
+#### KEYS
+
+- ksmnN0SYU1vcR69udsuY
+- oJHunt00vrX9Yile7Jny
 
 ### Commands
 

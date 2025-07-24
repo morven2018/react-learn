@@ -11,18 +11,11 @@ interface SearchProps {
   onHasMore: (hasMore: boolean) => void;
 }
 
-interface SearchRefMethods {
-  handleLoadMore: () => Promise<void>;
-}
-
 interface SearchState {
   termValue: string;
   isInitialLoad: boolean;
   isLoading: boolean;
 }
-
-const placeholderValue = 'Search characters by name...';
-const ariaValue = 'Search characters';
 
 class Search extends React.Component<SearchProps, SearchState> {
   private isMounted = false;
@@ -112,8 +105,8 @@ class Search extends React.Component<SearchProps, SearchState> {
             type="text"
             value={termValue}
             onChange={this.handleInputChange}
-            placeholder={placeholderValue}
-            aria-label={ariaValue}
+            placeholder="Search characters by name..."
+            aria-label="Search characters"
             className={style.input}
           />
           <button
@@ -129,40 +122,4 @@ class Search extends React.Component<SearchProps, SearchState> {
   }
 }
 
-const SearchWithRef = React.forwardRef<SearchRefMethods, SearchProps>(
-  (props, ref) => {
-    const searchRef = React.useRef<Search>(null);
-
-    const handleLoadMore = async () => {
-      if (!searchRef.current) return;
-
-      const { onLoading, onSearchResults, onHasMore } = props;
-
-      searchRef.current.setState({ isLoading: true });
-      onLoading(true);
-
-      try {
-        const response = await CharacterApiService.loadMore();
-        if (searchRef.current) {
-          onSearchResults(response?.docs || [], false);
-          onHasMore(CharacterApiService.hasMore());
-        }
-      } catch {
-        throw new Error('Load more failed');
-      } finally {
-        if (searchRef.current) {
-          searchRef.current.setState({ isLoading: false });
-          onLoading(false);
-        }
-      }
-    };
-
-    React.useImperativeHandle(ref, () => ({
-      handleLoadMore,
-    }));
-
-    return <Search ref={searchRef} {...props} />;
-  }
-);
-
-export default SearchWithRef;
+export default Search;

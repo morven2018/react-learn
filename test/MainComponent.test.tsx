@@ -3,6 +3,10 @@ import type { Person } from '@shared/types/responseTypes';
 import { act, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
+const SCROLL_TEST_HEIGHT = 1000;
+const SCROLL_POSITION = 900;
+const PAGE_HEIGHT = 2000;
+
 let mockOnSearchResults: (results: Person[], isNewSearch: boolean) => void;
 
 vi.mock('@components/layout/search/Search', () => ({
@@ -106,12 +110,12 @@ describe('Main Component', () => {
       '10 characters'
     );
 
-    Object.defineProperty(window, 'innerHeight', { value: 1000 });
+    Object.defineProperty(window, 'innerHeight', { value: SCROLL_TEST_HEIGHT });
     Object.defineProperty(document.documentElement, 'scrollTop', {
-      value: 900,
+      value: SCROLL_POSITION,
     });
     Object.defineProperty(document.documentElement, 'offsetHeight', {
-      value: 2000,
+      value: PAGE_HEIGHT,
     });
 
     const newResults: Person[] = Array(10)

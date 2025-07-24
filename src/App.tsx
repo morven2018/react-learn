@@ -1,4 +1,4 @@
-import './App.css';
+import './App.scss';
 import AboutPage from './pages/about/about';
 import Header from '@components/layout/header/Header';
 import Main from 'src/pages/home/Home';

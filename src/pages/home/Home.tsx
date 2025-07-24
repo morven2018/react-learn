@@ -2,9 +2,11 @@ import CharacterApiService from '@services/api/apiService';
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
 import React from 'react';
 import Results from '@components/layout/results/Results';
-import Search from '@components/layout/search/Search';
+import SearchWithRef from '@shared/search/SearchWithRef';
 import style from './Home.module.scss';
 import type { Person } from '@shared/types/responseTypes';
+
+const SCROLL_LOAD_THRESHOLD = 100;
 
 interface MainState {
   characters: Person[];
@@ -16,8 +18,6 @@ interface MainState {
 interface SearchComponentMethods {
   handleLoadMore: () => Promise<void>;
 }
-
-const SCROLL_LOAD_THRESHOLD = 100;
 
 class Main extends React.Component<Record<string, never>, MainState> {
   private readonly searchRef: React.RefObject<SearchComponentMethods | null>;
@@ -86,7 +86,7 @@ class Main extends React.Component<Record<string, never>, MainState> {
     return (
       <main className={style.mainSection}>
         <div className={style.mainContent}>
-          <Search
+          <SearchWithRef
             ref={this.searchRef}
             onSearchResults={this.handleSearchResults}
             onLoading={(loading) => this.setState({ isLoading: loading })}

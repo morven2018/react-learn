@@ -19,9 +19,13 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "erasableSyntaxOnly": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+
+    "isolatedModules": true,
+    "experimentalDecorators": false,
+    "emitDecoratorMetadata": false,
+    "erasableSyntaxOnly": false,
 
     "baseUrl": ".",
     "typeRoots": ["./node_modules/@types", "./src/types"],
