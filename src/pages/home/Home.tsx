@@ -11,8 +11,6 @@ import SearchWithRef, {
   type SearchHandle,
 } from '@components/layout/search/SearchWithRef';
 
-// Home.tsx
-
 const Home = () => {
   const [characters, setCharacters] = useState<Person[]>([]);
   const [isLoading] = useState(false);
@@ -48,6 +46,13 @@ const Home = () => {
           setCharacters(response.docs);
           setTotalPages(response.pages ?? 1);
           updateTermValue(term);
+          const pages = response.pages ?? 1;
+
+          if (page > pages) {
+            navigate(`?page=1`, {
+              replace: true,
+            });
+          }
         }
       } catch (error) {
         if (!controller.signal.aborted && error instanceof Error) {
