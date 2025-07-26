@@ -12,6 +12,7 @@ export const AboutPage = () => {
             href="https://github.com/morven2018"
             target="_blank"
             rel="noreferrer"
+            aria-label="Alena Pudina GitHub profile"
           >
             <img src={git} alt="git logo" />
           </a>
