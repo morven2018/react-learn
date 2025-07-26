@@ -1,142 +1,96 @@
-import * as CharacterApiService from '@services/api/apiService';
-import * as LastTerm from '@services/localStorage/LastTerm';
 import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-const person = [
-  {
-    _id: '',
-    name: 'person1',
-    wikiUrl: '',
-    race: '',
-    gender: '',
-    birth: '',
-    death: '',
-    realm: '',
-    height: '',
-    hair: '',
-    spouse: '',
-  },
-];
-
-const apiResponse = { docs: person, total: 1, limit: 20, page: 1, pages: 1 };
-
-vi.mock('@services/api/apiService', () => {
-  return {
-    default: {
-      searchCharacters: vi.fn(),
-    },
-  };
-});
-
-vi.mock('@services/localStorage/LastTerm', () => {
-  return {
-    Term: {
-      getTermFromLS: vi.fn(),
-      setTermToLS: vi.fn(),
-    },
-  };
-});
-
-vi.mock('@components/hooks/useRestoreSearchTerm', () => {
-  return {
-    useRestoreSearchTerm: () => ({
-      termValue: '',
-      updateTermValue: vi.fn(),
-    }),
-  };
-});
+vi.mock('@components/ui/loading-overlay/LoadingOverlay', () => ({
+  default: vi.fn(() => <div data-testid="loading-overlay" />),
+}));
 
 describe('Search Component', () => {
-  const mockProps = {
-    onSearchResults: vi.fn(),
-    onLoading: vi.fn(),
-  };
+  const mockOnSearch = vi.fn();
+  const initialSearchTerm = 'initial value';
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.spyOn(CharacterApiService.default, 'searchCharacters').mockResolvedValue(
-      apiResponse
+    mockOnSearch.mockResolvedValue(undefined);
+  });
+
+  it('render correctly', () => {
+    render(<Search onSearch={mockOnSearch} />);
+
+    expect(
+      screen.getByPlaceholderText('Search characters...')
+    ).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Search' })).toBeInTheDocument();
+  });
+
+  it('initializes with provided search term', () => {
+    render(
+      <Search onSearch={mockOnSearch} initialSearchTerm={initialSearchTerm} />
     );
-    vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
+
+    expect(screen.getByDisplayValue(initialSearchTerm)).toBeInTheDocument();
   });
 
-  it('renders correctly', () => {
-    render(<Search {...mockProps} />);
+  it('update input value when typing', () => {
+    render(<Search onSearch={mockOnSearch} />);
     const input = screen.getByPlaceholderText('Search characters...');
-    expect(input).toBeInTheDocument();
-    expect(input).toHaveAttribute('type', 'text');
 
-    const button = screen.getByRole('button', { name: /Search/i });
-    expect(button).toBeInTheDocument();
-    expect(button).toHaveTextContent('Search');
-  });
-
-  it('load initial data on mount', async () => {
-    const searchSpy = vi.spyOn(CharacterApiService.default, 'searchCharacters');
-    render(<Search {...mockProps} />);
-
-    await waitFor(() => {
-      expect(searchSpy).toHaveBeenCalledTimes(1);
-      expect(searchSpy).toHaveBeenCalledWith('');
-    });
-
-    await waitFor(() => {
-      expect(mockProps.onSearchResults).toHaveBeenCalledWith(person, true);
-    });
-  });
-
-  it('shows loading state', async () => {
-    vi.spyOn(
-      CharacterApiService.default,
-      'searchCharacters'
-    ).mockImplementation(() => new Promise(() => {}));
-
-    render(<Search {...mockProps} />);
-
-    const input = screen.getByPlaceholderText('Search characters...');
-    fireEvent.change(input, { target: { value: 'test' } });
-
-    const formElement = screen
-      .getByRole('button', { name: /Searching/i })
-      .closest('form');
-    if (!formElement) {
-      throw new Error('Form not found');
-    }
-    fireEvent.submit(formElement);
-
-    const loadingButton = await screen.findByRole('button', {
-      name: /Searching/i,
-    });
-
-    expect(loadingButton).toBeDisabled();
-    expect(loadingButton.textContent).toMatch(/Searching/i);
-    expect(mockProps.onLoading).toHaveBeenCalledWith(true);
-  });
-
-  it('update input value on typing', () => {
-    render(<Search {...mockProps} />);
-    const input = screen.getByPlaceholderText('Search characters...');
     fireEvent.change(input, { target: { value: 'test' } });
     expect(input).toHaveValue('test');
   });
 
-  it('handle search on form submit', async () => {
-    const searchSpy = vi.spyOn(CharacterApiService.default, 'searchCharacters');
-    const { container } = render(<Search {...mockProps} />);
-
+  it('trigger search on form submission', async () => {
+    render(<Search onSearch={mockOnSearch} />);
     const input = screen.getByPlaceholderText('Search characters...');
-    fireEvent.change(input, { target: { value: 'test' } });
+    const button = screen.getByRole('button', { name: 'Search' });
 
-    const form = container.querySelector('form');
-    if (!form) {
-      throw new Error('Form is mot found');
-    }
-    fireEvent.submit(form);
+    fireEvent.change(input, { target: { value: 'test' } });
+    fireEvent.click(button);
 
     await waitFor(() => {
-      expect(searchSpy).toHaveBeenCalledWith('test');
+      expect(mockOnSearch).toHaveBeenCalledWith('test');
+    });
+  });
+
+  it('show loading state during search', async () => {
+    render(<Search onSearch={mockOnSearch} />);
+    const input = screen.getByPlaceholderText('Search characters...');
+    const button = screen.getByRole('button', { name: 'Search' });
+
+    fireEvent.change(input, { target: { value: 'test' } });
+    fireEvent.click(button);
+
+    expect(screen.getByTestId('loading-overlay')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Searching...' })).toBeDisabled();
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('button', { name: 'Searching...' })
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  it('handle search with empty term', async () => {
+    render(<Search onSearch={mockOnSearch} />);
+    const button = screen.getByRole('button', { name: 'Search' });
+
+    fireEvent.click(button);
+
+    await waitFor(() => {
+      expect(mockOnSearch).toHaveBeenCalledWith('');
+    });
+  });
+
+  it('maintain button disabled state during search', async () => {
+    render(<Search onSearch={mockOnSearch} />);
+    const button = screen.getByRole('button', { name: 'Search' });
+
+    fireEvent.click(button);
+
+    expect(button).toBeDisabled();
+    await waitFor(() => {
+      expect(button).not.toBeDisabled();
     });
   });
 });

@@ -1,83 +1,91 @@
-import * as LastTerm from '@services/localStorage/LastTerm';
-import CharacterApiService from '@services/api/apiService';
 import React from 'react';
 import SearchWithRef from '@components/layout/search/SearchWithRef';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import { vi } from 'vitest';
 
-interface SearchWithRefHandle {
-  handleLoadPage: (page: number) => Promise<void>;
+interface SearchHandle {
+  handleSearch: (term?: string) => Promise<void>;
+  getCurrentValue: () => string;
 }
 
+vi.mock('@components/layout/search/Search', () => {
+  return {
+    default: vi
+      .fn()
+      .mockImplementation(
+        ({
+          ref,
+          onSearch,
+        }: {
+          ref: React.RefObject<SearchHandle>;
+          onSearch: (term: string) => void;
+        }) => {
+          const mockHandle: SearchHandle = {
+            handleSearch: vi.fn((term?: string) => {
+              onSearch(term || '');
+              return Promise.resolve();
+            }),
+            getCurrentValue: vi.fn(() => 'initial'),
+          };
+
+          Object.defineProperty(ref, 'current', {
+            value: mockHandle,
+            writable: true,
+          });
+
+          return <div data-testid="mock-search" />;
+        }
+      ),
+  };
+});
+
 describe('SearchWithRef', () => {
-  const person = {
-    _id: '',
-    name: 'person1',
-    wikiUrl: '',
-    race: '',
-    gender: '',
-    birth: '',
-    death: '',
-    realm: '',
-    height: '',
-    hair: '',
-    spouse: '',
-  };
-
-  const mockApiResponse = {
-    docs: [person],
-    total: 1,
-    limit: 20,
-    page: 1,
-    pages: 2,
-  };
-
   const mockProps = {
-    onSearchResults: vi.fn(),
-    onLoading: vi.fn(),
-    onHasMore: vi.fn(),
+    onSearch: vi.fn(),
+    initialSearchTerm: 'initial',
   };
 
   beforeEach(() => {
     vi.clearAllMocks();
-
-    vi.spyOn(CharacterApiService, 'searchCharacters').mockResolvedValue(
-      mockApiResponse
-    );
-    vi.spyOn(CharacterApiService, 'loadPage').mockResolvedValue(
-      mockApiResponse
-    );
-
-    vi.spyOn(LastTerm.Term, 'getTermFromLS').mockReturnValue('');
-    vi.spyOn(LastTerm.Term, 'setTermToLS').mockImplementation(() => {});
   });
 
-  it('provide the handleLoadPage method', async () => {
-    const ref = React.createRef<SearchWithRefHandle>();
+  it('forward handleSearch call to Search component', async () => {
+    const ref = React.createRef<SearchHandle>();
 
     await act(async () => {
       render(<SearchWithRef {...mockProps} ref={ref} />);
     });
 
-    expect(screen.getByRole('textbox')).toBeInTheDocument();
-
-    // Clear initial loading calls from the initial render
-    mockProps.onLoading.mockClear();
-
-    const testPage = 2;
+    const testTerm = 'test';
     await act(async () => {
-      await ref.current?.handleLoadPage?.(testPage);
+      await ref.current?.handleSearch(testTerm);
     });
 
-    expect(CharacterApiService.loadPage).toHaveBeenCalledTimes(1);
-    expect(CharacterApiService.loadPage).toHaveBeenCalledWith(testPage);
+    expect(mockProps.onSearch).toHaveBeenCalledWith(testTerm);
+  });
 
-    await waitFor(() => {
-      expect(mockProps.onSearchResults).toHaveBeenCalledWith([person], false);
+  it('forwards getCurrentValue call to Search component', async () => {
+    const ref = React.createRef<SearchHandle>();
+
+    await act(async () => {
+      render(<SearchWithRef {...mockProps} ref={ref} />);
     });
 
-    // Now we only expect the loading calls from our manual handleLoadPage call
-    const loadingCalls = mockProps.onLoading.mock.calls;
-    expect(loadingCalls).toEqual([[true], [false]]);
+    const value = ref.current?.getCurrentValue();
+    expect(value).toBe('initial');
+  });
+
+  it('handle term', async () => {
+    const ref = React.createRef<SearchHandle>();
+
+    await act(async () => {
+      render(<SearchWithRef {...mockProps} ref={ref} />);
+    });
+
+    await act(async () => {
+      await ref.current?.handleSearch();
+    });
+
+    expect(mockProps.onSearch).toHaveBeenCalledWith('');
   });
 });
