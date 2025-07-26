@@ -1,47 +1,38 @@
-import CharacterApiService from '@services/api/apiService';
 import Search from './Search';
-import type { Person } from '@shared/types/responseTypes';
 import { forwardRef, useImperativeHandle, useRef } from 'react';
 
-interface SearchRefMethods {
-  handleLoadPage: (page: number) => Promise<void>;
+export interface SearchHandle {
+  handleSearch: (term?: string) => Promise<void>;
+  getCurrentValue: () => string;
 }
 
-interface SearchProps {
-  onSearchResults: (results: Person[], isNewSearch: boolean) => void;
-  onLoading: (isLoading: boolean) => void;
+interface SearchWithRefProps {
+  onSearch: (term: string) => Promise<void>;
+  initialSearchTerm?: string;
 }
 
-const SearchWithRef = forwardRef<SearchRefMethods, SearchProps>(
-  (props, ref) => {
-    const searchRef = useRef<{
-      handleSearch: (term?: string) => Promise<void>;
-    }>(null);
-
-    const handleLoadPage = async (page: number) => {
-      if (!searchRef.current) return;
-
-      const { onLoading, onSearchResults } = props;
-
-      onLoading(true);
-
-      try {
-        const response = await CharacterApiService.loadPage(page);
-        if (searchRef.current) {
-          onSearchResults(response?.docs || [], false);
-        }
-      } catch {
-        throw new Error('Load page failed');
-      } finally {
-        onLoading(false);
-      }
-    };
+const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
+  ({ onSearch, initialSearchTerm }, ref) => {
+    const searchRef = useRef<SearchHandle>(null);
 
     useImperativeHandle(ref, () => ({
-      handleLoadPage,
+      handleSearch: async (term?: string) => {
+        if (searchRef.current) {
+          await searchRef.current.handleSearch(term);
+        }
+      },
+      getCurrentValue: () => {
+        return searchRef.current?.getCurrentValue() || '';
+      },
     }));
 
-    return <Search ref={searchRef} {...props} />;
+    return (
+      <Search
+        ref={searchRef}
+        onSearch={onSearch}
+        initialSearchTerm={initialSearchTerm}
+      />
+    );
   }
 );
 

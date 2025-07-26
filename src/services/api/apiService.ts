@@ -17,6 +17,7 @@ enum HttpStatus {
   InternalServerError = 500,
   ServiceUnavailable = 503,
 }
+
 enum CustomErrorCode {
   NetworkError = 1000,
   InvalidData = 1001,
@@ -51,12 +52,12 @@ class CharacterApiService {
   private static createError(code: number): Error {
     const message =
       ERROR_MESSAGES[code] || ERROR_MESSAGES[CustomErrorCode.UnknownError];
-    const fullMessage = message;
-    return new Error(fullMessage);
+    return new Error(message);
   }
 
   private static async authorizedFetch(
     url: string,
+    options: RequestInit = {},
     retry = true
   ): Promise<Response> {
     try {
@@ -65,7 +66,14 @@ class CharacterApiService {
         'Content-Type': 'application/json',
       });
 
-      const response = await fetch(url, { headers });
+      if (options.headers) {
+        const incomingHeaders = new Headers(options.headers);
+        incomingHeaders.forEach((value, key) => {
+          headers.append(key, value);
+        });
+      }
+
+      const response = await fetch(url, { ...options, headers });
 
       if (
         response.status === HttpStatus.Unauthorized &&
@@ -73,7 +81,7 @@ class CharacterApiService {
         API_KEY_SECONDARY
       ) {
         this.currentApiKey = API_KEY_SECONDARY;
-        return this.authorizedFetch(url, false);
+        return this.authorizedFetch(url, options, false);
       }
 
       if (!response.ok) {
@@ -82,6 +90,9 @@ class CharacterApiService {
 
       return response;
     } catch (error) {
+      if (error instanceof Error && error.name === 'AbortError') {
+        throw error;
+      }
       if (error instanceof Error) throw error;
       throw this.createError(CustomErrorCode.NetworkError);
     }
@@ -89,7 +100,8 @@ class CharacterApiService {
 
   static async searchCharacters(
     name: string = '',
-    page: number = 1
+    page: number = 1,
+    options: RequestInit = {}
   ): Promise<ApiResponse> {
     const queryParams = new URLSearchParams();
 
@@ -103,24 +115,29 @@ class CharacterApiService {
     queryParams.append('page', page.toString());
 
     const url = `${API_BASE}character?${queryParams.toString()}`;
-    const response = await this.authorizedFetch(url);
-    this.lastResponse = await response.json();
+    const response = await this.authorizedFetch(url, options);
+    const data = await response.json();
 
-    if (!this.lastResponse?.docs) {
+    if (!data?.docs) {
       throw this.createError(CustomErrorCode.InvalidData);
     }
 
-    return this.lastResponse;
+    this.lastResponse = data;
+    return data;
   }
-  static async loadPage(page: number): Promise<ApiResponse> {
-    return this.searchCharacters(this.lastQuery, page);
+
+  static async loadPage(
+    page: number,
+    options: RequestInit = {}
+  ): Promise<ApiResponse> {
+    return this.searchCharacters(this.lastQuery, page, options);
   }
 
   static getTotalPages(): number {
     return this.lastResponse?.pages || 1;
   }
 
-  static async loadMore(): Promise<ApiResponse> {
+  static async loadMore(options: RequestInit = {}): Promise<ApiResponse> {
     if (!this.lastResponse) {
       throw this.createError(HttpStatus.BadRequest);
     }
@@ -130,7 +147,7 @@ class CharacterApiService {
       throw this.createError(HttpStatus.BadRequest);
     }
 
-    return this.searchCharacters(this.lastQuery, nextPage);
+    return this.searchCharacters(this.lastQuery, nextPage, options);
   }
 
   static hasMore(): boolean {
@@ -147,7 +164,6 @@ class CharacterApiService {
 
   static async triggerTestError(): Promise<never> {
     const errorType = getRandomInt(1, ERROR_TYPES_COUNT);
-
     const errors = [
       () => this.createError(CustomErrorCode.NetworkError),
       () => this.createError(HttpStatus.InternalServerError),
@@ -155,7 +171,6 @@ class CharacterApiService {
       () => this.createError(HttpStatus.Unauthorized),
       () => this.createError(HttpStatus.NotFound),
     ];
-
     throw errors[errorType - 1]();
   }
 }
