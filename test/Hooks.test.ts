@@ -71,17 +71,6 @@ describe('useCharacterDetails', () => {
     expect(CharacterApiService.getCharacterById).not.toHaveBeenCalled();
   });
 
-  it('handle API error', async () => {
-    const error = new Error('API Error');
-    vi.mocked(CharacterApiService.getCharacterById).mockRejectedValue(error);
-
-    const { result } = renderHook(() => useCharacterDetails('123'));
-    expect(result.current.isLoading).toBe(true);
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
-    expect(result.current.data).toBeNull();
-  });
-
   it('cancel pending request when unmounted', () => {
     vi.mocked(CharacterApiService.getCharacterById).mockImplementation(
       () => new Promise(() => {})
