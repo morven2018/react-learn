@@ -1,84 +1,149 @@
-import Main from 'src/pages/home/Home';
-import type { Person } from '@shared/types/responseTypes';
-import { act, render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import Home from '@pages/home/Home';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-let mockOnSearchResults: (results: Person[], isNewSearch: boolean) => void;
+let mockSearchCharacters: ReturnType<typeof vi.fn>;
+let mockUpdateTermValue: ReturnType<typeof vi.fn>;
 
-vi.mock('@components/layout/search/Search', () => ({
-  default: vi.fn().mockImplementation(({ onSearchResults }) => {
-    mockOnSearchResults = onSearchResults;
-    return <div>Search Component</div>;
+vi.mock('@services/api/apiService', () => ({
+  default: {
+    searchCharacters: (term: string, page: number) =>
+      mockSearchCharacters(term, page),
+  },
+}));
+
+vi.mock('@components/hooks/useRestoreSearchTerm', () => ({
+  useRestoreSearchTerm: () => ({
+    termValue: '',
+    updateTermValue: () => mockUpdateTermValue(),
   }),
 }));
 
+interface SearchWithRefProps {
+  onSearch: (term: string) => void;
+  initialSearchTerm?: string;
+}
+
+interface ResultsProps {
+  characters?: { name: string }[];
+}
+
+interface PaginationProps {
+  currentPage: number;
+  onPageChange: (page: number) => void;
+}
+
+vi.mock('@components/ui/search/SearchWithRef', () => ({
+  default: ({ onSearch, initialSearchTerm }: SearchWithRefProps) => (
+    <form data-testid="search-form">
+      <input data-testid="search-input" defaultValue={initialSearchTerm} />
+      <button onClick={() => onSearch('test')} data-testid="search-button">
+        Search
+      </button>
+    </form>
+  ),
+}));
+
 vi.mock('@components/layout/results/Results', () => ({
-  default: vi.fn().mockImplementation(({ characters }) => (
-    <div data-testid="results-mock">
-      Results Component -{' '}
-      <span data-testid="characters-count">{characters.length} characters</span>
+  default: ({ characters }: ResultsProps) => (
+    <div data-testid="results-component">
+      {characters?.length
+        ? `Found ${characters.length} characters`
+        : 'No characters found'}
     </div>
-  )),
+  ),
 }));
 
-vi.mock('@components/ui/error-button/ErrorTestButton', () => ({
-  default: vi.fn().mockReturnValue(<button>Test Error Button</button>),
+vi.mock('@components/ui/pagination/Pagination', () => ({
+  default: ({ currentPage, onPageChange }: PaginationProps) => (
+    <div data-testid="pagination-component">
+      <button
+        onClick={() => onPageChange(currentPage - 1)}
+        data-testid="prev-button"
+      >
+        Previous
+      </button>
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        data-testid="next-button"
+      >
+        Next
+      </button>
+    </div>
+  ),
 }));
 
-describe('Main Component', () => {
+describe('Home Component', () => {
   beforeEach(() => {
+    mockSearchCharacters = vi.fn().mockResolvedValue({ docs: [], pages: 1 });
+    mockUpdateTermValue = vi.fn();
+  });
+
+  afterEach(() => {
     vi.clearAllMocks();
   });
 
-  it('render all child components properly', () => {
-    render(<Main />);
-
-    expect(screen.getByText('Search Component')).toBeInTheDocument();
-    expect(screen.getByTestId('results-mock')).toBeInTheDocument();
-    expect(screen.getByText('Test Error Button')).toBeInTheDocument();
-    expect(screen.getByTestId('characters-count')).toHaveTextContent(
-      '0 characters'
+  const setup = (initialRoute = '/') => {
+    render(
+      <MemoryRouter initialEntries={[initialRoute]}>
+        <Routes>
+          <Route path="*" element={<Home />} />
+        </Routes>
+      </MemoryRouter>
     );
+  };
+
+  it('render component Search', () => {
+    setup();
+    const form = document.querySelector('form');
+    expect(form).toBeInTheDocument();
   });
 
-  it('update state on receive search results', async () => {
-    render(<Main />);
+  it('load data from URL', async () => {
+    mockSearchCharacters.mockImplementation((term: string, page: number) => {
+      if (term === 'initialSearchTerm' && page === 2) {
+        return Promise.resolve({
+          docs: [{ name: 'Test Character' }],
+          pages: 1,
+        });
+      }
+      return Promise.resolve({ docs: [], pages: 1 });
+    });
+    setup('/?page=2');
+  });
 
-    const testResults: Person[] = [
-      {
-        _id: '',
-        name: 'person1',
-        wikiUrl: '',
-        race: '',
-        gender: '',
-        birth: '',
-        death: '',
-        realm: '',
-        height: '',
-        hair: '',
-        spouse: '',
-      },
-      {
-        _id: '',
-        name: 'person2',
-        wikiUrl: '',
-        race: '',
-        gender: '',
-        birth: '',
-        death: '',
-        realm: '',
-        height: '',
-        hair: '',
-        spouse: '',
-      },
-    ];
-
-    await act(async () => {
-      mockOnSearchResults(testResults, true);
+  it('should render Pagination component when there are pages', async () => {
+    mockSearchCharacters.mockResolvedValue({
+      docs: [{ name: 'Character 1' }, { name: 'Character 2' }],
+      pages: 3,
     });
 
-    expect(screen.getByTestId('characters-count')).toHaveTextContent(
-      '2 characters'
-    );
+    setup('/?page=1');
+
+    await waitFor(() => {
+      expect(screen.getByTestId('pagination-component')).toBeInTheDocument();
+      expect(screen.getByTestId('prev-button')).toBeInTheDocument();
+      expect(screen.getByTestId('next-button')).toBeInTheDocument();
+    });
+  });
+
+  it('should pass correct page number to Pagination', async () => {
+    mockSearchCharacters.mockResolvedValue({
+      docs: [],
+      pages: 5,
+    });
+
+    setup('/?page=3');
+
+    await waitFor(() => {
+      const prevButton = screen.getByTestId('prev-button');
+      const nextButton = screen.getByTestId('next-button');
+
+      fireEvent.click(prevButton);
+      fireEvent.click(nextButton);
+
+      expect(mockSearchCharacters).toHaveBeenCalledWith(expect.anything(), 3);
+    });
   });
 });
