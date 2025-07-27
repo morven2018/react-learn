@@ -15,13 +15,16 @@
   padding-bottom: $small-padding;
   text-align: center;
 }
+
 .cardWrapper {
   max-width: 300px;
   width: 100%;
-  padding: $base-padding;
-}
-.card {
   padding: 0;
+}
+
+.card {
+  width: 100%;
+  padding: $base-padding;
   margin: 0;
   background: $card-background;
   border-radius: $border-radius;
@@ -30,7 +33,17 @@
   color: $secondary-light;
   font-family: $font-base;
 
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
   .name {
+    height: 50px;
     font-family: $font-medieval;
     font-size: $card-header;
     padding-bottom: $small-padding;
