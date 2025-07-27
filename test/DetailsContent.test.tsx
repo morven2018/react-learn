@@ -33,7 +33,7 @@ describe('DetailsContent', () => {
     render(<DetailsContent character={mockCharacter} isLoading={false} />);
 
     expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
-    const wikiLink = screen.getByText(/see more information/i);
+    const wikiLink = screen.getByText(/see more info/i);
     expect(wikiLink).toBeInTheDocument();
     expect(wikiLink).toHaveAttribute('href', mockCharacter.wikiUrl);
     expect(wikiLink).toHaveAttribute('target', '_blank');

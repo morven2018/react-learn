@@ -38,17 +38,6 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
           </div>
 
           <div className={style.detailsContent}>
-            <a
-              href={character.wikiUrl || emptyLink}
-              aria-disabled={!character.wikiUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={character.wikiUrl ? style.wikiLink : style.disableLink}
-              onClick={(e) => !character.wikiUrl && e.preventDefault()}
-            >
-              You can see more information about this character on Lotr wiki
-            </a>
-
             {characterDetails.length ? (
               <div className={style.detailsList}>
                 {characterDetails.map((detail) => (
@@ -63,6 +52,17 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
                 No additional details available
               </div>
             )}
+
+            <a
+              href={character.wikiUrl || emptyLink}
+              aria-disabled={!character.wikiUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={character.wikiUrl ? style.wikiLink : style.disableLink}
+              onClick={(e) => !character.wikiUrl && e.preventDefault()}
+            >
+              You can see more info on Lotr wiki
+            </a>
           </div>
         </>
       )}
