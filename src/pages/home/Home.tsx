@@ -69,7 +69,7 @@ const Home = () => {
         setIsFetchingMore(false);
       }
     },
-    [updateTermValue]
+    [updateTermValue, navigate]
   );
 
   const handleSearch = useCallback(
