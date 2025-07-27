@@ -13,8 +13,8 @@ import SearchWithRef, {
 
 const Home = () => {
   const [characters, setCharacters] = useState<Person[]>([]);
-  const [isLoading] = useState(false);
-  const [isFetchingMore] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const searchRef = useRef<SearchHandle>(null);
   const { termValue: currentSearch, updateTermValue } = useRestoreSearchTerm();
@@ -36,6 +36,12 @@ const Home = () => {
       abortControllerRef.current = controller;
 
       try {
+        if (page === 1) {
+          setIsLoading(true);
+        } else {
+          setIsFetchingMore(true);
+        }
+
         const response = await CharacterApiService.searchCharacters(
           term,
           page,
@@ -58,6 +64,9 @@ const Home = () => {
         if (!controller.signal.aborted && error instanceof Error) {
           console.error('Search error:', error);
         }
+      } finally {
+        setIsLoading(false);
+        setIsFetchingMore(false);
       }
     },
     [updateTermValue]

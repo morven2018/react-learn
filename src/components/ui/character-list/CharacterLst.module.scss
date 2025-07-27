@@ -60,8 +60,10 @@
     .unknownItem {
       display: flex;
       justify-content: flex-start;
+      align-items: stretch;
       gap: 10px;
       padding: 6px 0;
+      height: 36px;
       border-bottom: 1px dashed rgba($base-border, 0.2);
 
       span:first-child {

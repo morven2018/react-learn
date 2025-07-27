@@ -1,6 +1,8 @@
 @use '@assets/styles/globals.scss' as *;
 
 .detailCard {
+  top: 30px;
+  position: sticky;
   width: 350px;
   margin: 0 auto;
   color: $secondary-light;
@@ -47,8 +49,9 @@
   .loading {
     text-align: center;
     padding: $base-padding;
-    color: $unknown;
+    color: $primary-light;
     font-style: italic;
+    font-size: $controls-typography;
   }
 
   .header {

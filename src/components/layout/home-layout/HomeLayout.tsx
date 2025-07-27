@@ -1,7 +1,7 @@
 import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
 import style from './HomeLayout.module.scss';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
-import { DetailCard } from '../detail-view/DetailCard';
+import { DetailCard } from '../detailView/DetailCard';
 
 const HomeLayout = () => {
   const [searchParams] = useSearchParams();

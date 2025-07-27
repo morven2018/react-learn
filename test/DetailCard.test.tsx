@@ -1,7 +1,7 @@
-import DetailsContent from '@components/layout/detail-view/DetailContent';
+import DetailsContent from '@components/layout/detailView/DetailContent';
 import userEvent from '@testing-library/user-event';
 import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
-import { DetailCard } from '@components/layout/detail-view/detailCard';
+import { DetailCard } from '@components/layout/detailView/DetailCard';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
