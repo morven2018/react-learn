@@ -37,4 +37,27 @@
     height: $header-typography;
     width: auto;
   }
+
+  .aboutPage {
+    font-size: $controls-typography;
+    color: $primary-light;
+    text-decoration: none;
+  }
+  .whiteTree,
+  .aboutPage {
+    &:hover {
+      transform: scale(1.1);
+      color: $gold;
+    }
+    &:focus {
+      transform: scale(0.8);
+      color: $hover-border;
+    }
+  }
+}
+.linkWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
 }

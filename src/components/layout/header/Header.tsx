@@ -4,11 +4,13 @@ import style from './Header.module.scss';
 const Header = () => {
   return (
     <header className={style.header}>
-      <div>
+      <div className={style.linkWrapper}>
         <a href="/">
           <img src={logo} alt="White tree" className={style.whiteTree} />
         </a>
-        <a href="/about">To about page</a>
+        <a href="/about" className={style.aboutPage}>
+          To about page
+        </a>
       </div>
       <div>
         <h1 className={style.h1}>Middle Earth</h1>
