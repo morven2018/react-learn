@@ -36,4 +36,13 @@ $bg-image: url('@assets/images/background.png');
     background: $card-background;
     border-radius: $border-radius;
   }
+
+  @media (max-width: $breakpoint3) {
+    flex-direction: column-reverse;
+    align-items: center;
+
+    .outlet {
+      min-width: 400px;
+    }
+  }
 }
