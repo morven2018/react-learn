@@ -70,11 +70,11 @@
 
 @media (max-width: $breakpoint) {
   .pagination {
-    gap: $small-padding / 2;
+    gap: calc($small-padding / 2);
   }
 
   .pageButton {
     min-width: 30px;
-    padding: $small-padding / 2;
+    padding: calc($small-padding / 2);
   }
 }
