@@ -1,3 +1,5 @@
+import ErrorTestButton from '@components/ui/error-button/ErrorTestButton';
+import style from './HomeLayout.module.scss';
 import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { DetailCard } from '../detail-view/DetailCard';
 
@@ -20,17 +22,20 @@ const HomeLayout = () => {
   };
 
   return (
-    <div>
-      <div>
-        <Outlet />
-      </div>
-
-      {detailsId && (
-        <div>
-          <DetailCard id={detailsId} onClose={handleCloseDetails} />
+    <>
+      <div className={style.layout}>
+        <div className={style.outlet}>
+          <Outlet />
         </div>
-      )}
-    </div>
+
+        {detailsId && (
+          <div className={style.detail}>
+            <DetailCard id={detailsId} onClose={handleCloseDetails} />
+          </div>
+        )}
+      </div>
+      <ErrorTestButton />
+    </>
   );
 };
 
