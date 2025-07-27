@@ -16,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   maxVisiblePages = 3,
 }) => {
-  if (totalPages <= 1) return null;
+  if (totalPages <= 1 || isLoading) return null;
 
   const pages = [];
   const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));

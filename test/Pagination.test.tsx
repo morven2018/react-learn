@@ -52,4 +52,23 @@ describe('Pagination', () => {
     render(<Pagination {...baseProps} currentPage={10} />);
     expect(screen.getByRole('button', { name: '>' })).toBeDisabled();
   });
+
+  it('not render if isLoading is true', () => {
+    const { container } = render(
+      <Pagination {...baseProps} isLoading={true} />
+    );
+    expect(container).toBeEmptyDOMElement();
+  });
+
+  it('handle prev button click', () => {
+    render(<Pagination {...baseProps} />);
+    fireEvent.click(screen.getByRole('button', { name: '<' }));
+    expect(mockOnPageChange).toHaveBeenCalledWith(2);
+  });
+
+  it('handle next button click', () => {
+    render(<Pagination {...baseProps} />);
+    fireEvent.click(screen.getByRole('button', { name: '>' }));
+    expect(mockOnPageChange).toHaveBeenCalledWith(4);
+  });
 });
