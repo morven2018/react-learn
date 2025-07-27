@@ -12,6 +12,7 @@ import {
 interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
+  setInputValue: (value: string) => void;
 }
 
 interface SearchProps {
@@ -21,7 +22,7 @@ interface SearchProps {
 
 const Search = forwardRef<SearchHandle, SearchProps>(
   ({ onSearch, initialSearchTerm = '' }, ref) => {
-    const [inputValue, setInputValue] = useState('');
+    const [inputValue, setInputValue] = useState(initialSearchTerm);
     const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
@@ -50,6 +51,9 @@ const Search = forwardRef<SearchHandle, SearchProps>(
     useImperativeHandle(ref, () => ({
       handleSearch,
       getCurrentValue,
+      setInputValue: (value: string) => {
+        setInputValue(value);
+      },
     }));
 
     return (

@@ -24,7 +24,7 @@ const Home = () => {
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const currentPage = parseInt(searchParams.get('page') || '1', 10);
-  const urlSearchTerm = searchParams.get('search') || '';
+  const initialSearchTerm = currentSearch ?? '';
 
   const loadData = useCallback(
     async (page: number, term: string) => {
@@ -74,17 +74,17 @@ const Home = () => {
 
   const handlePageChange = useCallback(
     async (page: number) => {
-      const searchTerm = urlSearchTerm ?? currentSearch;
+      const searchTerm = currentSearch ?? '';
       navigate(`?page=${page}`);
       await loadData(page, searchTerm);
     },
-    [navigate, urlSearchTerm, currentSearch, loadData]
+    [navigate, currentSearch, loadData]
   );
 
   useEffect(() => {
-    const searchTerm = urlSearchTerm || currentSearch;
+    const searchTerm = currentSearch;
     loadData(currentPage, searchTerm);
-  }, [currentPage, urlSearchTerm, currentSearch, loadData]);
+  }, [currentPage, currentSearch, loadData]);
 
   return (
     <main className={style.mainSection}>
@@ -92,7 +92,7 @@ const Home = () => {
         <SearchWithRef
           ref={searchRef}
           onSearch={handleSearch}
-          initialSearchTerm={urlSearchTerm ?? currentSearch}
+          initialSearchTerm={initialSearchTerm}
         />
 
         <Results

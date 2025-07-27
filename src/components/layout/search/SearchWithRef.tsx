@@ -1,9 +1,10 @@
 import Search from './Search';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 export interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
+  setInputValue: (value: string) => void;
 }
 
 interface SearchWithRefProps {
@@ -15,6 +16,12 @@ const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
   ({ onSearch, initialSearchTerm }, ref) => {
     const searchRef = useRef<SearchHandle>(null);
 
+    useEffect(() => {
+      if (searchRef.current && initialSearchTerm !== undefined) {
+        searchRef.current.setInputValue(initialSearchTerm);
+      }
+    }, [initialSearchTerm]);
+
     useImperativeHandle(ref, () => ({
       handleSearch: async (term?: string) => {
         if (searchRef.current) {
@@ -23,6 +30,11 @@ const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
       },
       getCurrentValue: () => {
         return searchRef.current?.getCurrentValue() || '';
+      },
+      setInputValue: (value: string) => {
+        if (searchRef.current) {
+          searchRef.current.setInputValue(value);
+        }
       },
     }));
 

@@ -6,6 +6,7 @@ import { vi } from 'vitest';
 interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
+  setInputValue: (value: string) => void;
 }
 
 vi.mock('@components/layout/search/Search', () => {
@@ -16,16 +17,23 @@ vi.mock('@components/layout/search/Search', () => {
         ({
           ref,
           onSearch,
+          initialSearchTerm,
         }: {
           ref: React.RefObject<SearchHandle>;
           onSearch: (term: string) => void;
+          initialSearchTerm?: string;
         }) => {
+          let currentValue = initialSearchTerm || 'initial';
+
           const mockHandle: SearchHandle = {
             handleSearch: vi.fn((term?: string) => {
-              onSearch(term || '');
+              onSearch(term || currentValue);
               return Promise.resolve();
             }),
-            getCurrentValue: vi.fn(() => 'initial'),
+            getCurrentValue: vi.fn(() => currentValue),
+            setInputValue: vi.fn((value: string) => {
+              currentValue = value;
+            }),
           };
 
           Object.defineProperty(ref, 'current', {
@@ -75,7 +83,23 @@ describe('SearchWithRef', () => {
     expect(value).toBe('initial');
   });
 
-  it('handle term', async () => {
+  it('forwards setInputValue call to Search component', async () => {
+    const ref = React.createRef<SearchHandle>();
+
+    await act(async () => {
+      render(<SearchWithRef {...mockProps} ref={ref} />);
+    });
+
+    const newValue = 'new value';
+    await act(async () => {
+      ref.current?.setInputValue(newValue);
+    });
+
+    const value = ref.current?.getCurrentValue();
+    expect(value).toBe(newValue);
+  });
+
+  it('handles undefined term in handleSearch', async () => {
     const ref = React.createRef<SearchHandle>();
 
     await act(async () => {
@@ -86,6 +110,27 @@ describe('SearchWithRef', () => {
       await ref.current?.handleSearch();
     });
 
-    expect(mockProps.onSearch).toHaveBeenCalledWith('');
+    expect(mockProps.onSearch).toHaveBeenCalledWith('initial');
+  });
+
+  it('updates input value when initialSearchTerm changes', async () => {
+    const ref = React.createRef<SearchHandle>();
+    const { rerender } = await act(async () => {
+      return render(<SearchWithRef {...mockProps} ref={ref} />);
+    });
+
+    const newInitialValue = 'updated initial';
+    await act(async () => {
+      rerender(
+        <SearchWithRef
+          {...mockProps}
+          initialSearchTerm={newInitialValue}
+          ref={ref}
+        />
+      );
+    });
+
+    const value = ref.current?.getCurrentValue();
+    expect(value).toBe(newInitialValue);
   });
 });
