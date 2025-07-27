@@ -1,6 +1,7 @@
 import CardList from '@components/ui/character-list/CardList';
 import type { Person } from '@shared/types/responseTypes';
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router-dom';
 
 describe('CardList Component', () => {
   const mockCharacters: Person[] = [
@@ -32,8 +33,16 @@ describe('CardList Component', () => {
     },
   ];
 
-  it('renders a list of characters (counts by h3)', () => {
-    render(<CardList characters={mockCharacters} isFetchingMore={false} />);
+  const renderCardList = (characters: Person[], isFetchingMore = false) => {
+    return render(
+      <MemoryRouter>
+        <CardList characters={characters} isFetchingMore={isFetchingMore} />
+      </MemoryRouter>
+    );
+  };
+
+  it('render a list of characters (counts by h3)', () => {
+    renderCardList(mockCharacters, false);
 
     const cardHeadings = screen.getAllByRole('heading', { level: 3 });
     expect(cardHeadings).toHaveLength(mockCharacters.length);
@@ -43,7 +52,7 @@ describe('CardList Component', () => {
     });
   });
 
-  it('renders empty list if no characters', () => {
+  it('render empty list if no characters', () => {
     render(<CardList characters={[]} isFetchingMore={false} />);
 
     const list = screen.getByRole('list');
@@ -51,14 +60,14 @@ describe('CardList Component', () => {
     expect(screen.queryAllByRole('listitem')).toHaveLength(0);
   });
 
-  it('shows loading message when isFetchingMore is true', () => {
-    render(<CardList characters={mockCharacters} isFetchingMore={true} />);
+  it('show loading message when isFetchingMore is true', () => {
+    renderCardList(mockCharacters, true);
 
     expect(screen.getByText('Loading more characters...')).toBeInTheDocument();
   });
 
   it('does not show loading message when isFetchingMore is false', () => {
-    render(<CardList characters={mockCharacters} isFetchingMore={false} />);
+    renderCardList(mockCharacters, false);
 
     expect(
       screen.queryByText('Loading more characters...')

@@ -1,11 +1,13 @@
 import Card from '@components/ui/character-list/Card';
 import type { Person } from '@shared/types/responseTypes';
 import { fireEvent, render, screen } from '@testing-library/react';
+import { createMemoryHistory } from 'history';
+import { MemoryRouter, Router } from 'react-router-dom';
 import { vi } from 'vitest';
 
 describe('Card Component', () => {
   const mockCharacter: Person = {
-    _id: '',
+    _id: '123',
     name: 'Aragorn',
     wikiUrl: 'https://lotr.fandom.com/wiki/Aragorn',
     race: '',
@@ -42,13 +44,21 @@ describe('Card Component', () => {
     vi.clearAllMocks();
   });
 
+  const renderCard = (character: Person) => {
+    return render(
+      <MemoryRouter>
+        <Card character={character} />
+      </MemoryRouter>
+    );
+  };
+
   it('renders character name', () => {
-    render(<Card character={mockCharacter} />);
+    renderCard(mockCharacter);
     expect(screen.getByText('Aragorn')).toBeInTheDocument();
   });
 
   it('renders an active wiki link if wikiUrl exists', () => {
-    render(<Card character={mockCharacter} />);
+    renderCard(mockCharacter);
 
     const link = screen.getByRole('link');
     expect(link).toHaveAttribute('href', mockCharacter.wikiUrl);
@@ -57,7 +67,7 @@ describe('Card Component', () => {
   });
 
   it('renders a disabled link if wikiUrl is missing', () => {
-    render(<Card character={mockCharacterNoWikiUrl} />);
+    renderCard(mockCharacterNoWikiUrl);
 
     const link = screen.getByText('See More Info').closest('a');
     expect(link).toBeInTheDocument();
@@ -65,7 +75,7 @@ describe('Card Component', () => {
   });
 
   it('should call preventDefault when wikiUrl is empty', () => {
-    render(<Card character={mockCharacterNoWikiUrl} />);
+    renderCard(mockCharacterNoWikiUrl);
 
     const link = screen.getByText('See More Info');
     const preventDefault = vi.fn();
@@ -76,7 +86,7 @@ describe('Card Component', () => {
   });
 
   it('should not call preventDefault when wikiUrl exists', () => {
-    render(<Card character={mockCharacter} />);
+    renderCard(mockCharacter);
 
     const link = screen.getByRole('link', { name: /see more info/i });
     const preventDefault = vi.fn();
@@ -84,5 +94,19 @@ describe('Card Component', () => {
     fireEvent.click(link, { preventDefault });
 
     expect(preventDefault).not.toHaveBeenCalled();
+  });
+  it('navigates to character details when card is clicked', () => {
+    const history = createMemoryHistory();
+
+    render(
+      <Router location={history.location} navigator={history}>
+        <Card character={mockCharacter} />
+      </Router>
+    );
+
+    const cardButton = screen.getByRole('button');
+    fireEvent.click(cardButton);
+
+    expect(history.location.search).toContain('details=123');
   });
 });
