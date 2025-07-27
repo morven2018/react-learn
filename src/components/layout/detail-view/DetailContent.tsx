@@ -18,8 +18,8 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
 
   const characterDetails = [
     { label: 'Race', value: formatValue(character.race) },
-    { label: 'Birth', value: formatValue(character.birth) },
     { label: 'Gender', value: formatValue(character.gender) },
+    { label: 'Birth', value: formatValue(character.birth) },
     { label: 'Death', value: formatValue(character.death) },
     { label: 'Hair', value: formatValue(character.hair) },
     { label: 'Height', value: formatValue(character.height) },
@@ -39,7 +39,7 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
 
           <div className={style.detailsContent}>
             <a
-              href={character.wikiUrl ?? emptyLink}
+              href={character.wikiUrl || emptyLink}
               aria-disabled={!character.wikiUrl}
               target="_blank"
               rel="noopener noreferrer"
@@ -49,7 +49,7 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
               You can see more information about this character on Lotr wiki
             </a>
 
-            {characterDetails.length > 0 ? (
+            {characterDetails.length ? (
               <div className={style.detailsList}>
                 {characterDetails.map((detail) => (
                   <div key={detail.label} className={style.detailsRow}>

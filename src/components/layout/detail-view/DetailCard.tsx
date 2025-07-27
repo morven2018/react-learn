@@ -1,4 +1,4 @@
-import DetailsContent from './detailContent';
+import DetailsContent from './DetailContent';
 import style from './Details.module.scss';
 import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
 
