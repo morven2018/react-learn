@@ -1,6 +1,6 @@
 import getRandomInt from '@shared/lib/randomNumber';
 import { Term } from '@services/localStorage/LastTerm';
-import type { ApiResponse } from '@shared/types/responseTypes';
+import type { ApiResponse, Person } from '@shared/types/responseTypes';
 
 const API_BASE = 'https://the-one-api.dev/v2/';
 const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY;
@@ -160,6 +160,25 @@ class CharacterApiService {
     return this.lastResponse
       ? this.lastResponse.page * this.lastResponse.limit
       : 0;
+  }
+
+  static async getCharacterById(
+    id: string,
+    options: RequestInit = {}
+  ): Promise<Person> {
+    if (!id) {
+      throw this.createError(HttpStatus.BadRequest);
+    }
+
+    const url = `${API_BASE}character/${id}`;
+    const response = await this.authorizedFetch(url, options);
+    const data = await response.json();
+
+    if (!data?.docs?.[0]) {
+      throw this.createError(HttpStatus.NotFound);
+    }
+
+    return data.docs[0];
   }
 
   static async triggerTestError(): Promise<never> {

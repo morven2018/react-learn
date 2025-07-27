@@ -15,15 +15,17 @@
   padding-bottom: $small-padding;
   text-align: center;
 }
-
-.card {
+.cardWrapper {
   max-width: 300px;
   width: 100%;
   padding: $base-padding;
-
+}
+.card {
+  padding: 0;
+  margin: 0;
   background: $card-background;
   border-radius: $border-radius;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
 
   color: $secondary-light;
   font-family: $font-base;
