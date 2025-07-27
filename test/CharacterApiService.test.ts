@@ -51,7 +51,7 @@ describe('CharacterApiService', () => {
   });
 
   describe('searchCharacters', () => {
-    it('should make a successful API call with name parameter', async () => {
+    it('make a successful API call with name parameter', async () => {
       const expectedApiKey = import.meta.env.VITE_API_KEY;
       const expectedAuthHeader = `Bearer ${expectedApiKey}`;
       const result = await CharacterApiService.searchCharacters('test');
@@ -77,7 +77,7 @@ describe('CharacterApiService', () => {
       expect(result).toEqual(mockApiResponse);
     });
 
-    it('should make a successful API call with empty name parameter', async () => {
+    it('make a successful API call with empty name parameter', async () => {
       const expectedApiKey = import.meta.env.VITE_API_KEY;
       const expectedAuthHeader = `Bearer ${expectedApiKey}`;
 
@@ -100,7 +100,7 @@ describe('CharacterApiService', () => {
       expect(result).toEqual(mockApiResponse);
     });
 
-    it('should use secondary API key if primary fails with 401', async () => {
+    it('use secondary API key if primary fails with 401', async () => {
       const secondaryApiKey = import.meta.env.VITE_API_KEY2;
 
       vi.mocked(fetch)
@@ -125,7 +125,7 @@ describe('CharacterApiService', () => {
       expect(CharacterApiService['currentApiKey']).toBe(secondaryApiKey);
     });
 
-    it('should load next page when more data is available', async () => {
+    it('load next page when more data is available', async () => {
       vi.mocked(fetch).mockResolvedValueOnce(
         new Response(JSON.stringify(mockApiResponse), {
           status: 200,
@@ -157,7 +157,7 @@ describe('CharacterApiService', () => {
     });
   });
 
-  it('should load second page if it available', async () => {
+  it('load second page if it available', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
       new Response(JSON.stringify(mockApiResponse), {
         status: 200,
@@ -190,12 +190,12 @@ describe('CharacterApiService', () => {
 });
 
 describe('hasMore', () => {
-  it('should return true when more pages are available', async () => {
+  it('return true when more pages are available', async () => {
     await CharacterApiService.searchCharacters('test');
     expect(CharacterApiService.hasMore()).toBe(true);
   });
 
-  it('should return false when no more pages are available', async () => {
+  it('return false when no more pages are available', async () => {
     vi.mocked(fetch).mockResolvedValueOnce(
       new Response(
         JSON.stringify({
@@ -216,18 +216,60 @@ describe('hasMore', () => {
 });
 
 describe('getLoadedCount', () => {
-  it('should return correct count after search', async () => {
+  it('return correct count after search', async () => {
     await CharacterApiService.searchCharacters('test');
     expect(CharacterApiService.getLoadedCount()).toBe(12);
   });
 });
 
 describe('triggerTestError', () => {
-  it('should throw a random error', async () => {
+  it('throw a random error', async () => {
     vi.mocked(getRandomInt).mockReturnValue(3);
 
     await expect(CharacterApiService.triggerTestError()).rejects.toThrow(
       '1001. Invalid Data - Incorrect data format'
     );
+  });
+});
+describe('getCharacterById', () => {
+  const mockCharacter = {
+    _id: '5cd99d4bde30eff6ebccfc07',
+    name: 'Gandalf',
+  };
+
+  beforeEach(() => {
+    global.fetch = vi.fn(() =>
+      Promise.resolve(
+        new Response(
+          JSON.stringify({
+            docs: [mockCharacter],
+          }),
+          {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      )
+    );
+  });
+
+  it('fetch character by id successfully', async () => {
+    const characterId = '5cd99d4bde30eff6ebccfc07';
+    const result = await CharacterApiService.getCharacterById(characterId);
+
+    expect(fetch).toHaveBeenCalledTimes(1);
+    const fetchMock = vi.mocked(fetch);
+    const [url, options] = fetchMock.mock.calls[0];
+
+    expect(url).toBe(`https://the-one-api.dev/v2/character/${characterId}`);
+    expect(options?.method).toBeUndefined();
+
+    const headers = new Headers(options?.headers);
+    expect(headers.get('Authorization')).toBe(
+      `Bearer ${import.meta.env.VITE_API_KEY}`
+    );
+    expect(headers.get('Content-Type')).toBe('application/json');
+
+    expect(result).toEqual(mockCharacter);
   });
 });

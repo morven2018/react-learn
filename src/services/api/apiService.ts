@@ -76,7 +76,8 @@ class CharacterApiService {
       const response = await fetch(url, { ...options, headers });
 
       if (
-        response.status === HttpStatus.Unauthorized &&
+        (response.status === HttpStatus.Unauthorized ||
+          response.status === HttpStatus.TooManyRequests) &&
         retry &&
         API_KEY_SECONDARY
       ) {
