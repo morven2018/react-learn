@@ -46,7 +46,7 @@ describe('DetailsContent', () => {
       <DetailsContent character={characterWithoutWiki} isLoading={false} />
     );
 
-    const link = screen.getByText(/see more information/i);
+    const link = screen.getByText(/see more info/i);
     expect(link).toHaveAttribute('href', '#');
     expect(link).toHaveAttribute('aria-disabled', 'true');
   });

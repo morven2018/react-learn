@@ -9,7 +9,7 @@ vi.mock('@components/hooks/useCharacterDetails', () => ({
   useCharacterDetails: vi.fn(),
 }));
 
-vi.mock('@components/layout/detail-view/DetailContent', () => ({
+vi.mock('@components/layout/detailView/DetailContent', () => ({
   default: vi.fn(() => <div>DetailsContent Mock</div>),
 }));
 
