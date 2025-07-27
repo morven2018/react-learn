@@ -3,8 +3,9 @@ import { Term } from '@services/localStorage/LastTerm';
 import type { ApiResponse, Person } from '@shared/types/responseTypes';
 
 const API_BASE = 'https://the-one-api.dev/v2/';
-const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY;
-const API_KEY_SECONDARY = import.meta.env.VITE_API_KEY2;
+const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
+const API_KEY_SECONDARY =
+  import.meta.env.VITE_API_KEY2 ?? 'oJHunt00vrX9Yile7Jny';
 const BASE_LIMIT = 12;
 const ERROR_TYPES_COUNT = 5;
 

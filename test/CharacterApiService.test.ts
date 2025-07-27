@@ -5,8 +5,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const UNAUTHORIZED = 401;
 
-vi.stubEnv('VITE_API_KEY', 'oJHunt00vrX9Yile7Jny');
-vi.stubEnv('VITE_API_KEY2', 'secondary_key');
+vi.stubEnv('VITE_API_KEY', 'ksmnN0SYU1vcR69udsuY');
+vi.stubEnv('VITE_API_KEY2', 'oJHunt00vrX9Yile7Jny');
 
 vi.mock('@shared/lib/randomNumber', () => ({
   default: vi.fn().mockReturnValue(1),
@@ -33,7 +33,8 @@ describe('CharacterApiService', () => {
 
     CharacterApiService['lastQuery'] = '';
     CharacterApiService['lastResponse'] = null;
-    CharacterApiService['currentApiKey'] = import.meta.env.VITE_API_KEY;
+    CharacterApiService['currentApiKey'] =
+      import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
 
     global.fetch = vi.fn(() => {
       return Promise.resolve(
@@ -52,7 +53,8 @@ describe('CharacterApiService', () => {
 
   describe('searchCharacters', () => {
     it('make a successful API call with name parameter', async () => {
-      const expectedApiKey = import.meta.env.VITE_API_KEY;
+      const expectedApiKey =
+        import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
       const expectedAuthHeader = `Bearer ${expectedApiKey}`;
       const result = await CharacterApiService.searchCharacters('test');
 
@@ -78,7 +80,8 @@ describe('CharacterApiService', () => {
     });
 
     it('make a successful API call with empty name parameter', async () => {
-      const expectedApiKey = import.meta.env.VITE_API_KEY;
+      const expectedApiKey =
+        import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
       const expectedAuthHeader = `Bearer ${expectedApiKey}`;
 
       const result = await CharacterApiService.searchCharacters();
@@ -101,7 +104,8 @@ describe('CharacterApiService', () => {
     });
 
     it('use secondary API key if primary fails with 401', async () => {
-      const secondaryApiKey = import.meta.env.VITE_API_KEY2;
+      const secondaryApiKey =
+        import.meta.env.VITE_API_KEY2 ?? 'oJHunt00vrX9Yile7Jny';
 
       vi.mocked(fetch)
         .mockImplementationOnce(() => {
@@ -266,7 +270,7 @@ describe('getCharacterById', () => {
 
     const headers = new Headers(options?.headers);
     expect(headers.get('Authorization')).toBe(
-      `Bearer ${import.meta.env.VITE_API_KEY}`
+      `Bearer ${import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY'}`
     );
     expect(headers.get('Content-Type')).toBe('application/json');
 
