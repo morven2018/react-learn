@@ -12,7 +12,7 @@ vi.mock('@shared/lib/randomNumber', () => ({
   default: vi.fn().mockReturnValue(1),
 }));
 
-vi.mock('@services/localStorage/LastTerm', () => ({
+vi.mock('@services/localStorage/LSService', () => ({
   Term: {
     setTermToLS: vi.fn(),
     getTermFromLS: vi.fn(),

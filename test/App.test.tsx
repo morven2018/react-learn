@@ -6,7 +6,7 @@ import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
 vi.mock('@components/layout/header/Header', () => ({
-  default: () => <header>Header</header>,
+  default: () => <header data-testid="header">Header</header>,
 }));
 
 vi.mock('@pages/home/Home', () => ({
@@ -15,28 +15,32 @@ vi.mock('@pages/home/Home', () => ({
     if (savedTerm) {
       apiService.searchCharacters(savedTerm);
     }
-    return <main>Main Content</main>;
+    return <main data-testid="main-content">Main Content</main>;
   }),
 }));
 
-vi.mock('.src/pages/about/about', () => ({
-  default: () => <div>About Page</div>,
+vi.mock('@pages/about/about', () => ({
+  default: () => <div data-testid="about-page">About Page</div>,
 }));
 
-vi.mock('.src/not-found/not-found', () => ({
-  NotFoundPage: () => <div>Not Found Page</div>,
+// Исправленный мок для NotFoundPage (именованный экспорт)
+vi.mock('@pages/not-found/not-found', () => ({
+  NotFoundPage: () => <div data-testid="not-found-page">Not Found Page</div>,
 }));
 
+// Моки сервисов
 vi.mock('@services/api/apiService', () => ({
   default: {
     searchCharacters: vi.fn().mockResolvedValue({ docs: [] }),
   },
 }));
 
-vi.mock('@services/localStorage/LastTerm', () => ({
+vi.mock('@services/localStorage/LSService', () => ({
   Term: {
     getTermFromLS: vi.fn(),
     setTermToLS: vi.fn(),
+    getThemeFromLS: vi.fn().mockReturnValue('dark'),
+    setThemeToLS: vi.fn(),
   },
 }));
 
@@ -45,7 +49,7 @@ describe('App Component', () => {
     vi.clearAllMocks();
   });
 
-  it('renders successfully', () => {
+  it('render successfully', () => {
     render(
       <MemoryRouter>
         <App />
@@ -54,7 +58,7 @@ describe('App Component', () => {
     expect(screen.getByRole('banner')).toBeInTheDocument();
   });
 
-  it('contains Header and Main components on home route', () => {
+  it('contain Header and Main components on home route', () => {
     render(
       <MemoryRouter initialEntries={['/']}>
         <App />
@@ -64,7 +68,7 @@ describe('App Component', () => {
     expect(screen.getByText('Main Content')).toBeInTheDocument();
   });
 
-  it('loads search term from localStorage and triggers search on mount', async () => {
+  it('load search term from localStorage and triggers search on mount', async () => {
     const mockSearchTerm = 'elf';
     vi.spyOn(Term, 'getTermFromLS').mockReturnValue(mockSearchTerm);
     const apiSpy = vi.spyOn(apiService, 'searchCharacters');
@@ -81,21 +85,21 @@ describe('App Component', () => {
     });
   });
 
-  it('renders About page on /about route', () => {
+  it('render About page on /about route', () => {
     render(
       <MemoryRouter initialEntries={['/about']}>
         <App />
       </MemoryRouter>
     );
-    expect(screen.getByText('About page')).toBeInTheDocument();
+    expect(screen.getByTestId('about-page')).toBeInTheDocument();
   });
 
-  it('renders Not Found page on unknown route', () => {
+  it('render Not Found page on unknown route', () => {
     render(
       <MemoryRouter initialEntries={['/unknown-route']}>
         <App />
       </MemoryRouter>
     );
-    expect(screen.getByText('This page doesn’t exist.')).toBeInTheDocument();
+    expect(screen.getByTestId('not-found-page')).toBeInTheDocument();
   });
 });

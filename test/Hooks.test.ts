@@ -83,7 +83,14 @@ describe('useCharacterDetails', () => {
   });
 });
 
-vi.mock('@services/localStorage/LastTerm');
+vi.mock('@services/localStorage/LSService', () => ({
+  Term: {
+    getTermFromLS: vi.fn(),
+    setTermToLS: vi.fn(),
+  },
+}));
+
+const mockedTerm = vi.mocked(Term);
 
 describe('useRestoreSearchTerm', () => {
   beforeEach(() => {
@@ -91,22 +98,22 @@ describe('useRestoreSearchTerm', () => {
   });
 
   it('initialize with empty term if LS is empty', () => {
-    vi.mocked(Term.getTermFromLS).mockReturnValue(undefined);
+    mockedTerm.getTermFromLS.mockReturnValue(undefined);
 
     const { result } = renderHook(() => useRestoreSearchTerm());
 
     expect(result.current.termValue).toBe('');
-    expect(Term.getTermFromLS).toHaveBeenCalledOnce();
+    expect(mockedTerm.getTermFromLS).toHaveBeenCalledOnce();
   });
 
   it('initialize with term from LS', () => {
     const mockTerm = 'test term';
-    vi.mocked(Term.getTermFromLS).mockReturnValue(mockTerm);
+    mockedTerm.getTermFromLS.mockReturnValue(mockTerm);
 
     const { result } = renderHook(() => useRestoreSearchTerm());
 
     expect(result.current.termValue).toBe(mockTerm);
-    expect(Term.getTermFromLS).toHaveBeenCalledOnce();
+    expect(mockedTerm.getTermFromLS).toHaveBeenCalledOnce();
   });
 
   it('update term value and save to LS', () => {
