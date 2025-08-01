@@ -23,12 +23,10 @@ vi.mock('@pages/about/about', () => ({
   default: () => <div data-testid="about-page">About Page</div>,
 }));
 
-// Исправленный мок для NotFoundPage (именованный экспорт)
 vi.mock('@pages/not-found/not-found', () => ({
   NotFoundPage: () => <div data-testid="not-found-page">Not Found Page</div>,
 }));
 
-// Моки сервисов
 vi.mock('@services/api/apiService', () => ({
   default: {
     searchCharacters: vi.fn().mockResolvedValue({ docs: [] }),
