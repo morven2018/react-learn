@@ -1,4 +1,4 @@
-import { Term } from '@services/localStorage/LastTerm';
+import { Term } from '@services/localStorage/LSService';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 describe('Term class', () => {

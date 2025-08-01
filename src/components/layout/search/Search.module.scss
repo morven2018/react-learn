@@ -22,15 +22,15 @@
 
   .input {
     width: 60vw;
-    background-color: $input;
+    background-color: var(--input);
 
     &::placeholder {
-      color: $secondary-light;
+      color: var(--secondary-light);
     }
   }
 
   .searchButton {
     width: 200px;
-    background-color: $button;
+    background-color: var(--button);
   }
 }

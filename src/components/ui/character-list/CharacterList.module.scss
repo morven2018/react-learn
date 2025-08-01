@@ -26,16 +26,16 @@
   width: 100%;
   padding: $base-padding;
   margin: 0;
-  background: $card-background;
+  background: var(--card-background);
   border-radius: $border-radius;
-  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 6px 8px var(--shadow30);
 
-  color: $secondary-light;
+  color: var(--secondary-light);
   font-family: $font-base;
 
   &:hover {
     transform: scale(1.02);
-    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 10px 15px var(---shadow40);
   }
 
   &:active {
@@ -64,7 +64,7 @@
       gap: 10px;
       padding: 6px 0;
       height: 36px;
-      border-bottom: 1px dashed rgba($base-border, 0.2);
+      border-bottom: 1px dashed rgba(var(--base-border), 0.2);
 
       span:first-child {
         margin-right: 10px;
@@ -79,7 +79,7 @@
 
     .unknownItem {
       span {
-        color: $unknown;
+        color: var(--unknown);
       }
     }
   }
@@ -90,12 +90,12 @@
     height: 40px;
 
     text-align: right;
-    color: $unknown;
+    color: var(--unknown);
     text-decoration: none;
   }
 
   .wikiLink {
-    color: $gold;
+    color: var(--gold);
     transition: all 0.2s ease;
 
     &:hover {
@@ -105,6 +105,6 @@
 
   @media (max-width: $breakpoint) {
     max-width: 100%;
-    padding: $small-padding;
+    padding: var(--small-padding);
   }
 }

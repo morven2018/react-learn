@@ -1,5 +1,5 @@
 import getRandomInt from '@shared/lib/randomNumber';
-import { Term } from '@services/localStorage/LastTerm';
+import { Term } from '@services/localStorage/LSService';
 import type { ApiResponse, Person } from '@shared/types/responseTypes';
 
 const API_BASE = 'https://the-one-api.dev/v2/';

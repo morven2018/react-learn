@@ -5,8 +5,8 @@
   line-height: 1.5;
   font-weight: 400;
 
-  color: $primary-light;
-  background-color: $primary-black;
+  color: var(--primary-light);
+  background-color: var(--primary-black);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -16,7 +16,7 @@
 
 #root {
   max-width: 100vw;
-  background-color: $primary-black;
+  background-color: var(--primary-black);
   padding: 0;
 }
 .app {
@@ -25,19 +25,23 @@
 
 button,
 input {
-  color: $secondary-light;
+  color: var(--secondary-light);
   padding: 10px 12px;
-  border: 1px solid $base-border;
+  border: 1px solid var(--base-border);
   border-radius: $border-radius;
   font-size: $controls-typography;
 
   &:focus {
-    outline: 3px solid $primary-light;
+    outline: 3px solid var(--primary-light);
     outline-offset: -1px;
   }
 
   &:hover {
-    outline: 3px solid $hover-border;
+    outline: 3px solid var(--hover-border);
     outline-offset: -1px;
   }
+}
+
+button {
+  cursor: pointer;
 }

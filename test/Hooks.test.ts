@@ -1,7 +1,7 @@
 import CharacterApiService from '@services/api/apiService';
 import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
 import { useRestoreSearchTerm } from '@components/hooks/useRestoreSearchTerm';
-import { Term } from '@services/localStorage/LastTerm';
+import { Term } from '@services/localStorage/LSService';
 import type { Person } from '@shared/types/responseTypes';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';

@@ -12,19 +12,23 @@
 .pageButton {
   min-width: 40px;
   padding: $small-padding;
+
   border-radius: $border-radius;
-  background: $card-background;
-  color: $secondary-light;
-  border: 1px solid rgba($base-border, 0.3);
+  border: 1px solid rgba(var(--base-border), 0.3);
+  box-shadow: 0 2px 4px var(--shadow);
+
   cursor: pointer;
   transition: all 0.3s ease;
+
+  background: var(--card-background);
+
+  color: var(--secondary-light);
   font-family: $font-base;
   font-size: $text-typography;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px var(--shadow30);
   }
 
   &:active:not(:disabled) {
@@ -32,10 +36,10 @@
   }
 
   &.active {
-    background: $gold;
-    color: $base-border;
+    background: var(--gold);
+    color: var(--pagination-text);
     font-weight: bold;
-    border-color: $gold;
+    border-color: var(--gold);
   }
 
   &:disabled {
@@ -54,7 +58,7 @@
   min-width: unset;
 
   &:hover:not(:disabled) {
-    color: $gold;
+    color: var(--gold);
   }
 }
 
@@ -63,7 +67,7 @@
   align-items: center;
   justify-content: center;
   padding: 0 $small-padding;
-  color: $unknown;
+  color: var(--unknown);
   font-family: $font-base;
   user-select: none;
 }

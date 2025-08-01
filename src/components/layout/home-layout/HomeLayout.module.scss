@@ -19,7 +19,7 @@ $bg-image: url('@assets/images/background.png');
     margin: 10px;
     border-radius: 5px;
     width: calc(100% - 20px);
-    background-color: $shadow;
+    background-color: var(--shadow);
     transition:
       flex 0.3s ease,
       width 0.3s ease;
@@ -33,7 +33,7 @@ $bg-image: url('@assets/images/background.png');
   .detail {
     width: 350px;
     margin: 10px;
-    background: $card-background;
+    background: var(--card-background);
     border-radius: $border-radius;
   }
 

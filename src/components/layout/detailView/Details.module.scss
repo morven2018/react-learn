@@ -5,7 +5,7 @@
   position: sticky;
   width: 350px;
   margin: 0 auto;
-  color: $secondary-light;
+  color: var(--secondary-light);
   font-family: $font-base;
 
   .header {
@@ -14,7 +14,7 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: $base-padding;
-    border-bottom: 1px solid rgba($base-border, 0.3);
+    border-bottom: 1px solid rgba(var(--base-border), 0.3);
     padding-bottom: $small-padding;
 
     .title {
@@ -30,13 +30,13 @@
       margin: 0;
       background: none;
       border: none;
-      color: $primary-light;
+      color: var(--primary-light);
       font-size: 24px;
       cursor: pointer;
       transition: all 0.2s ease;
 
       &:hover {
-        color: $primary-light;
+        color: var(--primary-light);
         transform: scale(1.2);
         border: none;
       }
@@ -49,7 +49,7 @@
   .loading {
     text-align: center;
     padding: $base-padding;
-    color: $primary-light;
+    color: var(--primary-light);
     font-style: italic;
     font-size: $controls-typography;
   }
@@ -61,7 +61,7 @@
       font-family: $font-medieval;
       font-size: $subheader-typography-mobile;
       margin: 0;
-      color: $gold;
+      color: var(--gold);
       text-align: center;
     }
   }
@@ -75,12 +75,12 @@
       height: 40px;
 
       text-align: right;
-      color: $unknown;
+      color: var(--unknown);
       text-decoration: none;
     }
 
     .wikiLink {
-      color: $gold;
+      color: var(--gold);
       transition: all 0.2s ease;
 
       &:hover {
@@ -95,11 +95,11 @@
         display: flex;
         justify-content: space-between;
         padding: 8px 0;
-        border-bottom: 1px dashed rgba($base-border, 0.2);
+        border-bottom: 1px dashed rgba(var(--base-border), 0.2);
 
         .detailLabel {
           font-weight: 500;
-          color: $gold;
+          color: var(--gold);
         }
 
         .detailValue {
@@ -112,7 +112,7 @@
     .noDetails {
       text-align: center;
       padding: $base-padding;
-      color: $unknown;
+      color: var(--unknown);
       font-style: italic;
     }
   }

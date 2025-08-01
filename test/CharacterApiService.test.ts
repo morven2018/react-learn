@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/apiService';
 import getRandomInt from '@shared/lib/randomNumber';
-import { Term } from '@services/localStorage/LastTerm';
+import { Term } from '@services/localStorage/LSService';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const UNAUTHORIZED = 401;

@@ -6,8 +6,8 @@
     flex-direction: column;
     gap: $base-padding;
 
-    border-radius: $border-radius;
+    border-radius: var(--border-radius);
 
-    background-color: $shadow;
+    background-color: var(--shadow);
   }
 }

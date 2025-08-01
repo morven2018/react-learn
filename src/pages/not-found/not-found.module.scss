@@ -10,7 +10,7 @@
   gap: 40px;
   padding: $base-padding;
 
-  color: $secondary-light;
+  color: var(--secondary-light);
   text-align: center;
   font-size: $text-typography;
   font-family: $font-medieval;
@@ -18,7 +18,7 @@
   .header {
     font-size: $header-typography;
     font-family: $font-medieval;
-    color: $hover-border;
+    color: var(--hover-border);
 
     @media (max-width: $breakpoint) {
       font-size: $header-typography-mobile;
@@ -29,8 +29,8 @@
     padding: 0.75rem 1.5rem;
     border: none;
     border-radius: $border-radius;
-    background: $hover-border;
-    color: $primary-black;
+    background: var(--hover-border);
+    color: var(--primary-black);
     font-family: $font-medieval;
     font-weight: bold;
     cursor: pointer;
@@ -38,7 +38,7 @@
 
     &:hover {
       transform: scale(1.1);
-      background: $gold;
+      background: var(--gold);
     }
 
     &:active {

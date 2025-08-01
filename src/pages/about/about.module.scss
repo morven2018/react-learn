@@ -9,14 +9,14 @@
 
   padding: $base-padding;
 
-  color: $secondary-light;
+  color: var(--secondary-light);
   text-align: center;
   font-size: $text-typography;
   font-family: $font-medieval;
 
   .header {
     font-size: $header-typography;
-    color: $hover-border;
+    color: var(--hover-border);
     margin-bottom: 20px;
 
     @media (max-width: $breakpoint) {
@@ -36,12 +36,12 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    color: $hover-border;
+    color: var(--hover-border);
     text-decoration: none;
     transition: all 0.2s ease;
 
     &:hover {
-      color: $gold;
+      color: var(--gold);
       transform: scale(1.05);
     }
 
