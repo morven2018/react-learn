@@ -1,6 +1,6 @@
 import CharacterCharacteristics from './CharacterCharacteristics';
 import React from 'react';
-import style from './CharacterLst.module.scss';
+import style from './CharacterList.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 import { useNavigate } from 'react-router-dom';
 
