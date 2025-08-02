@@ -16,7 +16,9 @@ export class Term {
   }
 
   public static getThemeFromLS(): Themes {
-    return localStorage.getItem(StoredTerm.Theme) ? 'light' : 'dark';
+    return localStorage.getItem(StoredTerm.Theme) === 'light'
+      ? 'light'
+      : 'dark';
   }
 
   public static setThemeToLS(theme: Themes = 'dark'): void {
