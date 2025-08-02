@@ -8,7 +8,7 @@
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: 20px;
 
@@ -16,6 +16,40 @@
   border-radius: $border-radius;
 
   font-family: $font-medieval;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+
+    .themeButton {
+      background-color: transparent;
+      border: none;
+
+      img {
+        height: 24px;
+        width: 24px;
+      }
+
+      &:focus,
+      &:hover {
+        border: none;
+        outline: none;
+        transform: scale(0.8);
+      }
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+
+    @media (max-width: $breakpoint) {
+      flex-direction: column-reverse;
+      .themeButton {
+        margin: 10px $base-padding 10px auto;
+      }
+    }
+  }
 
   .h1 {
     font-size: $header-typography;
@@ -52,27 +86,6 @@
     &:focus {
       transform: scale(0.8);
       color: var(--hover-border);
-    }
-  }
-
-  .themeButton {
-    background-color: transparent;
-    border: none;
-
-    img {
-      height: 24px;
-      width: 24px;
-    }
-
-    &:focus,
-    &:hover {
-      border: none;
-      outline: none;
-      transform: scale(0.8);
-    }
-
-    &:hover {
-      transform: scale(1.2);
     }
   }
 }
