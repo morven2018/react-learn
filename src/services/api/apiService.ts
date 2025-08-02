@@ -1,6 +1,11 @@
 import getRandomInt from '@shared/lib/randomNumber';
 import { Term } from '@services/localStorage/LSService';
-import type { ApiResponse, Person } from '@shared/types/responseTypes';
+
+import type {
+  ApiResponse,
+  Person,
+  PersonWithUrl,
+} from '@shared/types/responseTypes';
 
 const API_BASE = 'https://the-one-api.dev/v2/';
 const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
@@ -183,6 +188,40 @@ class CharacterApiService {
     return data.docs[0];
   }
 
+  static async getCharactersByIds(
+    ids: string[],
+    options: RequestInit = {}
+  ): Promise<PersonWithUrl[]> {
+    if (!ids || ids.length === 0) {
+      return [];
+    }
+
+    const characters = await Promise.all(
+      ids.map(async (id) => {
+        const url = `${API_BASE}character/${id}`;
+        try {
+          const response = await this.authorizedFetch(url, options);
+          const data = await response.json();
+
+          if (!data?.docs?.[0]) {
+            throw this.createError(HttpStatus.NotFound);
+          }
+
+          const character = data.docs[0];
+          return {
+            ...character,
+            url: url,
+          };
+        } catch (error) {
+          console.error(`Failed to fetch character ${id}:`, error);
+          return null;
+        }
+      })
+    );
+    return characters.filter(
+      (char): char is PersonWithUrl => char !== undefined
+    );
+  }
   static async triggerTestError(): Promise<never> {
     const errorType = getRandomInt(1, ERROR_TYPES_COUNT);
     const errors = [

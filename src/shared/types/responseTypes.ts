@@ -12,6 +12,10 @@ export interface Person {
   spouse: string | null;
 }
 
+export interface PersonWithUrl extends Person {
+  url: string;
+}
+
 export interface ApiResponse {
   docs: Person[];
   total: number;
