@@ -3,7 +3,7 @@ import lightMode from '@assets/logo/lightMode.svg';
 import logoDark from '@assets/images/image.png';
 import logoLight from '@assets/images/imageL.png';
 import style from './Header.module.scss';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '@context/useTheme';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();

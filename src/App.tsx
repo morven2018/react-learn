@@ -1,11 +1,11 @@
 import './App.scss';
-import AboutPage from './pages/about/about';
+import AboutPage from '@pages/about/about';
 import Header from '@components/layout/header/Header';
 import Home from '@pages/home/Home';
 import HomeLayout from '@components/layout/home-layout/HomeLayout';
+import NotFoundPage from '@pages/not-found/not-found';
+import ThemeProvider from '@context/ThemeProvider';
 import { Route, Routes } from 'react-router-dom';
-import { ThemeProvider } from './context/ThemeContext';
-import { NotFoundPage } from './pages/not-found/not-found';
 
 const HOME_PATH = '/';
 const RESERVE_HOME_PATH = '/index.html';
