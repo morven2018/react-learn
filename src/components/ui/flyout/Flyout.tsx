@@ -1,4 +1,6 @@
+import CharacterApiService from '@services/api/apiService';
 import React from 'react';
+import convertToCSV from '@shared/lib/convertToCSV';
 import style from './Flyout.module.scss';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 import { clearSelectedCharacters } from '@shared/features/charactersSlice';
@@ -13,8 +15,12 @@ export const Flyout: React.FC = () => {
     dispatch(clearSelectedCharacters());
   };
 
-  const handleDownload = () => {
-    console.log('Downloading:', selectedCharacters);
+  const handleDownload = async () => {
+    const data =
+      await CharacterApiService.getCharactersByIds(selectedCharacters);
+
+    const csvdata = convertToCSV(data);
+    console.log('Downloading:', csvdata);
   };
 
   if (selectedCharacters.length === 0) return null;
