@@ -3,6 +3,8 @@ import Pagination from '@components/ui/pagination/Pagination';
 import Results from '@components/layout/results/Results';
 import style from './Home.module.scss';
 import { useRestoreSearchTerm } from '@components/hooks/useRestoreSearchTerm';
+import { Flyout } from '@components/ui/flyout/Flyout';
+import { useAppSelector } from '@redux/store';
 import type { Person } from '@shared/types/responseTypes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -23,8 +25,12 @@ const Home = () => {
   const navigate = useNavigate();
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  const currentPage = parseInt(searchParams.get('page') || '1', 10);
+  const currentPage = parseInt(searchParams.get('page') ?? '1', 10);
   const initialSearchTerm = currentSearch ?? '';
+
+  const selectedCharacters = useAppSelector(
+    (state) => state.characters.selectedCharacters
+  );
 
   const loadData = useCallback(
     async (page: number, term: string) => {
@@ -118,6 +124,8 @@ const Home = () => {
             isLoading={isLoading || isFetchingMore}
           />
         )}
+
+        {selectedCharacters.length && <Flyout />}
       </div>
     </main>
   );
