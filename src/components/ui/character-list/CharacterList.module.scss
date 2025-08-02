@@ -33,15 +33,6 @@
   color: var(--secondary-light);
   font-family: $font-base;
 
-  &:hover {
-    transform: scale(1.02);
-    box-shadow: 0 10px 15px var(---shadow40);
-  }
-
-  &:active {
-    transform: scale(0.98);
-  }
-
   .name {
     height: 50px;
     font-family: $font-medieval;
