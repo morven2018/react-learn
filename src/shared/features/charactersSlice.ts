@@ -1,7 +1,7 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { Term } from '@services/localStorage/LSService';
 
-interface CharactersState {
+export interface CharactersState {
   selectedCharacters: string[];
 }
 
