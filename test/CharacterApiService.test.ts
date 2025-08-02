@@ -277,3 +277,76 @@ describe('getCharacterById', () => {
     expect(result).toEqual(mockCharacter);
   });
 });
+
+describe('getCharactersByIds', () => {
+  const mockCharacters = [
+    {
+      _id: '1',
+      name: 'Gandalf',
+    },
+    {
+      _id: '2',
+      name: 'Aragorn',
+    },
+  ];
+  beforeEach(() => {
+    global.fetch = vi.fn((input: RequestInfo | URL) => {
+      const url = input.toString();
+      const id = url.split('/').pop();
+
+      const character = mockCharacters.find((c) => c._id === id);
+
+      return Promise.resolve(
+        new Response(
+          JSON.stringify({
+            docs: character ? [character] : [],
+          }),
+          {
+            status: character ? 200 : 404,
+            headers: { 'Content-Type': 'application/json' },
+          }
+        )
+      );
+    });
+  });
+  it('return characters with URL', async () => {
+    const result = await CharacterApiService.getCharactersByIds(['1', '2']);
+
+    expect(result).toEqual([
+      { ...mockCharacters[0], url: expect.stringContaining('/1') },
+      { ...mockCharacters[1], url: expect.stringContaining('/2') },
+    ]);
+  });
+
+  it('fetch multiple characters by ids successfully', async () => {
+    const ids = ['1', '2'];
+    const result = await CharacterApiService.getCharactersByIds(ids);
+
+    expect(fetch).toHaveBeenCalledTimes(2);
+
+    const fetchMock = vi.mocked(fetch);
+
+    const [firstUrl] = fetchMock.mock.calls[0];
+    expect(firstUrl).toBe('https://the-one-api.dev/v2/character/1');
+
+    const [secondUrl] = fetchMock.mock.calls[1];
+    expect(secondUrl).toBe('https://the-one-api.dev/v2/character/2');
+
+    expect(result).toEqual([
+      {
+        ...mockCharacters[0],
+        url: 'https://the-one-api.dev/v2/character/1',
+      },
+      {
+        ...mockCharacters[1],
+        url: 'https://the-one-api.dev/v2/character/2',
+      },
+    ]);
+  });
+
+  it('return empty array when ids not provided', async () => {
+    const result = await CharacterApiService.getCharactersByIds([]);
+    expect(result).toEqual([]);
+    expect(fetch).not.toHaveBeenCalled();
+  });
+});
