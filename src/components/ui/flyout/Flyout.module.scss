@@ -1,0 +1,83 @@
+@use '@assets/styles/globals.scss' as *;
+
+.flyoutWrapper {
+  position: -webkit-sticky;
+  position: sticky;
+
+  display: flex;
+  justify-content: center;
+  max-width: $max-width;
+
+  bottom: 20px;
+  width: calc(100vw - 60px);
+  margin-top: 40px;
+  z-index: 1000;
+}
+
+.flyout {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 200px;
+  width: 60vw;
+  padding: $small-padding;
+  border: 2px solid var(--base-border);
+  border-radius: $border-radius;
+  background-color: var(--label);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s ease;
+}
+
+.info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.countBadge {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: auto;
+  border-radius: 50%;
+  background-color: var(--primary-black);
+  color: var(--gold);
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.countText {
+  color: var(--primary-black);
+  font-family: $font-medieval;
+  font-weight: bold;
+}
+
+.buttonList {
+  display: flex;
+  gap: 10px;
+}
+
+.selectButton,
+.downloadButton {
+  padding: 6px 12px;
+  border: 1px solid var(--primary-black);
+  border-radius: $border-radius;
+  background-color: transparent;
+  color: var(--primary-black);
+  font-family: $font-medieval;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background-color: var(--hover-border);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}

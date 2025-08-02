@@ -46,33 +46,35 @@ export const Flyout: React.FC = () => {
   if (selectedCharacters.length === 0) return null;
 
   return (
-    <div className={style.flyout}>
-      <div className={style.info}>
-        <span className={style.countBadge}>{selectedCharacters.length}</span>
-        <span className={style.countText}>
-          {selectedCharacters.length === 1 ? 'Item' : 'Items'} selected
-        </span>
-      </div>
+    <div className={style.flyoutWrapper}>
+      <div className={style.flyout}>
+        <div className={style.info}>
+          <span className={style.countBadge}>{selectedCharacters.length}</span>
+          <span className={style.countText}>
+            {selectedCharacters.length === 1 ? 'Item' : 'Items'} selected
+          </span>
+        </div>
 
-      <div className={style.buttonList}>
-        <button
-          className={style.selectButton}
-          onClick={handleUnselectAll}
-          aria-label="Unselect all"
-          title="Unselect all"
-        >
-          Unselect all
-        </button>
+        <div className={style.buttonList}>
+          <button
+            className={style.selectButton}
+            onClick={handleUnselectAll}
+            aria-label="Unselect all"
+            title="Unselect all"
+          >
+            Unselect all
+          </button>
 
-        <button
-          className={`${style.downloadButton}`}
-          onClick={handleDownload}
-          aria-label="Download selected characters"
-          title="Download selected characters"
-        >
-          Download
-        </button>
-      </div>
+          <button
+            className={`${style.downloadButton}`}
+            onClick={handleDownload}
+            aria-label="Download selected characters"
+            title="Download selected characters"
+          >
+            Download
+          </button>
+        </div>
+      </div>{' '}
     </div>
   );
 };
