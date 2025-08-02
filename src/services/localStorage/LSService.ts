@@ -1,10 +1,10 @@
+import { Themes } from '@shared/types/responseTypes';
+
 enum StoredTerm {
   LastSearch = 'lastSearchTerm',
   Theme = 'userTheme',
   SelectedCharacters = 'selectedCharacters',
 }
-
-export type Themes = 'dark' | 'light';
 
 export class Term {
   public static getTermFromLS(): string | undefined {
@@ -15,13 +15,13 @@ export class Term {
     localStorage.setItem(StoredTerm.LastSearch, newTerm);
   }
 
-  public static getThemeFromLS(): Themes {
-    return localStorage.getItem(StoredTerm.Theme) === 'light'
-      ? 'light'
-      : 'dark';
+  public static getThemeFromLS(): keyof typeof Themes {
+    return localStorage.getItem(StoredTerm.Theme) === Themes.light
+      ? Themes.light
+      : Themes.dark;
   }
 
-  public static setThemeToLS(theme: Themes = 'dark'): void {
+  public static setThemeToLS(theme: keyof typeof Themes = Themes.dark): void {
     localStorage.setItem(StoredTerm.Theme, theme);
   }
 

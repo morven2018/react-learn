@@ -4,6 +4,7 @@ import logoDark from '@assets/images/image.png';
 import logoLight from '@assets/images/imageL.png';
 import style from './Header.module.scss';
 import { useTheme } from '@context/useTheme';
+import { Themes } from '@shared/types/responseTypes';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();
@@ -13,7 +14,7 @@ const Header = () => {
       <div className={style.linkWrapper}>
         <a href="/">
           <img
-            src={theme === 'dark' ? logoDark : logoLight}
+            src={theme === Themes.dark ? logoDark : logoLight}
             alt="White tree"
             className={style.whiteTree}
           />
@@ -30,13 +31,17 @@ const Header = () => {
         onClick={toggleTheme}
         className={style.themeButton}
         aria-label={
-          theme === 'dark' ? 'Switch to light theme' : 'Switch to dark theme'
+          theme === Themes.dark
+            ? 'Switch to light theme'
+            : 'Switch to dark theme'
         }
       >
         <img
-          src={theme === 'dark' ? lightMode : darkMode}
+          src={theme === Themes.dark ? lightMode : darkMode}
           alt={
-            theme === 'dark' ? 'Toggle to light theme' : 'Toggle to dark theme'
+            theme === Themes.dark
+              ? 'Toggle to light theme'
+              : 'Toggle to dark theme'
           }
         />
       </button>

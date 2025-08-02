@@ -23,3 +23,8 @@ export interface ApiResponse {
   page: number;
   pages: number;
 }
+
+export enum Themes {
+  light = 'light',
+  dark = 'dark',
+}

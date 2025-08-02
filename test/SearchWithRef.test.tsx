@@ -3,6 +3,8 @@ import SearchWithRef from '@components/layout/search/SearchWithRef';
 import { act, render } from '@testing-library/react';
 import { vi } from 'vitest';
 
+const DEFAULT_INITIAL_VALUE = '';
+
 interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
@@ -23,11 +25,11 @@ vi.mock('@components/layout/search/Search', () => {
           onSearch: (term: string) => void;
           initialSearchTerm?: string;
         }) => {
-          let currentValue = initialSearchTerm || 'initial';
+          let currentValue = initialSearchTerm ?? DEFAULT_INITIAL_VALUE;
 
           const mockHandle: SearchHandle = {
             handleSearch: vi.fn((term?: string) => {
-              onSearch(term || currentValue);
+              onSearch(term ?? currentValue);
               return Promise.resolve();
             }),
             getCurrentValue: vi.fn(() => currentValue),
@@ -50,7 +52,7 @@ vi.mock('@components/layout/search/Search', () => {
 describe('SearchWithRef', () => {
   const mockProps = {
     onSearch: vi.fn(),
-    initialSearchTerm: 'initial',
+    initialSearchTerm: DEFAULT_INITIAL_VALUE,
   };
 
   beforeEach(() => {
@@ -80,7 +82,7 @@ describe('SearchWithRef', () => {
     });
 
     const value = ref.current?.getCurrentValue();
-    expect(value).toBe('initial');
+    expect(value).toBe(DEFAULT_INITIAL_VALUE);
   });
 
   it('forwards setInputValue call to Search component', async () => {
@@ -110,7 +112,7 @@ describe('SearchWithRef', () => {
       await ref.current?.handleSearch();
     });
 
-    expect(mockProps.onSearch).toHaveBeenCalledWith('initial');
+    expect(mockProps.onSearch).toHaveBeenCalledWith(DEFAULT_INITIAL_VALUE);
   });
 
   it('updates input value when initialSearchTerm changes', async () => {

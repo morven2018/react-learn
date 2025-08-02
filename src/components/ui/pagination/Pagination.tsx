@@ -1,6 +1,8 @@
 import React from 'react';
 import style from './Pagination.module.scss';
 
+const VisiblePages = 3;
+
 interface PaginationProps {
   currentPage: number;
   totalPages: number;
@@ -14,7 +16,7 @@ const Pagination: React.FC<PaginationProps> = ({
   totalPages,
   isLoading,
   onPageChange,
-  maxVisiblePages = 3,
+  maxVisiblePages = VisiblePages,
 }) => {
   if (totalPages <= 1 || isLoading) return null;
 

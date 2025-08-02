@@ -1,11 +1,12 @@
 import Header from '@components/layout/header/Header';
+import { Themes } from '@shared/types/responseTypes';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useTheme } from 'src/context/useTheme';
 import { describe, expect, it, vi } from 'vitest';
 
 vi.mock('src/context/useTheme', () => ({
   useTheme: vi.fn(() => ({
-    theme: 'dark',
+    theme: Themes.dark,
     toggleTheme: vi.fn(),
   })),
 }));
@@ -51,7 +52,7 @@ describe('Header Component', () => {
   it('call toggleTheme on button click', () => {
     const mockToggleTheme = vi.fn();
     vi.mocked(useTheme).mockImplementation(() => ({
-      theme: 'dark',
+      theme: Themes.dark,
       toggleTheme: mockToggleTheme,
     }));
 
@@ -64,7 +65,7 @@ describe('Header Component', () => {
 
   it('display light theme icon when theme is light', () => {
     vi.mocked(useTheme).mockImplementation(() => ({
-      theme: 'light',
+      theme: Themes.light,
       toggleTheme: vi.fn(),
     }));
 
