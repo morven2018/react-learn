@@ -16,11 +16,30 @@ export const Flyout: React.FC = () => {
   };
 
   const handleDownload = async () => {
-    const data =
-      await CharacterApiService.getCharactersByIds(selectedCharacters);
+    try {
+      const data =
+        await CharacterApiService.getCharactersByIds(selectedCharacters);
+      const csvData = convertToCSV(data);
 
-    const csvdata = convertToCSV(data);
-    console.log('Downloading:', csvdata);
+      const fileName = `${selectedCharacters.length}_characters.csv`;
+
+      const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', fileName);
+
+      document.body.appendChild(link);
+      link.click();
+
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      console.log(`Downloaded ${fileName}`);
+    } catch (error) {
+      console.error('Error downloading characters:', error);
+    }
   };
 
   if (selectedCharacters.length === 0) return null;
