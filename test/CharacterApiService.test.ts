@@ -291,7 +291,17 @@ describe('getCharactersByIds', () => {
   ];
   beforeEach(() => {
     global.fetch = vi.fn((input: RequestInfo | URL) => {
-      const url = input.toString();
+      let url: string;
+
+      if (typeof input === 'string') {
+        url = input;
+      } else if (input instanceof URL) {
+        url = input.href;
+      } else if (input instanceof Request) {
+        url = input.url;
+      } else {
+        url = String(input);
+      }
       const id = url.split('/').pop();
 
       const character = mockCharacters.find((c) => c._id === id);
