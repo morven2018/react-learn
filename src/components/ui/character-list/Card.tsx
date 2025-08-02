@@ -37,13 +37,7 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     e.stopPropagation();
-
-    const newSelectedCharacters = selectedCharacters.includes(character._id)
-      ? selectedCharacters.filter((id: string) => id !== character._id)
-      : [...selectedCharacters, character._id];
-
     dispatch(toggleCharacterSelection(character._id));
-    console.log('Selected characters:', newSelectedCharacters);
   };
 
   return (

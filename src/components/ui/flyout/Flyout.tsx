@@ -38,8 +38,6 @@ export const Flyout: React.FC = () => {
 
       document.body.removeChild(link);
       URL.revokeObjectURL(url);
-
-      console.log(`Downloaded ${fileName}`);
     } catch (error) {
       console.error('Error downloading characters:', error);
     }
