@@ -43,7 +43,7 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
   return (
     <li key={character.name} className={style.cardWrapper}>
       <button onClick={handleCardClick} className={style.card}>
-        <div>
+        <div className={style.checkboxWrapper}>
           <label htmlFor={character._id}>Choose character:</label>
           <input
             type="checkbox"
@@ -52,11 +52,7 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
             id={character._id}
             onChange={handleCheckboxChange}
             onClick={(e) => e.stopPropagation()}
-            style={{
-              width: '20px',
-              height: '20px',
-              cursor: 'pointer',
-            }}
+            className={style.customCheckbox}
           />
         </div>
         <h3 className={style.name}>{character.name}</h3>

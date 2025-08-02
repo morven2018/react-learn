@@ -17,6 +17,7 @@
 }
 
 .cardWrapper {
+  position: relative;
   max-width: 300px;
   width: 100%;
   padding: 0;
@@ -97,5 +98,70 @@
   @media (max-width: $breakpoint) {
     max-width: 100%;
     padding: var(--small-padding);
+  }
+}
+.checkboxWrapper {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+
+  label {
+    color: var(--label);
+  }
+}
+.customCheckbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+  border: 1px solid var(--hover-border);
+  border-radius: $border-radius;
+  background-color: var(--shadow);
+  transition: all 0.2s ease;
+  z-index: 2;
+
+  &::after {
+    content: '';
+    position: absolute;
+    display: none;
+    left: 8px;
+    top: 1px;
+    width: 6px;
+    height: 12px;
+    border: solid var(--secondary-light);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+
+  &:checked {
+    background-color: var(--checked);
+    border-color: var(--base-border);
+
+    &::after {
+      display: block;
+      border-color: var(--primary-light);
+    }
+  }
+
+  &:not(:checked) {
+    background-color: rgba(0, 0, 0, 0.05);
+    border-color: var(--base-border);
+  }
+
+  &:hover {
+    transform: scale(1.1);
+    box-shadow: 0 0 0 2px var(--hover-border);
+  }
+
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    box-shadow: none;
   }
 }

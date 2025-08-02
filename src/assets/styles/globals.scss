@@ -17,6 +17,9 @@
   --shadow30: rgba(0, 0, 0, 0.3);
   --shadow40: rgba(0, 0, 0, 0.3);
   --pagination-text: #000000;
+  --checked: #d48e0c;
+  --label: #ebae3e;
+  --focus-border: rgb(243, 236, 195);
 }
 
 [data-theme='light'] {
@@ -35,6 +38,9 @@
   --shadow30: rgba(255, 255, 255, 0.3);
   --shadow30: rgba(255, 255, 255, 0.4);
   --pagination-text: #ffffff;
+  --checked: #f3cf8b;
+  --label: #795718;
+  --focus-border: rgb(212, 186, 34);
 }
 
 $max-width: 1200px;
