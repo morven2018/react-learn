@@ -1,7 +1,10 @@
 import CharacterCharacteristics from './CharacterCharacteristics';
 import React from 'react';
 import style from './CharacterList.module.scss';
+import type { RootState } from '@redux/store';
+import { toggleCharacterSelection } from '@shared/features/charactersSlice';
 import type { Person } from '@shared/types/responseTypes';
+import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 
 interface CardItemProps {
@@ -12,6 +15,12 @@ const emptyLink = '#';
 
 const Card: React.FC<CardItemProps> = ({ character }) => {
   const navigate = useNavigate();
+
+  const dispatch = useDispatch();
+  const selectedCharacters = useSelector(
+    (state: RootState) => state.characters.selectedCharacters
+  );
+  const isChecked = selectedCharacters.includes(character._id);
 
   const handleCardClick = () => {
     const searchParams = new URLSearchParams(window.location.search);
@@ -26,14 +35,42 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
     e.stopPropagation();
   };
 
+  const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    e.stopPropagation();
+
+    const newSelectedCharacters = selectedCharacters.includes(character._id)
+      ? selectedCharacters.filter((id: string) => id !== character._id)
+      : [...selectedCharacters, character._id];
+
+    dispatch(toggleCharacterSelection(character._id));
+    console.log('Selected characters:', newSelectedCharacters);
+  };
+
   return (
     <li key={character.name} className={style.cardWrapper}>
       <button onClick={handleCardClick} className={style.card}>
+        <div>
+          <label htmlFor={character._id}>Choose character:</label>
+          <input
+            type="checkbox"
+            title="Select character"
+            checked={isChecked}
+            id={character._id}
+            onChange={handleCheckboxChange}
+            onClick={(e) => e.stopPropagation()}
+            style={{
+              width: '20px',
+              height: '20px',
+              cursor: 'pointer',
+            }}
+          />
+        </div>
         <h3 className={style.name}>{character.name}</h3>
         <CharacterCharacteristics character={character} />
         <a
           href={character.wikiUrl ?? emptyLink}
           aria-disabled={!character.wikiUrl}
+          title="More info"
           target="_blank"
           rel="noopener noreferrer"
           className={character.wikiUrl ? style.wikiLink : style.disableLink}
