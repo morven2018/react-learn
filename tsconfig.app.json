@@ -35,7 +35,9 @@
       "@shared/*": ["./src/shared/*"],
       "@pages/*": ["./src/pages/*"],
       "@services/*": ["./src/services/*"],
-      "@hooks/*": ["./src/hooks/*"]
+      "@hooks/*": ["./src/components/hooks/*"],
+      "@redux/*": ["./src/redux/*"],
+      "@context/*": ["./src/context/*"]
     }
   },
   "include": ["src", "test"]
