@@ -1,9 +1,19 @@
 import Card from '@components/ui/character-list/Card';
+import { configureStore } from '@reduxjs/toolkit';
 import type { Person } from '@shared/types/responseTypes';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
 import { MemoryRouter, Router } from 'react-router-dom';
 import { vi } from 'vitest';
+
+const mockStore = configureStore({
+  reducer: {
+    characters: () => ({
+      selectedCharacters: [],
+    }),
+  },
+});
 
 describe('Card Component', () => {
   const mockCharacter: Person = {
@@ -46,9 +56,11 @@ describe('Card Component', () => {
 
   const renderCard = (character: Person) => {
     return render(
-      <MemoryRouter>
-        <Card character={character} />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <Card character={character} />
+        </MemoryRouter>
+      </Provider>
     );
   };
 
@@ -99,9 +111,11 @@ describe('Card Component', () => {
     const history = createMemoryHistory();
 
     render(
-      <Router location={history.location} navigator={history}>
-        <Card character={mockCharacter} />
-      </Router>
+      <Provider store={mockStore}>
+        <Router location={history.location} navigator={history}>
+          <Card character={mockCharacter} />
+        </Router>
+      </Provider>
     );
 
     const cardButton = screen.getByRole('button');

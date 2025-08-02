@@ -1,7 +1,17 @@
 import CardList from '@components/ui/character-list/CardList';
+import { configureStore } from '@reduxjs/toolkit';
 import type { Person } from '@shared/types/responseTypes';
 import { render, screen } from '@testing-library/react';
+import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';
+
+const mockStore = configureStore({
+  reducer: {
+    characters: () => ({
+      selectedCharacters: [],
+    }),
+  },
+});
 
 describe('CardList Component', () => {
   const mockCharacters: Person[] = [
@@ -35,9 +45,11 @@ describe('CardList Component', () => {
 
   const renderCardList = (characters: Person[], isFetchingMore = false) => {
     return render(
-      <MemoryRouter>
-        <CardList characters={characters} isFetchingMore={isFetchingMore} />
-      </MemoryRouter>
+      <Provider store={mockStore}>
+        <MemoryRouter>
+          <CardList characters={characters} isFetchingMore={isFetchingMore} />
+        </MemoryRouter>
+      </Provider>
     );
   };
 

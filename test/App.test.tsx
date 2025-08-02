@@ -24,7 +24,7 @@ vi.mock('@pages/about/about', () => ({
 }));
 
 vi.mock('@pages/not-found/not-found', () => ({
-  NotFoundPage: () => <div data-testid="not-found-page">Not Found Page</div>,
+  default: () => <div data-testid="not-found-page">Not Found Page</div>,
 }));
 
 vi.mock('@services/api/apiService', () => ({
