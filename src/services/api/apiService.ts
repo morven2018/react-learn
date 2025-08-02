@@ -198,22 +198,13 @@ class CharacterApiService {
 
     const characters = await Promise.all(
       ids.map(async (id) => {
-        const url = `${API_BASE}character/${id}`;
         try {
-          const response = await this.authorizedFetch(url, options);
-          const data = await response.json();
-
-          if (!data?.docs?.[0]) {
-            throw this.createError(HttpStatus.NotFound);
-          }
-
-          const character = data.docs[0];
+          const character = await this.getCharacterById(id, options);
           return {
             ...character,
-            url: url,
+            url: `${API_BASE}character/${id}`,
           };
-        } catch (error) {
-          console.error(`Failed to fetch character ${id}:`, error);
+        } catch {
           return null;
         }
       })

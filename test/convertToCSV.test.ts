@@ -65,7 +65,7 @@ describe('convertToCSV', () => {
 
     const result = convertToCSV(testData);
     const dataLine = result.split('\n')[1];
-    const unknownCount = (dataLine.match(/unknown/g) || []).length;
+    const unknownCount = (dataLine.match(/unknown/g) ?? []).length;
     expect(unknownCount).toBeGreaterThanOrEqual(2);
   });
 
