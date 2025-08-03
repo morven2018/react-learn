@@ -127,9 +127,7 @@ const Home = () => {
           />
         )}
 
-        {!!selectedCharacters.length &&
-          loadingState !== 'loading' &&
-          !!characters.length && <Flyout />}
+        {!!selectedCharacters.length && <Flyout />}
       </div>
     </main>
   );
