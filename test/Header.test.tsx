@@ -1,6 +1,6 @@
 import Header from '@components/layout/header/header';
 import { useTheme } from '@context/use-theme';
-import { Themes } from '@shared/types/responseTypes';
+import { Themes } from '@shared/types/response-types';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { describe, expect, it, vi } from 'vitest';
 

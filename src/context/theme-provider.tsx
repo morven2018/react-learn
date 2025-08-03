@@ -1,5 +1,5 @@
-import { Term } from '@services/localStorage/LSService';
-import { Themes } from '@shared/types/responseTypes';
+import { Term } from '@services/localStorage/LS-service';
+import { Themes } from '@shared/types/response-types';
 import { ThemeContext } from './theme-context';
 
 import {

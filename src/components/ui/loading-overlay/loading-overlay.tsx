@@ -1,4 +1,4 @@
-import Spinner from './spinner/Spinner';
+import Spinner from './spinner/spinner';
 import styles from './spinner/spinner.module.scss';
 
 interface LoadingOverlayProps {

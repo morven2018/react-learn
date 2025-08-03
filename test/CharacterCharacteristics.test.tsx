@@ -1,5 +1,5 @@
 import CharacterCharacteristics from '@components/ui/character-list/character-characteristics';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 import { render, screen } from '@testing-library/react';
 
 describe('CharacterCharacteristics', () => {

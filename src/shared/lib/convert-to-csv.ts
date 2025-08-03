@@ -1,4 +1,4 @@
-import type { PersonWithUrl } from '@shared/types/responseTypes';
+import type { PersonWithUrl } from '@shared/types/response-types';
 
 const convertToCSV = (data: PersonWithUrl[]): string => {
   if (data.length === 0) return '';

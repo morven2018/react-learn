@@ -1,4 +1,4 @@
-import { Themes } from '@shared/types/responseTypes';
+import { Themes } from '@shared/types/response-types';
 
 enum StoredTerm {
   LastSearch = 'lastSearchTerm',

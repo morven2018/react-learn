@@ -16,7 +16,7 @@ const mockStore = configureStore({
   },
 });
 
-vi.mock('@services/api/apiService', () => ({
+vi.mock('@services/api/api-service', () => ({
   default: {
     searchCharacters: (term: string, page: number) =>
       mockSearchCharacters(term, page),

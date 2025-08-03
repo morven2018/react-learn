@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/api-service';
-import getRandomInt from '@shared/lib/randomNumber';
-import { Term } from '@services/localStorage/LSService';
+import getRandomInt from '@shared/lib/random-number';
+import { Term } from '@services/localStorage/LS-service';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 const UNAUTHORIZED = 401;
@@ -8,11 +8,11 @@ const UNAUTHORIZED = 401;
 vi.stubEnv('VITE_API_KEY', 'ksmnN0SYU1vcR69udsuY');
 vi.stubEnv('VITE_API_KEY2', 'oJHunt00vrX9Yile7Jny');
 
-vi.mock('@shared/lib/randomNumber', () => ({
+vi.mock('@shared/lib/random-number', () => ({
   default: vi.fn().mockReturnValue(1),
 }));
 
-vi.mock('@services/localStorage/LSService', () => ({
+vi.mock('@services/localStorage/LS-service', () => ({
   Term: {
     setTermToLS: vi.fn(),
     getTermFromLS: vi.fn(),

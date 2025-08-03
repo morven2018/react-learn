@@ -1,4 +1,4 @@
-import Search from './Search';
+import Search from './search';
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react';
 
 export interface SearchHandle {

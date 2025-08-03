@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/api-service';
-import convertToCSV from '@shared/lib/convertToCSV';
-import { Flyout } from '@components/ui/flyout/Flyout';
+import convertToCSV from '@shared/lib/convert-to-csv';
+import { Flyout } from '@components/ui/flyout/flyout';
 import type { RootState } from '@redux/store';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
@@ -9,7 +9,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import charactersSlice, {
   clearSelectedCharacters,
-} from '@shared/features/charactersSlice';
+} from '@shared/features/characters-slice';
 
 vi.mock('@services/api/api-service', () => ({
   default: {
@@ -17,7 +17,7 @@ vi.mock('@services/api/api-service', () => ({
   },
 }));
 
-vi.mock('@shared/lib/convertToCSV', () => ({
+vi.mock('@shared/lib/convert-to-csv', () => ({
   default: vi.fn(),
 }));
 

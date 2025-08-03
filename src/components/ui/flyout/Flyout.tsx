@@ -1,9 +1,9 @@
 import CharacterApiService from '@services/api/api-service';
 import React from 'react';
-import convertToCSV from '@shared/lib/convertToCSV';
+import convertToCSV from '@shared/lib/convert-to-csv';
 import style from './Flyout.module.scss';
 import { useAppDispatch, useAppSelector } from '@redux/store';
-import { clearSelectedCharacters } from '@shared/features/charactersSlice';
+import { clearSelectedCharacters } from '@shared/features/characters-slice';
 
 export const Flyout: React.FC = () => {
   const dispatch = useAppDispatch();

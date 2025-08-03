@@ -1,4 +1,4 @@
-import charactersSlice from '@shared/features/charactersSlice';
+import charactersSlice from '@shared/features/characters-slice';
 import { configureStore } from '@reduxjs/toolkit';
 
 import {

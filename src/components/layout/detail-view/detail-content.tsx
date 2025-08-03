@@ -1,5 +1,5 @@
 import style from './details.module.scss';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 
 interface DetailsProps {
   character: Person | null;

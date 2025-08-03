@@ -1,4 +1,4 @@
-import { Term } from '@services/localStorage/LSService';
+import { Term } from '@services/localStorage/LS-service';
 import { createContext } from 'react';
 
 export const ThemeContext = createContext({

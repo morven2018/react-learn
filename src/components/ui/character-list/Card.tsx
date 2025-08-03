@@ -2,8 +2,8 @@ import CharacterCharacteristics from './character-characteristics';
 import React from 'react';
 import style from './character-list.module.scss';
 import type { RootState } from '@redux/store';
-import { toggleCharacterSelection } from '@shared/features/charactersSlice';
-import type { Person } from '@shared/types/responseTypes';
+import { toggleCharacterSelection } from '@shared/features/characters-slice';
+import type { Person } from '@shared/types/response-types';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 

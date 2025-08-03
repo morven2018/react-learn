@@ -1,7 +1,7 @@
-import Card from './Card';
+import Card from './card';
 import React from 'react';
 import style from './character-list.module.scss';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 
 interface CardListProps {
   characters: Person[];

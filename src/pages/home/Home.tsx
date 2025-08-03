@@ -1,13 +1,13 @@
 import CharacterApiService from '@services/api/api-service';
-import Pagination from '@components/ui/pagination/Pagination';
-import Results from '@components/layout/results/Results';
-import SearchWithRef from '@components/layout/search/Search-with-ref';
+import Pagination from '@components/ui/pagination/pagination';
+import Results from '@components/layout/results/results';
+import SearchWithRef from '@components/layout/search/search-with-ref';
 import style from './Home.module.scss';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
-import type { SearchHandle } from '@components/layout/search/Search-with-ref';
-import { Flyout } from '@components/ui/flyout/Flyout';
+import type { SearchHandle } from '@components/layout/search/search-with-ref';
+import { Flyout } from '@components/ui/flyout/flyout';
 import { useAppSelector } from '@redux/store';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 

@@ -1,5 +1,5 @@
 import CharacterApiService from '@services/api/api-service';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 import { useEffect, useState } from 'react';
 
 export const useCharacterDetails = (id: string) => {

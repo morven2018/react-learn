@@ -4,7 +4,7 @@ import logoDark from '@assets/images/image.png';
 import logoLight from '@assets/images/imageL.png';
 import style from './header.module.scss';
 import { useTheme } from '@context/use-theme';
-import { Themes } from '@shared/types/responseTypes';
+import { Themes } from '@shared/types/response-types';
 
 const Header = () => {
   const { theme, toggleTheme } = useTheme();

@@ -1,8 +1,8 @@
 import CharacterApiService from '@services/api/api-service';
 import { useCharacterDetails } from '@components/hooks/use-character-details';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
-import { Term } from '@services/localStorage/LSService';
-import type { Person } from '@shared/types/responseTypes';
+import { Term } from '@services/localStorage/LS-service';
+import type { Person } from '@shared/types/response-types';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -83,7 +83,7 @@ describe('useCharacterDetails', () => {
   });
 });
 
-vi.mock('@services/localStorage/LSService', () => ({
+vi.mock('@services/localStorage/LS-service', () => ({
   Term: {
     getTermFromLS: vi.fn(),
     setTermToLS: vi.fn(),

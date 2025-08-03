@@ -1,11 +1,11 @@
-import getRandomInt from '@shared/lib/randomNumber';
-import { Term } from '@services/localStorage/LSService';
+import getRandomInt from '@shared/lib/random-number';
+import { Term } from '@services/localStorage/LS-service';
 
 import type {
   ApiResponse,
   Person,
   PersonWithUrl,
-} from '@shared/types/responseTypes';
+} from '@shared/types/response-types';
 
 const API_BASE = 'https://the-one-api.dev/v2/';
 const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';

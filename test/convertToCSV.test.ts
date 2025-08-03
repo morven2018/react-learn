@@ -1,5 +1,5 @@
-import convertToCSV from '@shared/lib/convertToCSV';
-import type { PersonWithUrl } from '@shared/types/responseTypes';
+import convertToCSV from '@shared/lib/convert-to-csv';
+import type { PersonWithUrl } from '@shared/types/response-types';
 import { describe, expect, it } from 'vitest';
 
 describe('convertToCSV', () => {

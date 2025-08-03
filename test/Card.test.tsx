@@ -1,6 +1,6 @@
-import Card from '@components/ui/character-list/Card';
+import Card from '@components/ui/character-list/card';
 import { configureStore } from '@reduxjs/toolkit';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
 import { Provider } from 'react-redux';

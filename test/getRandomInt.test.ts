@@ -1,4 +1,4 @@
-import getRandomInt from '@shared/lib/randomNumber';
+import getRandomInt from '@shared/lib/random-number';
 import { describe, expect, it, vi } from 'vitest';
 
 describe('getRandomInt', () => {

@@ -1,4 +1,4 @@
-import Search from '@components/layout/search/Search';
+import Search from '@components/layout/search/search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 

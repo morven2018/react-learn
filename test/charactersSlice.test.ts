@@ -4,7 +4,7 @@ import charactersSlice, {
   clearSelectedCharacters,
   toggleCharacterSelection,
   type CharactersState,
-} from '@shared/features/charactersSlice';
+} from '@shared/features/characters-slice';
 
 const localStorageMock = {
   getItem: vi.fn(),

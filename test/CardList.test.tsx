@@ -1,6 +1,6 @@
 import CardList from '@components/ui/character-list/card-list';
 import { configureStore } from '@reduxjs/toolkit';
-import type { Person } from '@shared/types/responseTypes';
+import type { Person } from '@shared/types/response-types';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter } from 'react-router-dom';

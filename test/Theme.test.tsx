@@ -1,8 +1,8 @@
 import ThemeProvider from '@context/theme-provider';
 import { ThemeContext } from '@context/theme-context';
 import { useTheme } from '@context/use-theme';
-import { Term } from '@services/localStorage/LSService';
-import { Themes } from '@shared/types/responseTypes';
+import { Term } from '@services/localStorage/LS-service';
+import { Themes } from '@shared/types/response-types';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { useContext } from 'react';
 import { describe, expect, it, vi } from 'vitest';

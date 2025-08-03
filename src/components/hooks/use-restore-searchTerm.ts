@@ -1,4 +1,4 @@
-import { Term } from '@services/localStorage/LSService';
+import { Term } from '@services/localStorage/LS-service';
 import { useCallback, useState } from 'react';
 
 export const useRestoreSearchTerm = () => {
