@@ -1,4 +1,4 @@
-import Spinner from '@components/ui/loading-overlay/spinner/Spinner';
+import Spinner from '@components/ui/loading-overlay/spinner/spinner';
 import { render, screen } from '@testing-library/react';
 
 describe('Spinner', () => {

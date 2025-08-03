@@ -1,4 +1,4 @@
-import style from './Details.module.scss';
+import style from './details.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface DetailsProps {

@@ -1,5 +1,5 @@
 import App from 'src/App';
-import apiService from '@services/api/apiService';
+import apiService from '@services/api/api-service';
 import { Term } from '@services/localStorage/LSService';
 import { render, screen, waitFor } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';

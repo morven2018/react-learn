@@ -2,7 +2,7 @@ import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
-vi.mock('@components/ui/loading-overlay/LoadingOverlay', () => ({
+vi.mock('@components/ui/loading-overlay/loading-overlay', () => ({
   default: vi.fn(() => <div data-testid="loading-overlay" />),
 }));
 

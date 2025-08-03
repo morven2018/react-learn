@@ -3,7 +3,7 @@ import type { Person } from '@shared/types/responseTypes';
 import { act, render, screen, type RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';
 
-vi.mock('@components/ui/character-list/CardList', () => ({
+vi.mock('@components/ui/character-list/card-list', () => ({
   default: ({ characters }: { characters: Person[] }) => (
     <div data-testid="card-list">
       {characters.map((char) => (

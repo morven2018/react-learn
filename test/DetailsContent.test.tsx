@@ -1,4 +1,4 @@
-import DetailsContent from '@components/layout/detailView/DetailContent';
+import DetailsContent from '@components/layout/detail-view/detail-content';
 import type { Person } from '@shared/types/responseTypes';
 import { render, screen } from '@testing-library/react';
 

@@ -1,4 +1,4 @@
-import Home from '@pages/home/Home';
+import Home from '@pages/home/home';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
@@ -23,7 +23,7 @@ vi.mock('@services/api/apiService', () => ({
   },
 }));
 
-vi.mock('@components/hooks/useRestoreSearchTerm', () => ({
+vi.mock('@components/hooks/use-restore-search-term', () => ({
   useRestoreSearchTerm: () => ({
     termValue: '',
     updateTermValue: () => mockUpdateTermValue(),
@@ -44,7 +44,7 @@ interface PaginationProps {
   onPageChange: (page: number) => void;
 }
 
-vi.mock('@components/ui/search/SearchWithRef', () => ({
+vi.mock('@components/layout/search/search-with-ref', () => ({
   default: ({ onSearch, initialSearchTerm }: SearchWithRefProps) => (
     <form data-testid="search-form">
       <input data-testid="search-input" defaultValue={initialSearchTerm} />

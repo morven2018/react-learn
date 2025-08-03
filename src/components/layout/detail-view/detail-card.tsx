@@ -1,6 +1,6 @@
-import DetailsContent from './DetailContent';
-import style from './Details.module.scss';
-import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
+import DetailsContent from './detail-content';
+import style from './details.module.scss';
+import { useCharacterDetails } from '@components/hooks/use-character-details';
 
 interface DetailCardProps {
   id: string;

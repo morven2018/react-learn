@@ -1,17 +1,15 @@
-import CharacterApiService from '@services/api/apiService';
+import CharacterApiService from '@services/api/api-service';
 import Pagination from '@components/ui/pagination/Pagination';
 import Results from '@components/layout/results/Results';
+import SearchWithRef from '@components/layout/search/Search-with-ref';
 import style from './Home.module.scss';
-import { useRestoreSearchTerm } from '@components/hooks/useRestoreSearchTerm';
+import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
+import type { SearchHandle } from '@components/layout/search/Search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
 import type { Person } from '@shared/types/responseTypes';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
-import SearchWithRef, {
-  type SearchHandle,
-} from '@components/layout/search/SearchWithRef';
 
 const Home = () => {
   const [characters, setCharacters] = useState<Person[]>([]);

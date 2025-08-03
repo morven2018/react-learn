@@ -1,4 +1,4 @@
-import CharacterApiService from '@services/api/apiService';
+import CharacterApiService from '@services/api/api-service';
 import React from 'react';
 import convertToCSV from '@shared/lib/convertToCSV';
 import style from './Flyout.module.scss';

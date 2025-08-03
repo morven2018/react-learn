@@ -1,6 +1,6 @@
-import CharacterCharacteristics from './CharacterCharacteristics';
+import CharacterCharacteristics from './character-characteristics';
 import React from 'react';
-import style from './CharacterList.module.scss';
+import style from './character-list.module.scss';
 import type { RootState } from '@redux/store';
 import { toggleCharacterSelection } from '@shared/features/charactersSlice';
 import type { Person } from '@shared/types/responseTypes';

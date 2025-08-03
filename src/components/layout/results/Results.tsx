@@ -1,4 +1,4 @@
-import CardList from '@components/ui/character-list/CardList';
+import CardList from '@components/ui/character-list/card-list';
 import React from 'react';
 import style from './Results.module.scss';
 import type { Person } from '@shared/types/responseTypes';

@@ -1,5 +1,5 @@
 import React from 'react';
-import style from './CharacterList.module.scss';
+import style from './character-list.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface CharacterCharacteristicsProps {

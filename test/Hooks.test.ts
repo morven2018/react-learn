@@ -1,12 +1,12 @@
-import CharacterApiService from '@services/api/apiService';
-import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
-import { useRestoreSearchTerm } from '@components/hooks/useRestoreSearchTerm';
+import CharacterApiService from '@services/api/api-service';
+import { useCharacterDetails } from '@components/hooks/use-character-details';
+import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import { Term } from '@services/localStorage/LSService';
 import type { Person } from '@shared/types/responseTypes';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@services/api/apiService');
+vi.mock('@services/api/api-service');
 
 const mockCharacter: Person = {
   _id: '123',

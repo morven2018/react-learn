@@ -1,4 +1,4 @@
-import CharacterCharacteristics from '@components/ui/character-list/CharacterCharacteristics';
+import CharacterCharacteristics from '@components/ui/character-list/character-characteristics';
 import type { Person } from '@shared/types/responseTypes';
 import { render, screen } from '@testing-library/react';
 

@@ -1,4 +1,4 @@
-import CardList from '@components/ui/character-list/CardList';
+import CardList from '@components/ui/character-list/card-list';
 import { configureStore } from '@reduxjs/toolkit';
 import type { Person } from '@shared/types/responseTypes';
 import { render, screen } from '@testing-library/react';

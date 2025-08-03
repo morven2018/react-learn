@@ -1,4 +1,4 @@
-import LoadingOverlay from '@components/ui/loading-overlay/LoadingOverlay';
+import LoadingOverlay from '@components/ui/loading-overlay/loading-overlay';
 import { render } from '@testing-library/react';
 
 describe('LoadingOverlay Component', () => {

@@ -1,6 +1,6 @@
 import { Term } from '@services/localStorage/LSService';
 import { Themes } from '@shared/types/responseTypes';
-import { ThemeContext } from './ThemeContext';
+import { ThemeContext } from './theme-context';
 
 import {
   type FC,

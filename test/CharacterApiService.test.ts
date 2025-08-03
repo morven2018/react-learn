@@ -1,4 +1,4 @@
-import CharacterApiService from '@services/api/apiService';
+import CharacterApiService from '@services/api/api-service';
 import getRandomInt from '@shared/lib/randomNumber';
 import { Term } from '@services/localStorage/LSService';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';

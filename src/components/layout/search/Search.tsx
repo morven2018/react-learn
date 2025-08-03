@@ -1,4 +1,4 @@
-import LoadingOverlay from '@components/ui/loading-overlay/LoadingOverlay';
+import LoadingOverlay from '@components/ui/loading-overlay/loading-overlay';
 import style from './Search.module.scss';
 
 import {

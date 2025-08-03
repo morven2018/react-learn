@@ -1,4 +1,4 @@
-import HomeLayout from '@components/layout/home-layout/HomeLayout';
+import HomeLayout from '@components/layout/home-layout/home-layout';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';

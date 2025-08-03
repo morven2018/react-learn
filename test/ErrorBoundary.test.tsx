@@ -1,5 +1,5 @@
-import ErrorBoundary from '@components/common/ErrorBoundary';
-import apiService from '@services/api/apiService';
+import ErrorBoundary from '@components/common/error-boundary';
+import apiService from '@services/api/api-service';
 import { vi } from 'vitest';
 
 import {
@@ -30,7 +30,7 @@ const GoodComponent = () => <div>Good content</div>;
 
 beforeAll(() => {
   vi.spyOn(console, 'error').mockImplementation(() => {});
-  vi.mock('@services/api/apiService', () => ({
+  vi.mock('@services/api/api-service', () => ({
     default: {
       triggerTestError: vi.fn(() => Promise.reject(new Error('API error'))),
     },

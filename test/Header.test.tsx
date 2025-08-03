@@ -1,10 +1,10 @@
-import Header from '@components/layout/header/Header';
+import Header from '@components/layout/header/header';
+import { useTheme } from '@context/use-theme';
 import { Themes } from '@shared/types/responseTypes';
 import { fireEvent, render, screen } from '@testing-library/react';
-import { useTheme } from 'src/context/useTheme';
 import { describe, expect, it, vi } from 'vitest';
 
-vi.mock('src/context/useTheme', () => ({
+vi.mock('src/context/use-theme', () => ({
   useTheme: vi.fn(() => ({
     theme: Themes.dark,
     toggleTheme: vi.fn(),

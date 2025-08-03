@@ -1,15 +1,15 @@
-import DetailsContent from '@components/layout/detailView/DetailContent';
+import DetailsContent from '@components/layout/detail-view/detail-content';
 import userEvent from '@testing-library/user-event';
-import { useCharacterDetails } from '@components/hooks/useCharacterDetails';
-import { DetailCard } from '@components/layout/detailView/DetailCard';
+import { useCharacterDetails } from '@components/hooks/use-character-details';
+import { DetailCard } from '@components/layout/detail-view/detail-card';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 
-vi.mock('@components/hooks/useCharacterDetails', () => ({
+vi.mock('@components/hooks/use-character-details', () => ({
   useCharacterDetails: vi.fn(),
 }));
 
-vi.mock('@components/layout/detailView/DetailContent', () => ({
+vi.mock('@components/layout/detail-view/detail-content', () => ({
   default: vi.fn(() => <div>DetailsContent Mock</div>),
 }));
 

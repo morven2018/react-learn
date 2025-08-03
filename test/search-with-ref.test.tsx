@@ -1,5 +1,5 @@
 import React from 'react';
-import SearchWithRef from '@components/layout/search/SearchWithRef';
+import SearchWithRef from '@components/layout/search/search-with-ref';
 import { act, render } from '@testing-library/react';
 import { vi } from 'vitest';
 

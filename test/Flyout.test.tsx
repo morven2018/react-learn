@@ -1,4 +1,4 @@
-import CharacterApiService from '@services/api/apiService';
+import CharacterApiService from '@services/api/api-service';
 import convertToCSV from '@shared/lib/convertToCSV';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import type { RootState } from '@redux/store';
@@ -11,7 +11,7 @@ import charactersSlice, {
   clearSelectedCharacters,
 } from '@shared/features/charactersSlice';
 
-vi.mock('@services/api/apiService', () => ({
+vi.mock('@services/api/api-service', () => ({
   default: {
     getCharactersByIds: vi.fn(),
   },
