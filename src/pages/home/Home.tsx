@@ -15,7 +15,9 @@ import SearchWithRef, {
 
 const Home = () => {
   const [characters, setCharacters] = useState<Person[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loadingState, setLoadingState] = useState<
+    'loading' | 'success' | 'error'
+  >('loading');
   const [isFetchingMore, setIsFetchingMore] = useState(false);
   const [totalPages, setTotalPages] = useState(1);
   const searchRef = useRef<SearchHandle>(null);
@@ -43,7 +45,7 @@ const Home = () => {
 
       try {
         if (page === 1) {
-          setIsLoading(true);
+          setLoadingState('loading');
         } else {
           setIsFetchingMore(true);
         }
@@ -58,6 +60,8 @@ const Home = () => {
           setCharacters(response.docs);
           setTotalPages(response.pages ?? 1);
           updateTermValue(term);
+          setLoadingState('success');
+
           const pages = response.pages ?? 1;
 
           if (page > pages) {
@@ -69,9 +73,9 @@ const Home = () => {
       } catch (error) {
         if (!controller.signal.aborted && error instanceof Error) {
           console.error('Search error:', error);
+          setLoadingState('error');
         }
       } finally {
-        setIsLoading(false);
         setIsFetchingMore(false);
       }
     },
@@ -112,7 +116,7 @@ const Home = () => {
 
         <Results
           characters={characters}
-          isLoading={isLoading}
+          loadingState={loadingState}
           isFetchingMore={isFetchingMore}
         />
 
@@ -121,13 +125,13 @@ const Home = () => {
             currentPage={currentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
-            isLoading={isLoading || isFetchingMore}
+            isLoading={loadingState === 'loading' || isFetchingMore}
           />
         )}
 
-        {!!selectedCharacters.length && !isLoading && !!characters.length && (
-          <Flyout />
-        )}
+        {!!selectedCharacters.length &&
+          loadingState !== 'loading' &&
+          !!characters.length && <Flyout />}
       </div>
     </main>
   );

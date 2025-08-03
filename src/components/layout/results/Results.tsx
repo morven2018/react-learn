@@ -1,49 +1,31 @@
 import CardList from '@components/ui/character-list/CardList';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import style from './Results.module.scss';
 import type { Person } from '@shared/types/responseTypes';
 
 interface ResultsProps {
   characters: Person[];
-  isLoading: boolean;
+  loadingState: 'initial' | 'loading' | 'success' | 'error';
   isFetchingMore: boolean;
 }
 
 const Results: React.FC<ResultsProps> = ({
   characters,
-  isLoading,
+  loadingState,
   isFetchingMore,
 }) => {
-  const [shouldResetList, setShouldResetList] = useState(true);
-
-  useEffect(() => {
-    if (isLoading && !isFetchingMore) {
-      setShouldResetList(true);
-    }
-  }, [isLoading, isFetchingMore]);
-
-  useEffect(() => {
-    if (!isLoading && !isFetchingMore) {
-      setShouldResetList(false);
-    }
-  }, [isLoading, isFetchingMore]);
-
-  const displayCharacters = shouldResetList ? [] : characters;
-
   return (
     <div className={style.resultsContainer}>
-      {isLoading && !isFetchingMore && (
+      {loadingState === 'loading' && (
         <div className={style.messageIndicator}>Loading characters...</div>
       )}
 
-      {!!displayCharacters.length && (
-        <CardList
-          characters={displayCharacters}
-          isFetchingMore={isFetchingMore}
-        />
+      {loadingState === 'success' && !!characters.length && (
+        <CardList characters={characters} isFetchingMore={isFetchingMore} />
       )}
 
-      {!isLoading && !displayCharacters.length && !shouldResetList && (
+      {((loadingState === 'success' && !characters.length) ||
+        loadingState === 'error') && (
         <div className={style.messageIndicator}>No data found</div>
       )}
     </div>

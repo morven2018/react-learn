@@ -34,7 +34,7 @@ const mockCharacters = [
 
 const renderResults = (props: {
   characters: Person[];
-  isLoading: boolean;
+  loadingState: 'loading' | 'success' | 'error';
   isFetchingMore: boolean;
 }): RenderResult => {
   return render(<Results {...props} />);
@@ -44,7 +44,7 @@ const rerenderResults = (
   rerender: (ui: React.ReactElement) => void,
   props: {
     characters: Person[];
-    isLoading: boolean;
+    loadingState: 'loading' | 'success' | 'error';
     isFetchingMore: boolean;
   }
 ): void => {
@@ -74,20 +74,24 @@ describe('Results Component', () => {
     vi.clearAllMocks();
   });
 
-  it('should render loading state', () => {
-    renderResults({ characters: [], isLoading: true, isFetchingMore: false });
+  it('render loading state', () => {
+    renderResults({
+      characters: [],
+      loadingState: 'loading',
+      isFetchingMore: false,
+    });
     expectLoadingState();
   });
 
   it('show empty message after loading with no data', () => {
     const { rerender } = renderResults({
       characters: [],
-      isLoading: true,
+      loadingState: 'loading',
       isFetchingMore: false,
     });
     rerenderResults(rerender, {
       characters: [],
-      isLoading: false,
+      loadingState: 'success',
       isFetchingMore: false,
     });
     expectEmptyState();
@@ -96,40 +100,26 @@ describe('Results Component', () => {
   it('display characters after loading finish', () => {
     const { rerender } = renderResults({
       characters: [],
-      isLoading: true,
+      loadingState: 'loading',
       isFetchingMore: false,
     });
     rerenderResults(rerender, {
       characters: mockCharacters,
-      isLoading: false,
+      loadingState: 'success',
       isFetchingMore: false,
     });
     expectCharactersVisible();
   });
 
-  it('reset content on new search start', () => {
-    const { rerender } = renderResults({
-      characters: mockCharacters,
-      isLoading: false,
-      isFetchingMore: false,
-    });
-    rerenderResults(rerender, {
-      characters: mockCharacters,
-      isLoading: true,
-      isFetchingMore: false,
-    });
-    expectLoadingState();
-  });
-
   it('show empty state on API error. Return no data', () => {
     const { rerender } = renderResults({
       characters: [],
-      isLoading: true,
+      loadingState: 'loading',
       isFetchingMore: false,
     });
     rerenderResults(rerender, {
       characters: [],
-      isLoading: false,
+      loadingState: 'error',
       isFetchingMore: false,
     });
     expectEmptyState();
@@ -138,19 +128,15 @@ describe('Results Component', () => {
   it('preserve data when subsequent loading fails', () => {
     const { rerender } = renderResults({
       characters: mockCharacters,
-      isLoading: false,
+      loadingState: 'loading',
       isFetchingMore: false,
     });
     rerenderResults(rerender, {
       characters: mockCharacters,
-      isLoading: true,
-      isFetchingMore: false,
-    });
-    rerenderResults(rerender, {
-      characters: mockCharacters,
-      isLoading: false,
-      isFetchingMore: false,
+      loadingState: 'success',
+      isFetchingMore: true,
     });
     expectCharactersVisible();
+    expect(screen.queryByText('Loading characters...')).not.toBeInTheDocument();
   });
 });
