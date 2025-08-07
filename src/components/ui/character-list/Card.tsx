@@ -11,8 +11,6 @@ interface CardItemProps {
   character: Person;
 }
 
-const emptyLink = '#';
-
 const Card: React.FC<CardItemProps> = ({ character }) => {
   const navigate = useNavigate();
 
@@ -58,7 +56,7 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
         <h3 className={style.name}>{character.name}</h3>
         <CharacterCharacteristics character={character} />
         <a
-          href={character.wikiUrl ?? emptyLink}
+          href={character.wikiUrl ?? '#'}
           aria-disabled={!character.wikiUrl}
           title="More info"
           target="_blank"
@@ -67,7 +65,7 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
           onClick={handleWikiClick}
         >
           See More Info
-        </a>{' '}
+        </a>
       </button>
     </li>
   );
