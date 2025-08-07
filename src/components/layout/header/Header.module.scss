@@ -1,0 +1,63 @@
+@use '@assets/styles/globals.scss' as *;
+
+.header {
+  max-width: $max-width;
+  margin: 0 auto 10px;
+  padding: $base-padding;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+
+  border: 2px solid $base-border;
+  border-radius: $border-radius;
+
+  font-family: $font-medieval;
+
+  .h1 {
+    font-size: $header-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $header-typography-mobile;
+    }
+  }
+
+  .subheader {
+    font-size: $subheader-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $subheader-typography-mobile;
+    }
+  }
+
+  .whiteTree {
+    height: $header-typography;
+    width: auto;
+  }
+
+  .aboutPage {
+    font-size: $controls-typography;
+    color: $primary-light;
+    text-decoration: none;
+  }
+  .whiteTree,
+  .aboutPage {
+    &:hover {
+      transform: scale(1.1);
+      color: $gold;
+    }
+    &:focus {
+      transform: scale(0.8);
+      color: $hover-border;
+    }
+  }
+}
+.linkWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+}

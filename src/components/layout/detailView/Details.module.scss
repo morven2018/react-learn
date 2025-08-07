@@ -1,0 +1,126 @@
+@use '@assets/styles/globals.scss' as *;
+
+.detailCard {
+  top: 30px;
+  position: sticky;
+  width: 350px;
+  margin: 0 auto;
+  color: $secondary-light;
+  font-family: $font-base;
+
+  .header {
+    margin: $base-padding;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: $base-padding;
+    border-bottom: 1px solid rgba($base-border, 0.3);
+    padding-bottom: $small-padding;
+
+    .title {
+      font-family: $font-medieval;
+      font-size: $card-header;
+      margin: 0;
+    }
+
+    .closeButton {
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      margin: 0;
+      background: none;
+      border: none;
+      color: $primary-light;
+      font-size: 24px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+
+      &:hover {
+        color: $primary-light;
+        transform: scale(1.2);
+        border: none;
+      }
+    }
+  }
+}
+
+.detailsContainer {
+  margin: $base-padding;
+  .loading {
+    text-align: center;
+    padding: $base-padding;
+    color: $primary-light;
+    font-style: italic;
+    font-size: $controls-typography;
+  }
+
+  .header {
+    margin-bottom: $base-padding;
+
+    .characterName {
+      font-family: $font-medieval;
+      font-size: $subheader-typography-mobile;
+      margin: 0;
+      color: $gold;
+      text-align: center;
+    }
+  }
+
+  .detailsContent {
+    .wikiLink,
+    .disableLink {
+      font-size: $controls-typography;
+      margin-top: $base-padding;
+      display: block;
+      height: 40px;
+
+      text-align: right;
+      color: $unknown;
+      text-decoration: none;
+    }
+
+    .wikiLink {
+      color: $gold;
+      transition: all 0.2s ease;
+
+      &:hover {
+        font-size: 110%;
+      }
+    }
+
+    .detailsList {
+      margin-top: $base-padding;
+
+      .detailsRow {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+        border-bottom: 1px dashed rgba($base-border, 0.2);
+
+        .detailLabel {
+          font-weight: 500;
+          color: $gold;
+        }
+
+        .detailValue {
+          font-weight: 300;
+          text-align: right;
+        }
+      }
+    }
+
+    .noDetails {
+      text-align: center;
+      padding: $base-padding;
+      color: $unknown;
+      font-style: italic;
+    }
+  }
+}
+
+@media (max-width: $breakpoint) {
+  .detailCard {
+    padding: $small-padding;
+    max-width: 100%;
+  }
+}

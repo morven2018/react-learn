@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=MedievalSharp&display=swap');
+
+$primary-black: #000;
+$primary-light: rgba(255, 255, 255, 0.87);
+$secondary-light: rgba(255, 255, 255, 1);
+$search-background: rgba(255, 255, 255, 0.25);
+$card-background: rgba($primary-black, 0.7);
+$shadow: rgba(0, 0, 0, 0.5);
+$base-border: #6a5332;
+$button: rgba(0, 0, 0, 0.87);
+$input: rgba(0, 0, 0, 0.7);
+$hover-border: gold;
+$gold: #fdff20;
+$unknown: rgba(255, 255, 255, 0.5);
+
+$max-width: 1200px;
+
+$breakpoint: 500px;
+$breakpoint2: 600px;
+$breakpoint3: 870px;
+
+$base-padding: 20px;
+$small-padding: 10px;
+$big-padding: 40px;
+
+$border-radius: 5px;
+
+$font-medieval: 'MedievalSharp', cursive;
+$font-base: 'Cormorant Garamond', serif;
+
+$header-typography: 48px;
+$header-typography-mobile: 24px;
+$subheader-typography: 36px;
+$subheader-typography-mobile: 18px;
+$card-header: 24px;
+$controls-typography: 18px;
+$text-typography: 16px;

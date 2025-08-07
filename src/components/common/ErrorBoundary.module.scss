@@ -1,0 +1,59 @@
+@use '@assets/styles/globals.scss' as *;
+
+.errorBoundary {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 40px;
+
+  min-height: 300px;
+  padding: $base-padding;
+
+  color: $secondary-light;
+  text-align: center;
+  font-size: $text-typography;
+  font-family: $font-medieval;
+  font-weight: bold;
+
+  .header {
+    font-size: $header-typography;
+    font-family: $font-medieval;
+    color: $hover-border;
+
+    @media (max-width: $breakpoint) {
+      font-size: $header-typography-mobile;
+    }
+  }
+
+  .errorDetails {
+    width: 100%;
+    text-align: center;
+  }
+
+  .retryButton {
+    padding: 0.75rem 1.5rem;
+
+    border: none;
+    border-radius: $border-radius;
+
+    background: $hover-border;
+    color: $primary-black;
+
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+
+    &:active {
+      transform: scale(0.98);
+    }
+  }
+}

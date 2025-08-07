@@ -1,0 +1,8 @@
+@use '@assets/styles/globals.scss' as *;
+
+.messageIndicator {
+  font-family: $font-medieval;
+  font-size: $card-header;
+  padding-bottom: $small-padding;
+  text-align: center;
+}

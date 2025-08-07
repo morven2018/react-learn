@@ -1,0 +1,43 @@
+@use '@assets/styles/globals.scss' as *;
+
+:root {
+  font-family: $font-base;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color: $primary-light;
+  background-color: $primary-black;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+#root {
+  max-width: 100vw;
+  background-color: $primary-black;
+  padding: 0;
+}
+.app {
+  padding: 0;
+}
+
+button,
+input {
+  color: $secondary-light;
+  padding: 10px 12px;
+  border: 1px solid $base-border;
+  border-radius: $border-radius;
+  font-size: $controls-typography;
+
+  &:focus {
+    outline: 3px solid $primary-light;
+    outline-offset: -1px;
+  }
+
+  &:hover {
+    outline: 3px solid $hover-border;
+    outline-offset: -1px;
+  }
+}

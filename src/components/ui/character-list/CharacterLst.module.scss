@@ -1,0 +1,110 @@
+@use '@assets/styles/globals.scss' as *;
+
+.list {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px 20px;
+  list-style-type: none;
+  padding: 0;
+}
+
+.loadMore {
+  font-family: $font-medieval;
+  font-size: $card-header;
+  padding-bottom: $small-padding;
+  text-align: center;
+}
+
+.cardWrapper {
+  max-width: 300px;
+  width: 100%;
+  padding: 0;
+}
+
+.card {
+  width: 100%;
+  padding: $base-padding;
+  margin: 0;
+  background: $card-background;
+  border-radius: $border-radius;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+
+  color: $secondary-light;
+  font-family: $font-base;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 15px rgba(0, 0, 0, 0.4);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  .name {
+    height: 50px;
+    font-family: $font-medieval;
+    font-size: $card-header;
+    padding-bottom: $small-padding;
+    text-align: center;
+  }
+
+  .characteristics {
+    margin: $small-padding 0;
+    padding: 0;
+    list-style: none;
+    font-size: $text-typography;
+
+    .characteristicItem,
+    .unknownItem {
+      display: flex;
+      justify-content: flex-start;
+      align-items: stretch;
+      gap: 10px;
+      padding: 6px 0;
+      height: 36px;
+      border-bottom: 1px dashed rgba($base-border, 0.2);
+
+      span:first-child {
+        margin-right: 10px;
+        font-weight: 500;
+      }
+
+      span:last-child {
+        text-align: right;
+        font-weight: 300;
+      }
+    }
+
+    .unknownItem {
+      span {
+        color: $unknown;
+      }
+    }
+  }
+
+  .wikiLink,
+  .disableLink {
+    display: block;
+    height: 40px;
+
+    text-align: right;
+    color: $unknown;
+    text-decoration: none;
+  }
+
+  .wikiLink {
+    color: $gold;
+    transition: all 0.2s ease;
+
+    &:hover {
+      font-size: 110%;
+    }
+  }
+
+  @media (max-width: $breakpoint) {
+    max-width: 100%;
+    padding: $small-padding;
+  }
+}
