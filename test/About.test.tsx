@@ -23,7 +23,7 @@ describe('AboutPage', () => {
 
     expect(gitHubLink).toHaveAttribute('href', 'https://github.com/morven2018');
     expect(gitHubLink).toHaveAttribute('target', '_blank');
-    expect(gitHubLink).toHaveAttribute('rel', 'noreferrer');
+    expect(gitHubLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 
   it('contain RS School course link', () => {
@@ -33,6 +33,6 @@ describe('AboutPage', () => {
       'https://rs.school/courses/reactjs'
     );
     expect(courseLink).toHaveAttribute('target', '_blank');
-    expect(courseLink).toHaveAttribute('rel', 'noreferrer');
+    expect(courseLink).toHaveAttribute('rel', 'noopener noreferrer');
   });
 });
