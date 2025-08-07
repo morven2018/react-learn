@@ -12,7 +12,7 @@ export const AboutPage = () => {
           <a
             href="https://github.com/morven2018"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label="Alena Pudina GitHub profile"
             className={style.link}
           >
@@ -24,7 +24,7 @@ export const AboutPage = () => {
           <a
             href="https://rs.school/courses/reactjs"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             className={style.link}
           >
             React Course <img src={rss} alt="rss logo" />

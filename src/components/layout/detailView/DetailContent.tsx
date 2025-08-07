@@ -6,8 +6,6 @@ interface DetailsProps {
   isLoading: boolean;
 }
 
-const emptyLink = '#';
-
 const DetailsContent = ({ character, isLoading }: DetailsProps) => {
   if (!character) return null;
 
@@ -54,7 +52,7 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
             )}
 
             <a
-              href={character.wikiUrl || emptyLink}
+              href={character.wikiUrl || '#'}
               aria-disabled={!character.wikiUrl}
               target="_blank"
               rel="noopener noreferrer"

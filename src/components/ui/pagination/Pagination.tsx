@@ -18,60 +18,36 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   if (totalPages <= 1 || isLoading) return null;
 
-  const pages = [];
-  const startPage = Math.max(1, currentPage - Math.floor(maxVisiblePages / 2));
-  const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
-
-  if (startPage > 1) {
-    pages.push(
-      <button
-        key={1}
-        onClick={() => onPageChange(1)}
-        className={style.pageButton}
-      >
-        1
-      </button>
+  const getVisiblePages = () => {
+    const pages = [];
+    const startPage = Math.max(
+      1,
+      currentPage - Math.floor(maxVisiblePages / 2)
     );
-    if (startPage > 2) {
-      pages.push(
-        <span key="left-ellipsis" className={style.ellipsis}>
-          ...
-        </span>
-      );
+    const endPage = Math.min(totalPages, startPage + maxVisiblePages - 1);
+
+    if (startPage > 1) {
+      pages.push(1);
+      if (startPage > 2) {
+        pages.push('left-ellipsis');
+      }
     }
-  }
 
-  for (let i = startPage; i <= endPage; i++) {
-    pages.push(
-      <button
-        key={i}
-        onClick={() => onPageChange(i)}
-        className={`${style.pageButton} ${i === currentPage ? style.active : ''}`}
-        disabled={i === currentPage}
-      >
-        {i}
-      </button>
-    );
-  }
-
-  if (endPage < totalPages) {
-    if (endPage < totalPages - 1) {
-      pages.push(
-        <span key="right-ellipsis" className={style.ellipsis}>
-          ...
-        </span>
-      );
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
     }
-    pages.push(
-      <button
-        key={totalPages}
-        onClick={() => onPageChange(totalPages)}
-        className={style.pageButton}
-      >
-        {totalPages}
-      </button>
-    );
-  }
+
+    if (endPage < totalPages) {
+      if (endPage < totalPages - 1) {
+        pages.push('right-ellipsis');
+      }
+      pages.push(totalPages);
+    }
+
+    return pages;
+  };
+
+  const visiblePages = getVisiblePages();
 
   return (
     <div className={style.pagination}>
@@ -83,7 +59,27 @@ const Pagination: React.FC<PaginationProps> = ({
         &lt;
       </button>
 
-      {pages}
+      {visiblePages.map((page) => {
+        if (page === 'left-ellipsis' || page === 'right-ellipsis') {
+          return (
+            <span key={page} className={style.ellipsis}>
+              ...
+            </span>
+          );
+        }
+        if (typeof page === 'number') {
+          return (
+            <button
+              key={page}
+              onClick={() => onPageChange(page)}
+              className={`${style.pageButton} ${page === currentPage ? style.active : ''}`}
+              disabled={page === currentPage}
+            >
+              {page}
+            </button>
+          );
+        }
+      })}
 
       <button
         onClick={() => onPageChange(currentPage + 1)}

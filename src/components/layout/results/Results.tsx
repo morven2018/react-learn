@@ -15,6 +15,7 @@ const Results: React.FC<ResultsProps> = ({
   isFetchingMore,
 }) => {
   const [shouldResetList, setShouldResetList] = useState(true);
+  const displayCharacters = shouldResetList ? [] : characters;
 
   useEffect(() => {
     if (isLoading && !isFetchingMore) {
@@ -27,8 +28,6 @@ const Results: React.FC<ResultsProps> = ({
       setShouldResetList(false);
     }
   }, [isLoading, isFetchingMore]);
-
-  const displayCharacters = shouldResetList ? [] : characters;
 
   return (
     <div className={style.resultsContainer}>
