@@ -1,14 +1,13 @@
-import CharacterApiService from '@services/api/api-service';
 import { useCharacterDetails } from '@components/hooks/use-character-details';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
+import { useGetCharacterByIdQuery } from '@services/api/characterApi';
 import { Term } from '@services/localStorage/LS-service';
-import type { Person } from '@shared/types/response-types';
 import { act, renderHook, waitFor } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-vi.mock('@services/api/api-service');
+vi.mock('@services/api/characterApi');
 
-const mockCharacter: Person = {
+const mockCharacter = {
   _id: '123',
   name: 'Aragorn',
   wikiUrl: 'https://lotr.fandom.com/wiki/Aragorn',
@@ -23,63 +22,91 @@ const mockCharacter: Person = {
 };
 
 describe('useCharacterDetails', () => {
+  const mockUseGetCharacterByIdQuery = vi.fn();
+
   beforeEach(() => {
     vi.clearAllMocks();
+    vi.mocked(useGetCharacterByIdQuery).mockImplementation(
+      (id, { skip } = { skip: false }) => {
+        if (skip) {
+          return {
+            data: undefined,
+            isLoading: false,
+            isError: false,
+            error: undefined,
+          };
+        }
+        return mockUseGetCharacterByIdQuery(id);
+      }
+    );
   });
 
   it('return initial loading state', () => {
-    vi.mocked(CharacterApiService.getCharacterById).mockImplementation(
-      () => new Promise(() => {})
-    );
+    mockUseGetCharacterByIdQuery.mockReturnValue({
+      data: undefined,
+      isLoading: true,
+      isError: false,
+      error: undefined,
+    });
 
     const { result } = renderHook(() => useCharacterDetails('123'));
 
     expect(result.current).toEqual({
-      data: null,
-      isLoading: true,
+      character: null,
+      isDetailsLoading: true,
+      isError: false,
+      error: undefined,
     });
   });
 
   it('fetch character details successfully', async () => {
-    vi.mocked(CharacterApiService.getCharacterById).mockResolvedValue(
-      mockCharacter
-    );
+    mockUseGetCharacterByIdQuery.mockReturnValue({
+      data: mockCharacter,
+      isLoading: false,
+      isError: false,
+      error: undefined,
+    });
 
     const { result } = renderHook(() => useCharacterDetails('123'));
 
-    expect(result.current).toEqual({
-      data: null,
-      isLoading: true,
-    });
-
-    await waitFor(() => expect(result.current.isLoading).toBe(false));
+    await waitFor(() => expect(result.current.isDetailsLoading).toBe(false));
 
     expect(result.current).toEqual({
-      data: mockCharacter,
-      isLoading: false,
+      character: mockCharacter,
+      isDetailsLoading: false,
+      isError: false,
+      error: undefined,
     });
-    expect(CharacterApiService.getCharacterById).toHaveBeenCalledWith('123');
   });
 
   it('handle empty id', () => {
     const { result } = renderHook(() => useCharacterDetails(''));
 
     expect(result.current).toEqual({
-      data: null,
-      isLoading: false,
+      character: null,
+      isDetailsLoading: false,
+      isError: false,
+      error: undefined,
     });
-    expect(CharacterApiService.getCharacterById).not.toHaveBeenCalled();
   });
 
-  it('cancel pending request when unmounted', () => {
-    vi.mocked(CharacterApiService.getCharacterById).mockImplementation(
-      () => new Promise(() => {})
-    );
+  it('handle error state', () => {
+    const mockError = new Error('Failed to fetch');
+    mockUseGetCharacterByIdQuery.mockReturnValue({
+      data: undefined,
+      isLoading: false,
+      isError: true,
+      error: mockError,
+    });
 
-    const { unmount } = renderHook(() => useCharacterDetails('123'));
-    unmount();
+    const { result } = renderHook(() => useCharacterDetails('123'));
 
-    expect(CharacterApiService.getCharacterById).toHaveBeenCalled();
+    expect(result.current).toEqual({
+      character: null,
+      isDetailsLoading: false,
+      isError: true,
+      error: mockError,
+    });
   });
 });
 

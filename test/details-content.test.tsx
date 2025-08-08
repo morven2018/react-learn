@@ -17,20 +17,27 @@ describe('DetailsContent', () => {
     spouse: 'Arwen',
   };
 
-  it('render nothing if character == null.', () => {
-    const { container } = render(
-      <DetailsContent character={null} isLoading={false} />
-    );
-    expect(container).toBeEmptyDOMElement();
-  });
-
   it('show loading state', () => {
-    render(<DetailsContent character={mockCharacter} isLoading={true} />);
+    render(
+      <DetailsContent
+        character={mockCharacter}
+        isLoading={true}
+        isError={false}
+        errorData={''}
+      />
+    );
     expect(screen.getByText('Loading details...')).toBeInTheDocument();
   });
 
   it('render character name and wiki link', () => {
-    render(<DetailsContent character={mockCharacter} isLoading={false} />);
+    render(
+      <DetailsContent
+        character={mockCharacter}
+        isLoading={false}
+        isError={false}
+        errorData={''}
+      />
+    );
 
     expect(screen.getByText(mockCharacter.name)).toBeInTheDocument();
     const wikiLink = screen.getByText(/see more info/i);
@@ -43,7 +50,12 @@ describe('DetailsContent', () => {
   it('disable wiki-link if no url', () => {
     const characterWithoutWiki = { ...mockCharacter, wikiUrl: '' };
     render(
-      <DetailsContent character={characterWithoutWiki} isLoading={false} />
+      <DetailsContent
+        character={characterWithoutWiki}
+        isLoading={false}
+        isError={false}
+        errorData={''}
+      />
     );
 
     const link = screen.getByText(/see more info/i);
@@ -52,7 +64,14 @@ describe('DetailsContent', () => {
   });
 
   it('render all characters values', () => {
-    render(<DetailsContent character={mockCharacter} isLoading={false} />);
+    render(
+      <DetailsContent
+        character={mockCharacter}
+        isLoading={false}
+        isError={false}
+        errorData={''}
+      />
+    );
 
     expect(screen.getByText('Race:')).toBeInTheDocument();
     expect(screen.getByText(mockCharacter.race!)).toBeInTheDocument();
@@ -81,7 +100,12 @@ describe('DetailsContent', () => {
     };
 
     render(
-      <DetailsContent character={characterWithEmptyFields} isLoading={false} />
+      <DetailsContent
+        character={characterWithEmptyFields}
+        isLoading={false}
+        isError={false}
+        errorData={''}
+      />
     );
 
     expect(screen.queryByText('Hair:')).not.toBeInTheDocument();
@@ -104,7 +128,14 @@ describe('DetailsContent', () => {
       spouse: '',
     };
 
-    render(<DetailsContent character={emptyCharacter} isLoading={false} />);
+    render(
+      <DetailsContent
+        character={emptyCharacter}
+        isLoading={false}
+        isError={false}
+        errorData={''}
+      />
+    );
     expect(
       screen.getByText('No additional details available')
     ).toBeInTheDocument();
