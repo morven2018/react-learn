@@ -5,7 +5,7 @@ import type { Person } from '@shared/types/response-types';
 
 interface ResultsProps {
   characters: Person[];
-  loadingState: 'initial' | 'loading' | 'success' | 'error';
+  loadingState: 'loading' | 'success' | 'error';
   isFetchingMore: boolean;
 }
 

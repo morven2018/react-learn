@@ -1,107 +1,88 @@
-import CharacterApiService from '@services/api/api-service';
-import Pagination from '@components/ui/pagination/pagination';
-import Results from '@components/layout/results/results';
+import Pagination from '@components/ui/pagination/Pagination';
+import Results from '@components/layout/results/Results';
 import SearchWithRef from '@components/layout/search/search-with-ref';
 import style from './Home.module.scss';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
-import { Flyout } from '@components/ui/flyout/flyout';
+import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
-import type { Person } from '@shared/types/response-types';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import {
+  useLazySearchCharactersQuery,
+  useSearchCharactersQuery,
+} from '@services/api/characterApi';
+
 const Home = () => {
-  const [characters, setCharacters] = useState<Person[]>([]);
-  const [loadingState, setLoadingState] = useState<
-    'loading' | 'success' | 'error'
-  >('loading');
-  const [isFetchingMore, setIsFetchingMore] = useState(false);
-  const [totalPages, setTotalPages] = useState(1);
   const searchRef = useRef<SearchHandle>(null);
   const { termValue: currentSearch, updateTermValue } = useRestoreSearchTerm();
-
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   const currentPage = parseInt(searchParams.get('page') ?? '1', 10);
   const initialSearchTerm = currentSearch ?? '';
+
+  const {
+    data: characters,
+    isLoading,
+    isError,
+    isFetching,
+    currentData,
+  } = useSearchCharactersQuery(
+    {
+      name: currentSearch ?? '',
+      page: currentPage,
+    },
+    {
+      refetchOnMountOrArgChange: true,
+    }
+  );
+
+  const getLoadingState = (
+    isLoading: boolean,
+    isError: boolean
+  ): 'loading' | 'success' | 'error' => {
+    if (isLoading) return 'loading';
+    if (isError) return 'error';
+    return 'success';
+  };
+
+  const [triggerSearch, { isFetching: isFetchingMore }] =
+    useLazySearchCharactersQuery();
 
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
   );
 
-  const loadData = useCallback(
-    async (page: number, term: string) => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-
-      const controller = new AbortController();
-      abortControllerRef.current = controller;
-
-      try {
-        if (page === 1) {
-          setLoadingState('loading');
-        } else {
-          setIsFetchingMore(true);
-        }
-
-        const response = await CharacterApiService.searchCharacters(
-          term,
-          page,
-          { signal: controller.signal }
-        );
-
-        if (!controller.signal.aborted) {
-          setCharacters(response.docs);
-          setTotalPages(response.pages ?? 1);
-          updateTermValue(term);
-          setLoadingState('success');
-
-          const pages = response.pages ?? 1;
-
-          if (page > pages) {
-            navigate(`?page=1`, {
-              replace: true,
-            });
-          }
-        }
-      } catch (error) {
-        if (!controller.signal.aborted && error instanceof Error) {
-          console.error('Search error:', error);
-          setLoadingState('error');
-        }
-      } finally {
-        setIsFetchingMore(false);
-      }
-    },
-    [updateTermValue, navigate]
-  );
-
   const handleSearch = useCallback(
     async (term: string) => {
       const searchTerm = term.trim();
+      updateTermValue(searchTerm);
       navigate(`?page=1`);
-      await loadData(1, searchTerm);
+      await triggerSearch({ name: searchTerm, page: 1 });
     },
-    [navigate, loadData]
+    [navigate, triggerSearch, updateTermValue]
   );
 
   const handlePageChange = useCallback(
     async (page: number) => {
       const searchTerm = currentSearch ?? '';
-      navigate(`?page=${page}`);
-      await loadData(page, searchTerm);
+      navigate(`?search=${currentSearch}&page=${page}`);
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth',
+      });
+      await triggerSearch({ name: searchTerm, page });
     },
-    [navigate, currentSearch, loadData]
+    [navigate, currentSearch, triggerSearch]
   );
 
   useEffect(() => {
-    const searchTerm = currentSearch;
-    loadData(currentPage, searchTerm);
-  }, [currentPage, currentSearch, loadData]);
+    if (characters?.pages && currentPage > characters.pages) {
+      navigate(`?page=1`, { replace: true });
+    }
+  }, [characters, currentPage, currentSearch, navigate]);
 
   return (
     <main className={style.mainSection}>
@@ -113,17 +94,20 @@ const Home = () => {
         />
 
         <Results
-          characters={characters}
-          loadingState={loadingState}
+          characters={characters?.docs ?? []}
+          loadingState={getLoadingState(
+            isLoading || (isFetching && !currentData),
+            isError
+          )}
           isFetchingMore={isFetchingMore}
         />
 
-        {!!totalPages && (
+        {!!characters?.pages && (
           <Pagination
             currentPage={currentPage}
-            totalPages={totalPages}
+            totalPages={characters?.pages}
             onPageChange={handlePageChange}
-            isLoading={loadingState === 'loading' || isFetchingMore}
+            isLoading={isFetching && !!currentData}
           />
         )}
 
