@@ -28,16 +28,13 @@ const Home = () => {
     isLoading,
     isError,
     isFetching,
-    currentData,
   } = useSearchCharactersQuery(
-    {
-      name: currentSearch ?? '',
-      page: currentPage,
-    },
-    {
-      refetchOnMountOrArgChange: true,
-    }
+    { name: currentSearch ?? '', page: currentPage },
+    { refetchOnMountOrArgChange: true }
   );
+
+  const [triggerSearch, { isFetching: isFetchingMore }] =
+    useLazySearchCharactersQuery();
 
   const getLoadingState = (
     isLoading: boolean,
@@ -47,9 +44,6 @@ const Home = () => {
     if (isError) return 'error';
     return 'success';
   };
-
-  const [triggerSearch, { isFetching: isFetchingMore }] =
-    useLazySearchCharactersQuery();
 
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
@@ -96,7 +90,7 @@ const Home = () => {
         <Results
           characters={characters?.docs ?? []}
           loadingState={getLoadingState(
-            isLoading || (isFetching && !currentData),
+            isLoading || (isFetching && !characters),
             isError
           )}
           isFetchingMore={isFetchingMore}
@@ -107,7 +101,7 @@ const Home = () => {
             currentPage={currentPage}
             totalPages={characters?.pages}
             onPageChange={handlePageChange}
-            isLoading={isFetching && !!currentData}
+            isLoading={isFetching}
           />
         )}
 
