@@ -1,5 +1,6 @@
 import charactersSlice from '@shared/features/characters-slice';
 import { configureStore } from '@reduxjs/toolkit';
+import { characterApi } from '@services/api/characterApi';
 
 import {
   type TypedUseSelectorHook,
@@ -10,7 +11,10 @@ import {
 export const store = configureStore({
   reducer: {
     characters: charactersSlice,
+    [characterApi.reducerPath]: characterApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(characterApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
