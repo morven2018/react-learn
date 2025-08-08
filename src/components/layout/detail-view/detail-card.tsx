@@ -1,6 +1,7 @@
 import DetailsContent from './detail-content';
 import style from './details.module.scss';
 import { useCharacterDetails } from '@components/hooks/use-character-details';
+import { getErrorMessage } from '@services/api/error-handler';
 
 interface DetailCardProps {
   id: string;
@@ -9,7 +10,7 @@ interface DetailCardProps {
 }
 
 export const DetailCard = ({ id, onClose, isLoading }: DetailCardProps) => {
-  const { data: character, isLoading: isDetailsLoading } =
+  const { character, isDetailsLoading, isError, error } =
     useCharacterDetails(id);
 
   return (
@@ -28,6 +29,8 @@ export const DetailCard = ({ id, onClose, isLoading }: DetailCardProps) => {
       <DetailsContent
         character={character}
         isLoading={isLoading || isDetailsLoading}
+        isError={isError}
+        errorData={getErrorMessage(error)}
       />
     </div>
   );

@@ -4,35 +4,49 @@ import type { Person } from '@shared/types/response-types';
 interface DetailsProps {
   character: Person | null;
   isLoading: boolean;
+  isError: boolean;
+  errorData: string;
 }
 
-const DetailsContent = ({ character, isLoading }: DetailsProps) => {
-  if (!character) return null;
-
+const DetailsContent = ({
+  character,
+  isLoading,
+  isError,
+  errorData,
+}: DetailsProps) => {
   const formatValue = (value: string | null) => {
     if (!value) return null;
     return value === 'NaN' ? null : value;
   };
 
-  const characterDetails = [
-    { label: 'Race', value: formatValue(character.race) },
-    { label: 'Gender', value: formatValue(character.gender) },
-    { label: 'Birth', value: formatValue(character.birth) },
-    { label: 'Death', value: formatValue(character.death) },
-    { label: 'Hair', value: formatValue(character.hair) },
-    { label: 'Height', value: formatValue(character.height) },
-    { label: 'Realm', value: formatValue(character.realm) },
-    { label: 'Spouse', value: formatValue(character.spouse) },
-  ].filter((item) => item.value !== null);
+  const characterDetails = character
+    ? [
+        { label: 'Race', value: formatValue(character.race) },
+        { label: 'Gender', value: formatValue(character.gender) },
+        { label: 'Birth', value: formatValue(character.birth) },
+        { label: 'Death', value: formatValue(character.death) },
+        { label: 'Hair', value: formatValue(character.hair) },
+        { label: 'Height', value: formatValue(character.height) },
+        { label: 'Realm', value: formatValue(character.realm) },
+        { label: 'Spouse', value: formatValue(character.spouse) },
+      ].filter((item) => item.value !== null)
+    : [];
 
   return (
     <div className={style.detailsContainer}>
-      {isLoading ? (
+      {(isLoading || !character) && (
         <div className={style.loading}>Loading details...</div>
-      ) : (
+      )}
+      {isError && (
+        <div className={style.noData}>
+          No data is found. <br />
+          <span className={style.errorDetail}>{errorData}</span>
+        </div>
+      )}
+      {!(isLoading || isError) && character && (
         <>
           <div className={style.header}>
-            <h2 className={style.characterName}>{character.name}</h2>
+            <h2 className={style.characterName}>{character?.name ?? ''}</h2>
           </div>
 
           <div className={style.detailsContent}>

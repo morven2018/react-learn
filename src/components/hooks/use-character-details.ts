@@ -1,29 +1,19 @@
-import CharacterApiService from '@services/api/api-service';
-import type { Person } from '@shared/types/response-types';
-import { useEffect, useState } from 'react';
+import { useGetCharacterByIdQuery } from '@services/api/characterApi';
 
 export const useCharacterDetails = (id: string) => {
-  const [character, setCharacter] = useState<Person | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (!id) return;
-
-    const fetchDetails = async () => {
-      setIsLoading(true);
-      try {
-        const data = await CharacterApiService.getCharacterById(id);
-        setCharacter(data);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    fetchDetails();
-  }, [id]);
-
-  return {
+  const {
     data: character,
     isLoading,
+    isError,
+    error,
+  } = useGetCharacterByIdQuery(id, {
+    skip: !id,
+  });
+
+  return {
+    character: character ?? null,
+    isDetailsLoading: isLoading,
+    isError,
+    error,
   };
 };
