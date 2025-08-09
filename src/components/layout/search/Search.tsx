@@ -13,20 +13,22 @@ interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
   setInputValue: (value: string) => void;
+  isLoading: boolean;
 }
 
 interface SearchProps {
   onSearch: (term: string) => Promise<void>;
   initialSearchTerm?: string;
+  isLoading: boolean;
 }
 
 const Search = forwardRef<SearchHandle, SearchProps>(
-  ({ onSearch, initialSearchTerm = '' }, ref) => {
+  ({ onSearch, initialSearchTerm = '', isLoading }, ref) => {
     const [inputValue, setInputValue] = useState(initialSearchTerm);
     const [isSearching, setIsSearching] = useState(false);
 
     useEffect(() => {
-      setInputValue(initialSearchTerm || '');
+      setInputValue(initialSearchTerm ?? '');
     }, [initialSearchTerm]);
 
     const handleSearch = useCallback(
@@ -54,12 +56,13 @@ const Search = forwardRef<SearchHandle, SearchProps>(
       setInputValue: (value: string) => {
         setInputValue(value);
       },
+      isLoading: isLoading || isSearching,
     }));
 
     return (
       <section className={style.searchComponent}>
         <div className={style.searchContainer}>
-          <LoadingOverlay visible={isSearching} />
+          <LoadingOverlay visible={isLoading || isSearching} />
           <form onSubmit={handleSubmit} className={style.form}>
             <input
               type="text"
@@ -70,10 +73,10 @@ const Search = forwardRef<SearchHandle, SearchProps>(
             />
             <button
               type="submit"
-              disabled={isSearching}
+              disabled={isLoading || isSearching}
               className={style.searchButton}
             >
-              {isSearching ? 'Searching...' : 'Search'}
+              {isLoading || isSearching ? 'Searching...' : 'Search'}
             </button>
           </form>
         </div>

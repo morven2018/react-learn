@@ -5,15 +5,17 @@ export interface SearchHandle {
   handleSearch: (term?: string) => Promise<void>;
   getCurrentValue: () => string;
   setInputValue: (value: string) => void;
+  isLoading: boolean;
 }
 
 interface SearchWithRefProps {
   onSearch: (term: string) => Promise<void>;
   initialSearchTerm?: string;
+  isLoading: boolean;
 }
 
 const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
-  ({ onSearch, initialSearchTerm }, ref) => {
+  ({ onSearch, initialSearchTerm, isLoading }, ref) => {
     const searchRef = useRef<SearchHandle>(null);
 
     useEffect(() => {
@@ -29,13 +31,14 @@ const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
         }
       },
       getCurrentValue: () => {
-        return searchRef.current?.getCurrentValue() || '';
+        return searchRef.current?.getCurrentValue() ?? '';
       },
       setInputValue: (value: string) => {
         if (searchRef.current) {
           searchRef.current.setInputValue(value);
         }
       },
+      isLoading: isLoading,
     }));
 
     return (
@@ -43,6 +46,7 @@ const SearchWithRef = forwardRef<SearchHandle, SearchWithRefProps>(
         ref={searchRef}
         onSearch={onSearch}
         initialSearchTerm={initialSearchTerm}
+        isLoading={isLoading}
       />
     );
   }

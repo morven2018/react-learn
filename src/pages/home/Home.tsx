@@ -52,7 +52,7 @@ const Home = () => {
       setPrevSearch(currentSearch);
       navigate(`?page=1`);
     },
-    [navigate, updateTermValue]
+    [navigate, updateTermValue, currentSearch]
   );
 
   const handlePageChange = useCallback(
@@ -79,6 +79,7 @@ const Home = () => {
           ref={searchRef}
           onSearch={handleSearch}
           initialSearchTerm={initialSearchTerm}
+          isLoading={isLoading || (isFetching && isNewSearch)}
         />
 
         <Results
