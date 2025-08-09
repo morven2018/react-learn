@@ -1,5 +1,6 @@
 import Home from '@pages/home/home';
 import { configureStore } from '@reduxjs/toolkit';
+import { characterApi } from '@services/api/characterApi';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
@@ -13,7 +14,10 @@ const mockStore = configureStore({
     characters: () => ({
       selectedCharacters: [],
     }),
+    [characterApi.reducerPath]: characterApi.reducer,
   },
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware().concat(characterApi.middleware),
 });
 
 vi.mock('@services/api/api-service', () => ({
