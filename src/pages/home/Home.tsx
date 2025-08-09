@@ -1,3 +1,4 @@
+import LoadingOverlay from '@components/ui/loading-overlay/loading-overlay';
 import Pagination from '@components/ui/pagination/Pagination';
 import Results from '@components/layout/results/Results';
 import SearchWithRef from '@components/layout/search/search-with-ref';
@@ -75,6 +76,7 @@ const Home = () => {
   return (
     <main className={style.mainSection}>
       <div className={style.mainContent}>
+        <LoadingOverlay visible={isLoading || (isFetching && isNewSearch)} />
         <SearchWithRef
           ref={searchRef}
           onSearch={handleSearch}

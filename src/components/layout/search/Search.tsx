@@ -1,4 +1,3 @@
-import LoadingOverlay from '@components/ui/loading-overlay/loading-overlay';
 import style from './Search.module.scss';
 
 import {
@@ -62,7 +61,6 @@ const Search = forwardRef<SearchHandle, SearchProps>(
     return (
       <section className={style.searchComponent}>
         <div className={style.searchContainer}>
-          <LoadingOverlay visible={isLoading || isSearching} />
           <form onSubmit={handleSubmit} className={style.form}>
             <input
               type="text"
