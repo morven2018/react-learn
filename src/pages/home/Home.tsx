@@ -6,7 +6,7 @@ import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import {
@@ -30,11 +30,14 @@ const Home = () => {
     isFetching,
   } = useSearchCharactersQuery(
     { name: currentSearch ?? '', page: currentPage },
-    { refetchOnMountOrArgChange: true }
+    { refetchOnMountOrArgChange: false }
   );
 
   const [triggerSearch, { isFetching: isFetchingMore }] =
     useLazySearchCharactersQuery();
+
+  const [prevSearch, setPrevSearch] = useState(currentSearch);
+  const isNewSearch = prevSearch !== currentSearch;
 
   const getLoadingState = (
     isLoading: boolean,
@@ -53,6 +56,7 @@ const Home = () => {
     async (term: string) => {
       const searchTerm = term.trim();
       updateTermValue(searchTerm);
+      setPrevSearch(currentSearch);
       navigate(`?page=1`);
       await triggerSearch({ name: searchTerm, page: 1 });
     },
@@ -90,7 +94,7 @@ const Home = () => {
         <Results
           characters={characters?.docs ?? []}
           loadingState={getLoadingState(
-            isLoading || (isFetching && !characters),
+            isLoading || (isFetching && isNewSearch),
             isError
           )}
           isFetchingMore={isFetchingMore}
