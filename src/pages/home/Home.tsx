@@ -6,13 +6,9 @@ import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
+import { useSearchCharactersQuery } from '@services/api/characterApi';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
-import {
-  useLazySearchCharactersQuery,
-  useSearchCharactersQuery,
-} from '@services/api/characterApi';
 
 const Home = () => {
   const searchRef = useRef<SearchHandle>(null);
@@ -30,11 +26,8 @@ const Home = () => {
     isFetching,
   } = useSearchCharactersQuery(
     { name: currentSearch ?? '', page: currentPage },
-    { refetchOnMountOrArgChange: false }
+    { refetchOnMountOrArgChange: true }
   );
-
-  const [triggerSearch, { isFetching: isFetchingMore }] =
-    useLazySearchCharactersQuery();
 
   const [prevSearch, setPrevSearch] = useState(currentSearch);
   const isNewSearch = prevSearch !== currentSearch;
@@ -58,22 +51,19 @@ const Home = () => {
       updateTermValue(searchTerm);
       setPrevSearch(currentSearch);
       navigate(`?page=1`);
-      await triggerSearch({ name: searchTerm, page: 1 });
     },
-    [navigate, triggerSearch, updateTermValue]
+    [navigate, updateTermValue]
   );
 
   const handlePageChange = useCallback(
     async (page: number) => {
-      const searchTerm = currentSearch ?? '';
-      navigate(`?search=${currentSearch}&page=${page}`);
+      navigate(`?page=${page}`);
       window.scrollTo({
         top: 0,
         behavior: 'smooth',
       });
-      await triggerSearch({ name: searchTerm, page });
     },
-    [navigate, currentSearch, triggerSearch]
+    [navigate]
   );
 
   useEffect(() => {
@@ -97,7 +87,7 @@ const Home = () => {
             isLoading || (isFetching && isNewSearch),
             isError
           )}
-          isFetchingMore={isFetchingMore}
+          isFetchingMore={isFetching}
         />
 
         {!!characters?.pages && (

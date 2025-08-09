@@ -8,8 +8,6 @@ import {
 } from './dynamicBaseQuery';
 
 const BASE_LIMIT = '12';
-const CHARACTERS_TAG_TYPE = 'Characters' as const;
-
 export const characterApi = createApi({
   reducerPath: 'characterApi',
   baseQuery: staggeredBaseQuery,
@@ -23,6 +21,7 @@ export const characterApi = createApi({
         return response.docs[0];
       },
       providesTags: (_result, _error, id) => [{ type: 'Characters', id }],
+      keepUnusedDataFor: 30000,
     }),
 
     searchCharacters: builder.query<
@@ -36,26 +35,22 @@ export const characterApi = createApi({
         params.append('limit', BASE_LIMIT);
         return `character?${params.toString()}`;
       },
-      serializeQueryArgs: ({ endpointName }) => {
-        return endpointName;
+      keepUnusedDataFor: 30000,
+      serializeQueryArgs: ({ queryArgs }) => {
+        return queryArgs.name ?? '';
       },
-      merge: undefined,
-      forceRefetch: ({ currentArg, previousArg }) => {
+      merge(currentCache, newData, otherArgs) {
+        if (newData.page === 1 || otherArgs.arg.page !== currentCache?.page) {
+          return newData;
+        }
+        return currentCache;
+      },
+      forceRefetch({ currentArg, previousArg }) {
         return (
           currentArg?.page !== previousArg?.page ||
           currentArg?.name !== previousArg?.name
         );
       },
-      providesTags: (result) =>
-        result?.docs
-          ? [
-              ...result.docs.map(({ _id }) => ({
-                type: CHARACTERS_TAG_TYPE,
-                _id,
-              })),
-              { type: 'Characters', id: 'LIST' },
-            ]
-          : [{ type: 'Characters', id: 'LIST' }],
     }),
   }),
 });
