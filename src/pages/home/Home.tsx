@@ -10,6 +10,15 @@ import { useSearchCharactersQuery } from '@services/api/characterApi';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+export const getLoadingState = (
+  isLoading: boolean,
+  isError: boolean
+): 'loading' | 'success' | 'error' => {
+  if (isLoading) return 'loading';
+  if (isError) return 'error';
+  return 'success';
+};
+
 const Home = () => {
   const searchRef = useRef<SearchHandle>(null);
   const { termValue: currentSearch, updateTermValue } = useRestoreSearchTerm();
@@ -31,15 +40,6 @@ const Home = () => {
 
   const [prevSearch, setPrevSearch] = useState(currentSearch);
   const isNewSearch = prevSearch !== currentSearch;
-
-  const getLoadingState = (
-    isLoading: boolean,
-    isError: boolean
-  ): 'loading' | 'success' | 'error' => {
-    if (isLoading) return 'loading';
-    if (isError) return 'error';
-    return 'success';
-  };
 
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
