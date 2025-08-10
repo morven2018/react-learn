@@ -1,10 +1,14 @@
 import Home from '@pages/home/Home';
 import { configureStore } from '@reduxjs/toolkit';
-import { useSearchCharactersQuery } from '@services/api/characterApi';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+
+import {
+  characterApi,
+  useSearchCharactersQuery,
+} from '@services/api/character-api';
 
 const mockApiResponse = {
   data: {
@@ -19,7 +23,7 @@ const mockApiResponse = {
 
 vi.mock('@services/api/characterApi', async (importOriginal) => {
   const actual =
-    await importOriginal<typeof import('@services/api/characterApi')>();
+    await importOriginal<typeof import('@services/api/character-api')>();
   return {
     ...actual,
     useSearchCharactersQuery: vi.fn(() => ({
@@ -95,13 +99,13 @@ describe('Home Component', () => {
       characters: () => ({
         selectedCharacters: [],
       }),
-      characterApi: () => ({}),
+      [characterApi.reducerPath]: characterApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,
         immutableCheck: false,
-      }),
+      }).concat(characterApi.middleware),
   });
 
   beforeEach(() => {
@@ -137,16 +141,21 @@ describe('Home Component', () => {
   });
 
   it('show loading overlay on loading', async () => {
-    vi.mocked(useSearchCharactersQuery).mockReturnValueOnce({
-      data: undefined,
-      state: 'loading',
-      isLoading: true,
-      isError: false,
-      isFetching: true,
-      refetch: vi.fn(),
-    });
-
-    renderComponent();
+    vi.doMock('@services/api/characterApi', () => ({
+      useSearchCharactersQuery: vi.fn().mockReturnValue({
+        data: undefined,
+        isFetching: true,
+      }),
+    }));
+    render(
+      <Provider store={mockStore}>
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
     await waitFor(() => {
       expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
@@ -158,13 +167,13 @@ describe('Home Component', () => {
         characters: () => ({
           selectedCharacters: [{ id: '1', name: 'Character 1' }],
         }),
-        characterApi: () => ({}),
+        [characterApi.reducerPath]: characterApi.reducer,
       },
       middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
           serializableCheck: false,
           immutableCheck: false,
-        }),
+        }).concat(characterApi.middleware),
     });
 
     render(
