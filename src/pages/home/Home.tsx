@@ -77,7 +77,7 @@ const Home = () => {
           visible={apiResponse?.state === 'loading' || isFetching}
         />
 
-        {(apiResponse?.state === 'error' || !apiResponse) && (
+        {(apiResponse?.state === 'error' || (!apiResponse && !isFetching)) && (
           <ErrorMessage
             message={getErrorMessage(error)}
             onRetry={handleForceRefresh}
