@@ -77,7 +77,18 @@ export const characterApi = createApi({
           currentArg?.name !== previousArg?.name
         );
       },
+      providesTags: (result) =>
+        result?.data?.docs
+          ? [
+              ...result.data.docs.map(({ _id }) => ({
+                type: 'Characters' as const,
+                id: _id,
+              })),
+              { type: 'Characters' as const, id: 'LIST' },
+            ]
+          : [{ type: 'Characters' as const, id: 'LIST' }],
     }),
+
     getCharactersByIds: builder.query<PersonWithUrl[], string[]>({
       async queryFn(ids, _queryApi) {
         if (!ids || ids.length === 0) {
