@@ -5,11 +5,13 @@ import SearchWithRef from '@components/layout/search/search-with-ref';
 import style from './Home.module.scss';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
+import { ErrorMessage } from '@components/ui/error-message/error-message';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { RefreshButton } from '@components/ui/refresh-button/refresh-button';
-import { triggerRefresh } from '@redux/refreshSlice';
+import { triggerRefresh } from '@redux/refresh-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 import { useSearchCharactersQuery } from '@services/api/character-api';
+import { getErrorMessage } from '@services/api/error-handler';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
@@ -26,6 +28,7 @@ const Home = () => {
   const {
     data: apiResponse,
     isFetching,
+    error,
     refetch,
   } = useSearchCharactersQuery(
     { name: currentSearch ?? '', page: currentPage },
@@ -73,6 +76,14 @@ const Home = () => {
         <LoadingOverlay
           visible={apiResponse?.state === 'loading' || isFetching}
         />
+
+        {(apiResponse?.state === 'error' || !apiResponse) && (
+          <ErrorMessage
+            message={getErrorMessage(error)}
+            onRetry={handleForceRefresh}
+            isLoading={isFetching}
+          />
+        )}
 
         <div className={style.headerControls}>
           <SearchWithRef

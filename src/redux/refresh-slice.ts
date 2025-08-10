@@ -4,7 +4,7 @@ interface RefreshState {
   version: number;
 }
 
-const initialState: RefreshState = {
+export const initialState: RefreshState = {
   version: 0,
 };
 

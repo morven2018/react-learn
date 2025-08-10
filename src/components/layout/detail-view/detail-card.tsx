@@ -12,7 +12,7 @@ interface DetailCardProps {
 }
 
 export const DetailCard = ({ id, onClose, isLoading }: DetailCardProps) => {
-  const refreshVersion = useAppSelector((state) => state.refresh.version);
+  const refreshVersion = useAppSelector((state) => state.refresh?.version ?? 1);
   const {
     data: character,
     isLoading: isDetailsLoading,
