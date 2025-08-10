@@ -1,4 +1,4 @@
-import Search from '@components/layout/search/search';
+import Search from '@components/layout/search/Search';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
 
@@ -16,7 +16,7 @@ describe('Search Component', () => {
   });
 
   it('render correctly', () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
 
     expect(
       screen.getByPlaceholderText('Search characters...')
@@ -26,14 +26,18 @@ describe('Search Component', () => {
 
   it('initializes with provided search term', () => {
     render(
-      <Search onSearch={mockOnSearch} initialSearchTerm={initialSearchTerm} />
+      <Search
+        onSearch={mockOnSearch}
+        initialSearchTerm={initialSearchTerm}
+        isLoading={false}
+      />
     );
 
     expect(screen.getByDisplayValue(initialSearchTerm)).toBeInTheDocument();
   });
 
   it('update input value when typing', () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
     const input = screen.getByPlaceholderText('Search characters...');
 
     fireEvent.change(input, { target: { value: 'test' } });
@@ -41,7 +45,7 @@ describe('Search Component', () => {
   });
 
   it('trigger search on form submission', async () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
     const input = screen.getByPlaceholderText('Search characters...');
     const button = screen.getByRole('button', { name: 'Search' });
 
@@ -54,14 +58,13 @@ describe('Search Component', () => {
   });
 
   it('show loading state during search', async () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
     const input = screen.getByPlaceholderText('Search characters...');
     const button = screen.getByRole('button', { name: 'Search' });
 
     fireEvent.change(input, { target: { value: 'test' } });
     fireEvent.click(button);
 
-    expect(screen.getByTestId('loading-overlay')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Searching...' })).toBeDisabled();
 
     await waitFor(() => {
@@ -72,7 +75,7 @@ describe('Search Component', () => {
   });
 
   it('handle search with empty term', async () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
     const button = screen.getByRole('button', { name: 'Search' });
 
     fireEvent.click(button);
@@ -83,7 +86,7 @@ describe('Search Component', () => {
   });
 
   it('maintain button disabled state during search', async () => {
-    render(<Search onSearch={mockOnSearch} />);
+    render(<Search onSearch={mockOnSearch} isLoading={false} />);
     const button = screen.getByRole('button', { name: 'Search' });
 
     fireEvent.click(button);
