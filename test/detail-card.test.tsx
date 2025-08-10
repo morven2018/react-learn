@@ -1,9 +1,18 @@
 import DetailsContent from '@components/layout/detail-view/detail-content';
 import userEvent from '@testing-library/user-event';
-import { useCharacterDetails } from '@components/hooks/use-character-details';
 import { DetailCard } from '@components/layout/detail-view/detail-card';
+import { useGetCharacterByIdQuery } from '@services/api/characterApi';
 import { render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
+
+vi.mock('@services/api/characterApi', () => ({
+  useGetCharacterByIdQuery: vi.fn().mockReturnValue({
+    data: null,
+    isLoading: false,
+    isError: false,
+    refetch: vi.fn(),
+  }),
+}));
 
 vi.mock('@components/hooks/use-character-details', () => ({
   useCharacterDetails: vi.fn(),
@@ -18,15 +27,9 @@ describe('DetailCard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    vi.mocked(useCharacterDetails).mockReturnValue({
-      character: null,
-      isDetailsLoading: false,
-      isError: false,
-      error: '',
-    });
+
     vi.mocked(DetailsContent).mockClear();
   });
-
   it('render with title and close button', () => {
     render(<DetailCard id="123" onClose={mockOnClose} />);
 
@@ -47,11 +50,15 @@ describe('DetailCard', () => {
 
   it('pass correct id to useCharacterDetails', () => {
     render(<DetailCard id="123" onClose={mockOnClose} />);
-    expect(useCharacterDetails).toHaveBeenCalledWith('123');
+    expect(useGetCharacterByIdQuery).toHaveBeenCalledWith('123', {
+      skip: false,
+    });
   });
 
   it('handle empty id', () => {
     render(<DetailCard id="" onClose={mockOnClose} />);
-    expect(useCharacterDetails).toHaveBeenCalledWith('');
+    expect(useGetCharacterByIdQuery).toHaveBeenCalledWith('', {
+      skip: true,
+    });
   });
 });
