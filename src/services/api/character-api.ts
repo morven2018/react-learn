@@ -1,5 +1,9 @@
-import { createApi } from '@reduxjs/toolkit/query/react';
 import type { CharacterApiEndpoints } from './types';
+
+import {
+  createApi,
+  type FetchBaseQueryError,
+} from '@reduxjs/toolkit/query/react';
 
 import type {
   ApiResponse,
@@ -74,52 +78,29 @@ export const characterApi = createApi({
         );
       },
     }),
-
     getCharactersByIds: builder.query<PersonWithUrl[], string[]>({
-      async queryFn(ids, _queryApi, _extraOptions, baseQuery) {
+      async queryFn(ids, _queryApi) {
         if (!ids || ids.length === 0) {
           return { data: [] };
         }
 
-        const getCachedCharacter = (id: string) => {
-          const currentState = _queryApi.getState() as {
-            [characterApi.reducerPath]: ReturnType<typeof characterApi.reducer>;
-          };
-
-          return characterApi.endpoints.getCharacterById.select(id)(
-            currentState
-          );
-        };
-
         try {
-          const characters = await Promise.all(
-            ids.map(async (id) => {
-              try {
-                const cachedData = getCachedCharacter(id);
-
-                if (cachedData.data) {
-                  return {
-                    ...cachedData.data,
-                    url: `character/${id}`,
-                  };
-                }
-
-                const result = await baseQuery(`character/${id}`);
-                if (result.error) throw result.error;
-                const response = result.data as { docs: Person[] };
-                if (!response?.docs?.[0]) {
-                  throw new Error(ERROR_MESSAGES[HttpStatus.NotFound]);
-                }
-
-                return {
-                  ...response.docs[0],
-                  url: `character/${id}`,
-                };
-              } catch {
-                return null;
-              }
-            })
+          const promises = ids.map((id) =>
+            _queryApi.dispatch(
+              characterApi.endpoints.getCharacterById.initiate(id)
+            )
           );
+
+          const results = await Promise.all(promises);
+          const characters = results.map((result) => {
+            if ('data' in result && result.data) {
+              return {
+                ...result.data,
+                url: `character/${result.originalArgs}`,
+              };
+            }
+            return null;
+          });
 
           const filteredCharacters = characters.filter(
             (char): char is PersonWithUrl => char !== null
@@ -127,7 +108,7 @@ export const characterApi = createApi({
 
           return { data: filteredCharacters };
         } catch (error) {
-          return { error };
+          return { error: error as FetchBaseQueryError };
         }
       },
       providesTags: (result) =>
