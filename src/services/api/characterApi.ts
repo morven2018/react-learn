@@ -5,7 +5,7 @@ import {
   ERROR_MESSAGES,
   HttpStatus,
   staggeredBaseQuery,
-} from './dynamicBaseQuery';
+} from './dynamic-base-query';
 
 const BASE_LIMIT = '12';
 

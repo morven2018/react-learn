@@ -1,4 +1,4 @@
-import Pagination from '@components/ui/pagination/pagination';
+import Pagination from '@components/ui/pagination/Pagination';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { vi } from 'vitest';
 

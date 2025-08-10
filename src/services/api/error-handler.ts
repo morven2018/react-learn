@@ -2,7 +2,7 @@ import {
   CustomErrorCode,
   ERROR_MESSAGES,
   HttpStatus,
-} from './dynamicBaseQuery';
+} from './dynamic-base-query';
 
 type ApiErrorObject = {
   status?: number;

@@ -1,4 +1,4 @@
-import Home from '@pages/home/home';
+import Home from '@pages/home/Home';
 import { configureStore } from '@reduxjs/toolkit';
 import { useSearchCharactersQuery } from '@services/api/characterApi';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

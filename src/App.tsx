@@ -1,7 +1,7 @@
 import './App.scss';
 import AboutPage from '@pages/about/about';
-import Header from '@components/layout/header/header';
-import Home from '@pages/home/home';
+import Header from '@components/layout/header/Header';
+import Home from '@pages/home/Home';
 import HomeLayout from '@components/layout/home-layout/home-layout';
 import NotFoundPage from '@pages/not-found/not-found';
 import ThemeProvider from '@context/theme-provider';
