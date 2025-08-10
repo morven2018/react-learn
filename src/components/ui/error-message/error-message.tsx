@@ -28,19 +28,24 @@ export const ErrorMessage = ({
       role="alert"
       aria-live="assertive"
     >
-      <div className={style.errorContent}>
-        <button
-          className={style.closeButton}
-          onClick={handleClose}
-          aria-label="Close error message"
-        >
-          &times;
-        </button>
-        <p className={style.errorText}>{message}</p>
-        <div className={style.buttonsGroup}>
-          {onRetry && (
-            <RefreshButton onRefresh={onRetry} isLoading={isLoading ?? false} />
-          )}
+      <div className={style.errorContainer}>
+        <div className={style.errorContent}>
+          <button
+            className={style.closeButton}
+            onClick={handleClose}
+            aria-label="Close error message"
+          >
+            &times;
+          </button>
+          <p className={style.errorText}>{message}</p>
+          <div className={style.buttonsGroup}>
+            {onRetry && (
+              <RefreshButton
+                onRefresh={onRetry}
+                isLoading={isLoading ?? false}
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>
