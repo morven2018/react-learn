@@ -1,8 +1,8 @@
-import CharacterApiService from '@services/api/api-service';
 import React from 'react';
 import convertToCSV from '@shared/lib/convert-to-csv';
 import style from './flyout.module.scss';
 import { useAppDispatch, useAppSelector } from '@redux/store';
+import { useLazyGetCharactersByIdsQuery } from '@services/api/character-api';
 import { clearSelectedCharacters } from '@shared/features/characters-slice';
 
 export const Flyout: React.FC = () => {
@@ -11,14 +11,19 @@ export const Flyout: React.FC = () => {
     (state) => state.characters.selectedCharacters
   );
 
+  const [fetchCharacters] = useLazyGetCharactersByIdsQuery();
+
   const handleUnselectAll = () => {
     dispatch(clearSelectedCharacters());
   };
 
   const handleDownload = async () => {
     try {
-      const data =
-        await CharacterApiService.getCharactersByIds(selectedCharacters);
+      const { data } = await fetchCharacters(selectedCharacters);
+
+      if (!data || data.length === 0) {
+        throw new Error('No data available to load');
+      }
       const csvData = convertToCSV(data);
 
       const fileName = `${selectedCharacters.length}_characters.csv`;
