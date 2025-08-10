@@ -1,9 +1,8 @@
 import { configureStore } from '@reduxjs/toolkit';
+import type { ApiResponse, Person } from '@shared/types/response-types';
 import { renderHook, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import type { ApiResponse, Person } from '@shared/types/response-types';
 
 import {
   characterApi,
@@ -44,7 +43,7 @@ describe('characterApi', () => {
     mockBaseQuery.mockReset();
   });
 
-  it('should successfully fetch a character', async () => {
+  it('fetch a character', async () => {
     const mockCharacter: Person = {
       _id: '5cd99d4bde30eff6ebccfea0',
       name: 'Gandalf',
@@ -62,7 +61,7 @@ describe('characterApi', () => {
     mockBaseQuery.mockResolvedValue({
       data: { docs: [mockCharacter] },
       meta: {
-        request: new Request('http://test'),
+        request: new Request('https://test'),
         response: new Response(),
       },
     });
@@ -87,7 +86,7 @@ describe('characterApi', () => {
   });
 
   describe('searchCharacters', () => {
-    it('should successfully search characters', async () => {
+    it('search characters', async () => {
       const mockResponse: ApiResponse = {
         docs: [
           {
@@ -128,7 +127,7 @@ describe('characterApi', () => {
       });
     });
 
-    it('should handle search error', async () => {
+    it('handle search error', async () => {
       mockBaseQuery.mockRejectedValue({
         error: 'Bad request!',
         data: null,
@@ -149,7 +148,7 @@ describe('characterApi', () => {
   });
 
   describe('getCharactersByIds', () => {
-    it('should fetch multiple characters', async () => {
+    it('fetch multiple characters', async () => {
       const mockCharacters = [
         {
           _id: '5cd99d4bde30eff6ebccfea0',
@@ -173,7 +172,7 @@ describe('characterApi', () => {
           return {
             data: { docs: [mockCharacters[0]] },
             meta: {
-              request: new Request('http://test'),
+              request: new Request('https://test'),
               response: new Response(),
             },
           };
@@ -200,7 +199,7 @@ describe('characterApi', () => {
       expect(result.current.data).toEqual(mockCharacters);
     });
 
-    it('should handle empty ids array', async () => {
+    it('handle empty ids array', async () => {
       const { result } = renderHook(() => useGetCharactersByIdsQuery([]), {
         wrapper: ({ children }) => (
           <Provider store={store}>{children}</Provider>
