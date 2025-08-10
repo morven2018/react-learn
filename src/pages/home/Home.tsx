@@ -7,7 +7,7 @@ import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
-import { useSearchCharactersQuery } from '@services/api/characterApi';
+import { useSearchCharactersQuery } from '@services/api/character-api';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 

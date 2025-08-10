@@ -1,6 +1,6 @@
 import DetailsContent from './detail-content';
 import style from './details.module.scss';
-import { useGetCharacterByIdQuery } from '@services/api/characterApi';
+import { useGetCharacterByIdQuery } from '@services/api/character-api';
 import { getErrorMessage } from '@services/api/error-handler';
 
 interface DetailCardProps {

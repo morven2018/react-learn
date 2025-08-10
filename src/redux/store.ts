@@ -1,6 +1,6 @@
 import charactersSlice from '@shared/features/characters-slice';
 import { configureStore } from '@reduxjs/toolkit';
-import { characterApi } from '@services/api/characterApi';
+import { characterApi } from '@services/api/character-api';
 
 import {
   type TypedUseSelectorHook,
