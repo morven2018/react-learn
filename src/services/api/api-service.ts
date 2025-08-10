@@ -1,4 +1,3 @@
-import getRandomInt from '@shared/lib/random-number';
 import { Term } from '@services/localStorage/LS-service';
 
 import type {
@@ -12,7 +11,6 @@ const API_KEY_PRIMARY = import.meta.env.VITE_API_KEY ?? 'ksmnN0SYU1vcR69udsuY';
 const API_KEY_SECONDARY =
   import.meta.env.VITE_API_KEY2 ?? 'oJHunt00vrX9Yile7Jny';
 const BASE_LIMIT = 12;
-const ERROR_TYPES_COUNT = 5;
 
 enum HttpStatus {
   BadRequest = 400,
@@ -50,9 +48,7 @@ const ERROR_MESSAGES: { [key: number]: string } = {
     '9999. Unknown Error - Unexpected situation occurred',
 };
 
-class CharacterApiService {
-  private static lastQuery: string = '';
-  private static lastResponse: ApiResponse | null = null;
+class CharacterApiServices {
   private static currentApiKey = API_KEY_PRIMARY;
 
   private static createError(code: number): Error {
@@ -115,7 +111,6 @@ class CharacterApiService {
     if (name) {
       queryParams.append('name', `/${name}/i`);
       Term.setTermToLS(name);
-      this.lastQuery = name;
     }
 
     queryParams.append('limit', BASE_LIMIT.toString());
@@ -129,44 +124,7 @@ class CharacterApiService {
       throw this.createError(CustomErrorCode.InvalidData);
     }
 
-    this.lastResponse = data;
     return data;
-  }
-
-  static async loadPage(
-    page: number,
-    options: RequestInit = {}
-  ): Promise<ApiResponse> {
-    return this.searchCharacters(this.lastQuery, page, options);
-  }
-
-  static getTotalPages(): number {
-    return this.lastResponse?.pages || 1;
-  }
-
-  static async loadMore(options: RequestInit = {}): Promise<ApiResponse> {
-    if (!this.lastResponse) {
-      throw this.createError(HttpStatus.BadRequest);
-    }
-
-    const nextPage = this.lastResponse.page + 1;
-    if (nextPage > this.lastResponse.pages) {
-      throw this.createError(HttpStatus.BadRequest);
-    }
-
-    return this.searchCharacters(this.lastQuery, nextPage, options);
-  }
-
-  static hasMore(): boolean {
-    return this.lastResponse
-      ? this.lastResponse.page < this.lastResponse.pages
-      : false;
-  }
-
-  static getLoadedCount(): number {
-    return this.lastResponse
-      ? this.lastResponse.page * this.lastResponse.limit
-      : 0;
   }
 
   static async getCharacterById(
@@ -213,17 +171,6 @@ class CharacterApiService {
       (char): char is PersonWithUrl => char !== undefined
     );
   }
-  static async triggerTestError(): Promise<never> {
-    const errorType = getRandomInt(1, ERROR_TYPES_COUNT);
-    const errors = [
-      () => this.createError(CustomErrorCode.NetworkError),
-      () => this.createError(HttpStatus.InternalServerError),
-      () => this.createError(CustomErrorCode.InvalidData),
-      () => this.createError(HttpStatus.Unauthorized),
-      () => this.createError(HttpStatus.NotFound),
-    ];
-    throw errors[errorType - 1]();
-  }
 }
 
-export default CharacterApiService;
+export default CharacterApiServices;
