@@ -1,4 +1,4 @@
-import Results from '@components/layout/results/results';
+import Results from '@components/layout/results/Results';
 import type { Person } from '@shared/types/response-types';
 import { act, render, screen, type RenderResult } from '@testing-library/react';
 import { vi } from 'vitest';

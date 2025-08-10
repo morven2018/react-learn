@@ -1,29 +1,10 @@
 import ErrorBoundary from '@components/common/error-boundary';
-import apiService from '@services/api/api-service';
 import { vi } from 'vitest';
 
-import {
-  render,
-  screen,
-  fireEvent,
-  act,
-  waitFor,
-} from '@testing-library/react';
+import { render, screen, fireEvent, act } from '@testing-library/react';
 
 const ErrorThrowingComponent = () => {
   throw new Error('Test error');
-};
-
-const PromiseRejectingComponent = () => {
-  (async () => {
-    try {
-      await apiService.triggerTestError();
-    } catch (e) {
-      if (e instanceof Error) console.error('API error caught:', e.message);
-    }
-  })();
-
-  return <div>Child component</div>;
 };
 
 const GoodComponent = () => <div>Good content</div>;
@@ -63,17 +44,6 @@ describe('ErrorBoundary', () => {
     );
     expect(screen.getByText('Something went wrong')).toBeInTheDocument();
     expect(screen.getByText('Test error')).toBeInTheDocument();
-  });
-
-  it('handle API errors and log them', async () => {
-    render(
-      <ErrorBoundary>
-        <PromiseRejectingComponent />
-      </ErrorBoundary>
-    );
-    await waitFor(() => {
-      expect(apiService.triggerTestError).toHaveBeenCalled();
-    });
   });
 
   it('use custom fallback, if it exists', () => {

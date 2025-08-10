@@ -1,15 +1,11 @@
 import React from 'react';
-import SearchWithRef from '@components/layout/search/search-with-ref';
+import SearchWithRef, {
+  type SearchHandle,
+} from '@components/layout/search/search-with-ref';
 import { act, render } from '@testing-library/react';
 import { vi } from 'vitest';
 
 const DEFAULT_INITIAL_VALUE = '';
-
-interface SearchHandle {
-  handleSearch: (term?: string) => Promise<void>;
-  getCurrentValue: () => string;
-  setInputValue: (value: string) => void;
-}
 
 vi.mock('@components/layout/search/Search', () => {
   return {
@@ -36,6 +32,7 @@ vi.mock('@components/layout/search/Search', () => {
             setInputValue: vi.fn((value: string) => {
               currentValue = value;
             }),
+            isLoading: false,
           };
 
           Object.defineProperty(ref, 'current', {
@@ -53,6 +50,7 @@ describe('SearchWithRef', () => {
   const mockProps = {
     onSearch: vi.fn(),
     initialSearchTerm: DEFAULT_INITIAL_VALUE,
+    isLoading: false,
   };
 
   beforeEach(() => {

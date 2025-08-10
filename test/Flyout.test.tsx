@@ -1,6 +1,6 @@
 import CharacterApiService from '@services/api/api-service';
 import convertToCSV from '@shared/lib/convert-to-csv';
-import { Flyout } from '@components/ui/flyout/flyout';
+import { Flyout } from '@components/ui/flyout/Flyout';
 import type { RootState } from '@redux/store';
 import { configureStore } from '@reduxjs/toolkit';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';

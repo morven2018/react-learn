@@ -19,8 +19,10 @@ describe('DetailCard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     vi.mocked(useCharacterDetails).mockReturnValue({
-      data: null,
-      isLoading: false,
+      character: null,
+      isDetailsLoading: false,
+      isError: false,
+      error: '',
     });
     vi.mocked(DetailsContent).mockClear();
   });
