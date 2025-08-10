@@ -5,10 +5,7 @@ import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import {
-  characterApi,
-  useSearchCharactersQuery,
-} from '@services/api/character-api';
+import { characterApi } from '@services/api/character-api';
 
 const mockApiResponse = {
   data: {

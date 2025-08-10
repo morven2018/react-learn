@@ -1,7 +1,5 @@
 import App from 'src/App';
-import apiService from '@services/api/api-service';
-import { Term } from '@services/localStorage/LS-service';
-import { render, screen, waitFor } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { vi } from 'vitest';
 
@@ -11,10 +9,6 @@ vi.mock('@components/layout/header/Header', () => ({
 
 vi.mock('@pages/home/Home', () => ({
   default: vi.fn().mockImplementation(() => {
-    const savedTerm = Term.getTermFromLS();
-    if (savedTerm) {
-      apiService.searchCharacters(savedTerm);
-    }
     return <main data-testid="main-content">Main Content</main>;
   }),
 }));
@@ -64,23 +58,6 @@ describe('App Component', () => {
     );
     expect(screen.getByRole('banner')).toBeInTheDocument();
     expect(screen.getByText('Main Content')).toBeInTheDocument();
-  });
-
-  it('load search term from localStorage and triggers search on mount', async () => {
-    const mockSearchTerm = 'elf';
-    vi.spyOn(Term, 'getTermFromLS').mockReturnValue(mockSearchTerm);
-    const apiSpy = vi.spyOn(apiService, 'searchCharacters');
-
-    render(
-      <MemoryRouter>
-        <App />
-      </MemoryRouter>
-    );
-
-    await waitFor(() => {
-      expect(Term.getTermFromLS).toHaveBeenCalled();
-      expect(apiSpy).toHaveBeenCalledWith(mockSearchTerm);
-    });
   });
 
   it('render About page on /about route', () => {
