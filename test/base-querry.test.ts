@@ -74,9 +74,8 @@ class MockAbortSignal implements AbortSignal {
     }
   }
 
-  addEventListener(): void {}
-
-  removeEventListener(): void {}
+  addEventListener = vi.fn();
+  removeEventListener = vi.fn();
 
   dispatchEvent(event: Event): boolean {
     return event.defaultPrevented;
