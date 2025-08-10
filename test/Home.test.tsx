@@ -1,17 +1,20 @@
-import Home, { getLoadingState } from '@pages/home/home';
+import Home from '@pages/home/home';
 import { configureStore } from '@reduxjs/toolkit';
-import type { ApiResponse } from '@shared/types/response-types';
+import { useSearchCharactersQuery } from '@services/api/characterApi';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-const mockApiResponse: ApiResponse = {
-  docs: [],
-  total: 0,
-  limit: 10,
-  page: 1,
-  pages: 1,
+const mockApiResponse = {
+  data: {
+    docs: Array(10).fill({ id: '1', name: 'Character' }),
+    total: 10,
+    limit: 10,
+    page: 1,
+    pages: 5,
+  },
+  state: 'success',
 };
 
 vi.mock('@services/api/characterApi', async (importOriginal) => {
@@ -20,22 +23,28 @@ vi.mock('@services/api/characterApi', async (importOriginal) => {
   return {
     ...actual,
     useSearchCharactersQuery: vi.fn(() => ({
-      data: mockApiResponse,
+      data: mockApiResponse.data,
+      state: mockApiResponse.state,
       isLoading: false,
       isError: false,
       isFetching: false,
       refetch: vi.fn(),
     })),
-    useLazySearchCharactersQuery: () => [
-      vi.fn().mockResolvedValue({ data: mockApiResponse }),
-      { isFetching: false, data: mockApiResponse },
-    ],
   };
 });
 
 vi.mock('@components/layout/search/search-with-ref', () => ({
-  default: ({ onSearch }: { onSearch: (term: string) => void }) => (
-    <button onClick={() => onSearch('test')}>Search</button>
+  default: ({
+    onSearch,
+    initialSearchTerm,
+  }: {
+    onSearch: (term: string) => void;
+    initialSearchTerm: string;
+  }) => (
+    <div>
+      <span>Initial search: {initialSearchTerm}</span>
+      <button onClick={() => onSearch('test')}>Search</button>
+    </div>
   ),
 }));
 
@@ -44,8 +53,23 @@ vi.mock('@components/layout/results/Results', () => ({
 }));
 
 vi.mock('@components/ui/pagination/Pagination', () => ({
-  default: ({ onPageChange }: { onPageChange: (page: number) => void }) => (
-    <button onClick={() => onPageChange(1)}>Page 1</button>
+  default: ({
+    onPageChange,
+    currentPage,
+    totalPages,
+  }: {
+    onPageChange: (page: number) => void;
+    currentPage: number;
+    totalPages: number;
+  }) => (
+    <div data-testid="pagination">
+      <button
+        onClick={() => onPageChange(currentPage + 1)}
+        aria-label={`Page ${currentPage + 1} of ${totalPages}`}
+      >
+        Page {currentPage + 1} of {totalPages}
+      </button>
+    </div>
   ),
 }));
 
@@ -54,6 +78,15 @@ vi.mock('@components/hooks/use-restore-search-term', () => ({
     termValue: '',
     updateTermValue: vi.fn(),
   }),
+}));
+
+vi.mock('@components/ui/loading-overlay/loading-overlay', () => ({
+  default: ({ visible }: { visible: boolean }) =>
+    visible ? <div>Loading...</div> : null,
+}));
+
+vi.mock('@components/ui/flyout/Flyout', () => ({
+  Flyout: () => <div>Flyout</div>,
 }));
 
 describe('Home Component', () => {
@@ -75,10 +108,10 @@ describe('Home Component', () => {
     vi.clearAllMocks();
   });
 
-  const renderComponent = () => {
+  const renderComponent = (initialEntries = ['/']) => {
     return render(
       <Provider store={mockStore}>
-        <MemoryRouter initialEntries={['/']}>
+        <MemoryRouter initialEntries={initialEntries}>
           <Routes>
             <Route path="*" element={<Home />} />
           </Routes>
@@ -91,6 +124,7 @@ describe('Home Component', () => {
     renderComponent();
     await waitFor(() => {
       expect(screen.getByText('Search')).toBeInTheDocument();
+      expect(screen.getByText('Initial search:')).toBeInTheDocument();
     });
   });
 
@@ -102,28 +136,49 @@ describe('Home Component', () => {
     });
   });
 
-  it('should handle pagination', async () => {
+  it('show loading overlay on loading', async () => {
+    vi.mocked(useSearchCharactersQuery).mockReturnValueOnce({
+      data: undefined,
+      state: 'loading',
+      isLoading: true,
+      isError: false,
+      isFetching: true,
+      refetch: vi.fn(),
+    });
+
     renderComponent();
-    fireEvent.click(screen.getByText('Page 1'));
     await waitFor(() => {
-      expect(screen.getByText('Results')).toBeInTheDocument();
+      expect(screen.getByText('Loading...')).toBeInTheDocument();
     });
   });
-});
 
-describe('getLoadingState', () => {
-  it('return "loading" when isLoading is true', () => {
-    const result = getLoadingState(true, false);
-    expect(result).toBe('loading');
-  });
+  it('show flyout if the character selected', async () => {
+    const storeWithSelectedChars = configureStore({
+      reducer: {
+        characters: () => ({
+          selectedCharacters: [{ id: '1', name: 'Character 1' }],
+        }),
+        characterApi: () => ({}),
+      },
+      middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+          serializableCheck: false,
+          immutableCheck: false,
+        }),
+    });
 
-  it('return "error" when isError is true', () => {
-    const result1 = getLoadingState(false, true);
-    expect(result1).toBe('error');
-  });
+    render(
+      <Provider store={storeWithSelectedChars}>
+        <MemoryRouter initialEntries={['/']}>
+          <Routes>
+            <Route path="*" element={<Home />} />
+          </Routes>
+        </MemoryRouter>
+      </Provider>
+    );
 
-  it('return "success" when neither isLoading nor isError is true', () => {
-    const result = getLoadingState(false, false);
-    expect(result).toBe('success');
+    await waitFor(() => {
+      expect(screen.getByText('Flyout')).toBeInTheDocument();
+    });
   });
 });
