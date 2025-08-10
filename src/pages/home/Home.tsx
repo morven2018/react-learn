@@ -8,17 +8,8 @@ import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { useAppSelector } from '@redux/store';
 import { useSearchCharactersQuery } from '@services/api/characterApi';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
-
-export const getLoadingState = (
-  isLoading: boolean,
-  isError: boolean
-): 'loading' | 'success' | 'error' => {
-  if (isLoading) return 'loading';
-  if (isError) return 'error';
-  return 'success';
-};
 
 const Home = () => {
   const searchRef = useRef<SearchHandle>(null);
@@ -29,18 +20,10 @@ const Home = () => {
   const currentPage = parseInt(searchParams.get('page') ?? '1', 10);
   const initialSearchTerm = currentSearch ?? '';
 
-  const {
-    data: characters,
-    isLoading,
-    isError,
-    isFetching,
-  } = useSearchCharactersQuery(
+  const { data: apiResponse, isFetching } = useSearchCharactersQuery(
     { name: currentSearch ?? '', page: currentPage },
     { refetchOnMountOrArgChange: true }
   );
-
-  const [prevSearch, setPrevSearch] = useState(currentSearch);
-  const isNewSearch = prevSearch !== currentSearch;
 
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
@@ -50,10 +33,9 @@ const Home = () => {
     async (term: string) => {
       const searchTerm = term.trim();
       updateTermValue(searchTerm);
-      setPrevSearch(currentSearch);
       navigate(`?page=1`);
     },
-    [navigate, updateTermValue, currentSearch]
+    [navigate, updateTermValue]
   );
 
   const handlePageChange = useCallback(
@@ -68,35 +50,38 @@ const Home = () => {
   );
 
   useEffect(() => {
-    if (characters?.pages && currentPage > characters.pages) {
+    if (apiResponse?.data?.pages && currentPage > apiResponse.data.pages) {
       navigate(`?page=1`, { replace: true });
     }
-  }, [characters, currentPage, currentSearch, navigate]);
+  }, [apiResponse, currentPage, currentSearch, navigate]);
 
   return (
     <main className={style.mainSection}>
       <div className={style.mainContent}>
-        <LoadingOverlay visible={isLoading || (isFetching && isNewSearch)} />
+        <LoadingOverlay
+          visible={apiResponse?.state === 'loading' || isFetching}
+        />
         <SearchWithRef
           ref={searchRef}
           onSearch={handleSearch}
           initialSearchTerm={initialSearchTerm}
-          isLoading={isLoading || (isFetching && isNewSearch)}
+          isLoading={apiResponse?.state === 'loading' || isFetching}
         />
 
         <Results
-          characters={characters?.docs ?? []}
-          loadingState={getLoadingState(
-            isLoading || (isFetching && isNewSearch),
-            isError
-          )}
+          characters={apiResponse?.data?.docs ?? []}
+          loadingState={
+            (apiResponse?.state === 'error' && 'error') ||
+            (isFetching && 'loading') ||
+            'success'
+          }
           isFetchingMore={isFetching}
         />
 
-        {!!characters?.pages && (
+        {!!apiResponse?.data?.pages && (
           <Pagination
             currentPage={currentPage}
-            totalPages={characters?.pages}
+            totalPages={apiResponse?.data?.pages}
             onPageChange={handlePageChange}
             isLoading={isFetching}
           />
