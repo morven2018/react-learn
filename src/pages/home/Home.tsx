@@ -6,7 +6,9 @@ import style from './Home.module.scss';
 import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { Flyout } from '@components/ui/flyout/Flyout';
-import { useAppSelector } from '@redux/store';
+import { RefreshButton } from '@components/ui/refresh-button/refresh-button';
+import { triggerRefresh } from '@redux/refreshSlice';
+import { useAppDispatch, useAppSelector } from '@redux/store';
 import { useSearchCharactersQuery } from '@services/api/character-api';
 import { useCallback, useEffect, useRef } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
@@ -19,8 +21,13 @@ const Home = () => {
 
   const currentPage = parseInt(searchParams.get('page') ?? '1', 10);
   const initialSearchTerm = currentSearch ?? '';
+  const dispatch = useAppDispatch();
 
-  const { data: apiResponse, isFetching } = useSearchCharactersQuery(
+  const {
+    data: apiResponse,
+    isFetching,
+    refetch,
+  } = useSearchCharactersQuery(
     { name: currentSearch ?? '', page: currentPage },
     { refetchOnMountOrArgChange: true }
   );
@@ -49,6 +56,11 @@ const Home = () => {
     [navigate]
   );
 
+  const handleForceRefresh = useCallback(() => {
+    refetch();
+    dispatch(triggerRefresh());
+  }, [refetch, dispatch]);
+
   useEffect(() => {
     if (apiResponse?.data?.pages && currentPage > apiResponse.data.pages) {
       navigate(`?page=1`, { replace: true });
@@ -61,12 +73,19 @@ const Home = () => {
         <LoadingOverlay
           visible={apiResponse?.state === 'loading' || isFetching}
         />
-        <SearchWithRef
-          ref={searchRef}
-          onSearch={handleSearch}
-          initialSearchTerm={initialSearchTerm}
-          isLoading={apiResponse?.state === 'loading' || isFetching}
-        />
+
+        <div className={style.headerControls}>
+          <SearchWithRef
+            ref={searchRef}
+            onSearch={handleSearch}
+            initialSearchTerm={initialSearchTerm}
+            isLoading={apiResponse?.state === 'loading' || isFetching}
+          />
+          <RefreshButton
+            onRefresh={handleForceRefresh}
+            isLoading={isFetching}
+          />
+        </div>
 
         <Results
           characters={apiResponse?.data?.docs ?? []}

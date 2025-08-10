@@ -127,6 +127,7 @@ export const characterApi = createApi({
 
 export const {
   useGetCharacterByIdQuery,
+  useLazyGetCharacterByIdQuery,
   useSearchCharactersQuery,
   useLazySearchCharactersQuery,
   useGetCharactersByIdsQuery,

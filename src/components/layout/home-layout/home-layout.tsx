@@ -1,6 +1,7 @@
 import style from './home-layout.module.scss';
-import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 import { DetailCard } from '../detail-view/detail-card';
+
+import { Outlet, useNavigate, useSearchParams } from 'react-router-dom';
 
 const HomeLayout = () => {
   const [searchParams] = useSearchParams();
