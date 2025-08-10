@@ -1,8 +1,7 @@
-import CharacterApiService from '@services/api/api-service';
 import convertToCSV from '@shared/lib/convert-to-csv';
 import { Flyout } from '@components/ui/flyout/Flyout';
-import type { RootState } from '@redux/store';
 import { configureStore } from '@reduxjs/toolkit';
+import { useLazyGetCharactersByIdsQuery } from '@services/api/character-api';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
@@ -11,15 +10,18 @@ import charactersSlice, {
   clearSelectedCharacters,
 } from '@shared/features/characters-slice';
 
-vi.mock('@services/api/api-service', () => ({
-  default: {
-    getCharactersByIds: vi.fn(),
-  },
-}));
-
 vi.mock('@shared/lib/convert-to-csv', () => ({
   default: vi.fn(),
 }));
+
+vi.mock('@services/api/character-api', async (importOriginal) => {
+  const original =
+    await importOriginal<typeof import('@services/api/character-api')>();
+  return {
+    ...original,
+    useLazyGetCharactersByIdsQuery: vi.fn(),
+  };
+});
 
 describe('Flyout Component', () => {
   const mockCharacters = [
@@ -39,7 +41,7 @@ describe('Flyout Component', () => {
     },
   ];
 
-  const createTestStore = (preloadedState?: Partial<RootState>) => {
+  const createTestStore = () => {
     return configureStore({
       reducer: {
         characters: charactersSlice,
@@ -47,20 +49,34 @@ describe('Flyout Component', () => {
       preloadedState: {
         characters: {
           selectedCharacters: ['1', '2'],
-          ...preloadedState?.characters,
         },
       },
     });
   };
 
   let store: ReturnType<typeof createTestStore>;
+  const mockedUseLazyGetCharactersByIdsQuery = vi.mocked(
+    useLazyGetCharactersByIdsQuery
+  );
 
   beforeEach(() => {
     store = createTestStore();
-    vi.mocked(CharacterApiService.getCharactersByIds).mockResolvedValue(
-      mockCharacters
-    );
     vi.mocked(convertToCSV).mockReturnValue('csv data');
+
+    mockedUseLazyGetCharactersByIdsQuery.mockReturnValue([
+      vi.fn().mockResolvedValue({ data: mockCharacters }),
+      {
+        data: mockCharacters,
+        isLoading: false,
+        isError: false,
+        isSuccess: true,
+        isUninitialized: false,
+        refetch: vi.fn(),
+        reset: vi.fn(),
+        status: 'fulfilled',
+      },
+      { lastArg: [''] },
+    ]);
   });
 
   it('render correctly if selectedCharacters not empty', () => {
@@ -81,8 +97,13 @@ describe('Flyout Component', () => {
   });
 
   it('not render if selectedCharacters empty', () => {
-    const emptyStore = createTestStore({
-      characters: { selectedCharacters: [] },
+    const emptyStore = configureStore({
+      reducer: {
+        characters: charactersSlice,
+      },
+      preloadedState: {
+        characters: { selectedCharacters: [] },
+      },
     });
 
     const { container } = render(
@@ -94,7 +115,7 @@ describe('Flyout Component', () => {
     expect(container.firstChild).toBeNull();
   });
 
-  it('dispatch clearSelectedCharacters action on "Unselect all" button click', async () => {
+  it('dispatch clearSelectedCharacters action on "Unselect all" button click', () => {
     const dispatchSpy = vi.spyOn(store, 'dispatch');
 
     render(
@@ -104,13 +125,10 @@ describe('Flyout Component', () => {
     );
 
     fireEvent.click(screen.getByText('Unselect all'));
-
-    await waitFor(() => {
-      expect(dispatchSpy).toHaveBeenCalledWith(clearSelectedCharacters());
-    });
+    expect(dispatchSpy).toHaveBeenCalledWith(clearSelectedCharacters());
   });
 
-  it('download characters on "Download" button click', async () => {
+  it('download characters on Download button click', async () => {
     const div = document.createElement('div');
     div.id = 'root';
     document.body.appendChild(div);
@@ -130,10 +148,10 @@ describe('Flyout Component', () => {
     fireEvent.click(screen.getByText('Download'));
 
     await waitFor(() => {
-      expect(CharacterApiService.getCharactersByIds).toHaveBeenCalledWith([
-        '1',
-        '2',
-      ]);
+      const triggerFn =
+        mockedUseLazyGetCharactersByIdsQuery.mock.results[0].value[0];
+      expect(triggerFn).toHaveBeenCalledWith(['1', '2']);
+
       expect(convertToCSV).toHaveBeenCalledWith(mockCharacters);
       expect(mockCreateObjectURL).toHaveBeenCalled();
     });

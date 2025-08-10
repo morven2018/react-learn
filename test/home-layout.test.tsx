@@ -1,6 +1,6 @@
 import HomeLayout from '@components/layout/home-layout/home-layout';
 import { configureStore } from '@reduxjs/toolkit';
-import { characterApi } from '@services/api/characterApi';
+import { characterApi } from '@services/api/character-api';
 import { render, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes, useNavigate } from 'react-router-dom';
