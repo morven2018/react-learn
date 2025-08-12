@@ -2,8 +2,8 @@ import CharacterApiService from '@services/api/api-service';
 import React, { useRef } from 'react';
 import convertToCSV from '@shared/lib/convert-to-csv';
 import style from './flyout.module.scss';
+import { clearSelectedCharacters } from '@redux/slices/characters-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
-import { clearSelectedCharacters } from '@shared/features/characters-slice';
 
 export const Flyout: React.FC = () => {
   const downloadLinkRef = useRef<HTMLAnchorElement>(null);
