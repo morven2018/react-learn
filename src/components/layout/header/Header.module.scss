@@ -1,0 +1,98 @@
+@use '@assets/styles/globals.scss' as *;
+
+.header {
+  max-width: $max-width;
+  margin: 0 auto 10px;
+  padding: $base-padding;
+
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  justify-content: center;
+  gap: 20px;
+
+  border: 2px solid var(--base-border);
+  border-radius: $border-radius;
+
+  font-family: $font-medieval;
+
+  .controls {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: flex-start;
+
+    .themeButton {
+      background-color: transparent;
+      border: none;
+
+      img {
+        height: 24px;
+        width: 24px;
+      }
+
+      &:focus,
+      &:hover {
+        border: none;
+        outline: none;
+        transform: scale(0.8);
+      }
+
+      &:hover {
+        transform: scale(1.2);
+      }
+    }
+
+    @media (max-width: $breakpoint) {
+      flex-direction: column-reverse;
+      .themeButton {
+        margin: 10px $base-padding 10px auto;
+      }
+    }
+  }
+
+  .h1 {
+    font-size: $header-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $header-typography-mobile;
+    }
+  }
+
+  .subheader {
+    font-size: $subheader-typography;
+
+    @media (max-width: $breakpoint) {
+      font-size: $subheader-typography-mobile;
+    }
+  }
+
+  .whiteTree {
+    height: $header-typography;
+    width: auto;
+  }
+
+  .aboutPage {
+    font-size: $controls-typography;
+    color: var(--primary-light);
+    text-decoration: none;
+  }
+  .whiteTree,
+  .aboutPage {
+    &:hover {
+      transform: scale(1.1);
+      color: var(--gold);
+    }
+    &:focus {
+      transform: scale(0.8);
+      color: var(--hover-border);
+    }
+  }
+}
+.linkWrapper {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 50px;
+}
