@@ -15,15 +15,20 @@ const DetailsContent = ({ character, isLoading }: DetailsProps) => {
   };
 
   const characterDetails = [
-    { label: 'Race', value: formatValue(character.race) },
-    { label: 'Gender', value: formatValue(character.gender) },
-    { label: 'Birth', value: formatValue(character.birth) },
-    { label: 'Death', value: formatValue(character.death) },
-    { label: 'Hair', value: formatValue(character.hair) },
-    { label: 'Height', value: formatValue(character.height) },
-    { label: 'Realm', value: formatValue(character.realm) },
-    { label: 'Spouse', value: formatValue(character.spouse) },
-  ].filter((item) => item.value !== null);
+    { label: 'Race', value: character.race },
+    { label: 'Gender', value: character.gender },
+    { label: 'Birth', value: character.birth },
+    { label: 'Death', value: character.death },
+    { label: 'Hair', value: character.hair },
+    { label: 'Height', value: character.height },
+    { label: 'Realm', value: character.realm },
+    { label: 'Spouse', value: character.spouse },
+  ]
+    .map((item) => ({
+      label: item.label,
+      value: formatValue(item.value),
+    }))
+    .filter((item) => item.value !== null);
 
   return (
     <div className={style.detailsContainer}>
