@@ -1,15 +1,7 @@
 import { Term } from '@services/localStorage/LS-service';
 import { Themes } from '@shared/types/response-types';
+import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
 import { ThemeContext } from './theme-context';
-
-import {
-  type FC,
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-  useCallback,
-} from 'react';
 
 const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState(Term.getThemeFromLS());
@@ -21,13 +13,10 @@ const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
   }, [theme]);
 
   const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
-
-  useEffect(() => {
-    document.documentElement.setAttribute('data-theme', theme);
-  }, [theme]);
-
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <div className={theme}>{children}</div>
+    </ThemeContext.Provider>
   );
 };
 

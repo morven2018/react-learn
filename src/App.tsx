@@ -1,7 +1,7 @@
 import './App.scss';
 import AboutPage from '@pages/about/about';
-import Header from '@components/layout/header/header';
-import Home from '@pages/home/home';
+import Header from '@components/layout/header/Header';
+import Home from '@pages/home/Home';
 import HomeLayout from '@components/layout/home-layout/home-layout';
 import NotFoundPage from '@pages/not-found/not-found';
 import ThemeProvider from '@context/theme-provider';
@@ -15,18 +15,16 @@ const OTHER_PATH = '*';
 const App = () => {
   return (
     <ThemeProvider>
-      <div className="app">
-        <Header />
-        <Routes>
-          <Route element={<HomeLayout />}>
-            <Route path={HOME_PATH} element={<Home />} />
-            <Route path={RESERVE_HOME_PATH} element={<Home />} />
-          </Route>
+      <Header />
+      <Routes>
+        <Route element={<HomeLayout />}>
+          <Route path={HOME_PATH} element={<Home />} />
+          <Route path={RESERVE_HOME_PATH} element={<Home />} />
+        </Route>
 
-          <Route path={ABOUT_PATH} element={<AboutPage />} />
-          <Route path={OTHER_PATH} element={<NotFoundPage />} />
-        </Routes>
-      </div>
+        <Route path={ABOUT_PATH} element={<AboutPage />} />
+        <Route path={OTHER_PATH} element={<NotFoundPage />} />
+      </Routes>
     </ThemeProvider>
   );
 };
