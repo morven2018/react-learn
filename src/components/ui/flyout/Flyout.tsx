@@ -1,11 +1,12 @@
 import CharacterApiService from '@services/api/api-service';
-import React from 'react';
+import React, { useRef } from 'react';
 import convertToCSV from '@shared/lib/convert-to-csv';
 import style from './flyout.module.scss';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 import { clearSelectedCharacters } from '@shared/features/characters-slice';
 
 export const Flyout: React.FC = () => {
+  const downloadLinkRef = useRef<HTMLAnchorElement>(null);
   const dispatch = useAppDispatch();
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
@@ -20,24 +21,19 @@ export const Flyout: React.FC = () => {
       const data =
         await CharacterApiService.getCharactersByIds(selectedCharacters);
       const csvData = convertToCSV(data);
-
       const fileName = `${selectedCharacters.length}_characters.csv`;
-
       const BOM = '\uFEFF';
       const blob = new Blob([BOM + csvData], {
         type: 'text/csv;charset=utf-8;',
       });
 
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', fileName);
-
-      document.body.appendChild(link);
-      link.click();
-
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
+      if (downloadLinkRef.current) {
+        const url = URL.createObjectURL(blob);
+        downloadLinkRef.current.href = url;
+        downloadLinkRef.current.download = fileName;
+        downloadLinkRef.current.click();
+        URL.revokeObjectURL(url);
+      }
     } catch (error) {
       console.error('Error downloading characters:', error);
     }
@@ -73,8 +69,9 @@ export const Flyout: React.FC = () => {
           >
             Download
           </button>
+          <a ref={downloadLinkRef} style={{ display: 'none' }} />
         </div>
-      </div>{' '}
+      </div>
     </div>
   );
 };
