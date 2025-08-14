@@ -1,10 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import charactersSlice, {
+  type CharactersState,
   clearSelectedCharacters,
   toggleCharacterSelection,
-  type CharactersState,
-} from '@shared/features/characters-slice';
+} from '@redux/slices/characters-slice';
 
 const localStorageMock = {
   getItem: vi.fn(),

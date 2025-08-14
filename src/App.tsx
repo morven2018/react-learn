@@ -15,18 +15,16 @@ const OTHER_PATH = '*';
 const App = () => {
   return (
     <ThemeProvider>
-      <div className="app">
-        <Header />
-        <Routes>
-          <Route element={<HomeLayout />}>
-            <Route path={HOME_PATH} element={<Home />} />
-            <Route path={RESERVE_HOME_PATH} element={<Home />} />
-          </Route>
+      <Header />
+      <Routes>
+        <Route element={<HomeLayout />}>
+          <Route path={HOME_PATH} element={<Home />} />
+          <Route path={RESERVE_HOME_PATH} element={<Home />} />
+        </Route>
 
-          <Route path={ABOUT_PATH} element={<AboutPage />} />
-          <Route path={OTHER_PATH} element={<NotFoundPage />} />
-        </Routes>
-      </div>
+        <Route path={ABOUT_PATH} element={<AboutPage />} />
+        <Route path={OTHER_PATH} element={<NotFoundPage />} />
+      </Routes>
     </ThemeProvider>
   );
 };

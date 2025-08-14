@@ -1,5 +1,5 @@
-import charactersSlice from '@shared/features/characters-slice';
-import refreshReducer from './refresh-slice';
+import charactersSlice from './slices/characters-slice';
+import refreshReducer from './slices/refresh-slice';
 import { configureStore } from '@reduxjs/toolkit';
 import { characterApi } from '@services/api/character-api';
 

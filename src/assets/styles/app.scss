@@ -4,10 +4,6 @@
   font-family: $font-base;
   line-height: 1.5;
   font-weight: 400;
-
-  color: var(--primary-light);
-  background-color: var(--primary-black);
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -16,7 +12,6 @@
 
 #root {
   max-width: 100vw;
-  background-color: var(--primary-black);
   padding: 0;
 }
 .app {

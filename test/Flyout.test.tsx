@@ -8,7 +8,13 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import charactersSlice, {
   clearSelectedCharacters,
-} from '@shared/features/characters-slice';
+} from '@redux/slices/characters-slice';
+
+vi.mock('@services/api/api-service', () => ({
+  default: {
+    getCharactersByIds: vi.fn(),
+  },
+}));
 
 vi.mock('@shared/lib/convert-to-csv', () => ({
   default: vi.fn(),

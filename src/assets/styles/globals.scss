@@ -1,48 +1,57 @@
 @import url('https://fonts.googleapis.com/css2?family=MedievalSharp&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=MedievalSharp&display=swap');
 
-:root {
-  --primary-black: #000;
-  --primary-light: rgba(255, 255, 255, 0.87);
-  --secondary-light: rgba(255, 255, 255, 1);
-  --search-background: rgba(255, 255, 255, 0.25);
-  --card-background: rgba(0, 0, 0, 0.7);
-  --shadow: rgba(0, 0, 0, 0.5);
-  --base-border: #6a5332;
-  --button: rgba(0, 0, 0, 0.87);
-  --input: rgba(0, 0, 0, 0.7);
-  --hover-border: gold;
-  --gold: #fdff20;
-  --unknown: rgba(255, 255, 255, 0.5);
-  --shadow30: rgba(0, 0, 0, 0.3);
-  --shadow40: rgba(0, 0, 0, 0.3);
-  --pagination-text: #000000;
-  --checked: #d48e0c;
-  --label: #ebae3e;
-  --focus-border: rgb(243, 236, 195);
-}
+#root {
+  background-color: rgba(109, 98, 98, 0.3);
+  color: var(--primary-light);
+  height: 100vh;
 
-[data-theme='light'] {
-  --primary-black: #f0eaba8f;
-  --primary-light: rgba(0, 0, 0, 0.87);
-  --secondary-light: rgba(0, 0, 0, 1);
-  --search-background: rgba(0, 0, 0, 0.1);
-  --card-background: rgba(245, 245, 245, 0.65);
-  --shadow: rgba(255, 255, 255, 0.2);
-  --base-border: #b8a27d;
-  --button: gold;
-  --input: rgba(255, 255, 255, 0.7);
-  --hover-border: #b59500;
-  --gold: #582604;
-  --unknown: rgba(0, 0, 0, 0.5);
-  --shadow30: rgba(255, 255, 255, 0.3);
-  --shadow30: rgba(255, 255, 255, 0.4);
-  --pagination-text: #ffffff;
-  --checked: #f3cf8b;
-  --label: #795718;
-  --focus-border: rgb(212, 186, 34);
-}
+  .dark {
+    --primary-black: #000;
+    --primary-light: rgba(255, 255, 255, 0.87);
+    --secondary-light: rgba(255, 255, 255, 1);
+    --search-background: rgba(255, 255, 255, 0.25);
+    --card-background: rgba(0, 0, 0, 0.7);
+    --shadow: rgba(0, 0, 0, 0.5);
+    --base-border: #6a5332;
+    --button: rgba(0, 0, 0, 0.87);
+    --input: rgba(0, 0, 0, 0.7);
+    --hover-border: gold;
+    --gold: #fdff20;
+    --unknown: rgba(255, 255, 255, 0.5);
+    --shadow30: rgba(0, 0, 0, 0.3);
+    --shadow40: rgba(0, 0, 0, 0.3);
+    --pagination-text: #000000;
+    --checked: #d48e0c;
+    --label: #ebae3e;
+    --focus-border: rgb(243, 236, 195);
+    background-color: var(--primary-black);
+    color: var(--primary-light);
+  }
 
+  .light {
+    --primary-black: #f0eaba8f;
+    --primary-light: rgba(0, 0, 0, 0.87);
+    --secondary-light: rgba(0, 0, 0, 1);
+    --search-background: rgba(0, 0, 0, 0.1);
+    --card-background: rgba(245, 245, 245, 0.65);
+    --shadow: rgba(255, 255, 255, 0.2);
+    --base-border: #b8a27d;
+    --button: gold;
+    --input: rgba(255, 255, 255, 0.7);
+    --hover-border: #b59500;
+    --gold: #582604;
+    --unknown: rgba(0, 0, 0, 0.5);
+    --shadow30: rgba(255, 255, 255, 0.3);
+    --shadow30: rgba(255, 255, 255, 0.4);
+    --pagination-text: #ffffff;
+    --checked: #f3cf8b;
+    --label: #795718;
+    --focus-border: rgb(212, 186, 34);
+    background-color: var(--primary-black);
+    color: var(--primary-light);
+  }
+}
 $max-width: 1200px;
 
 $breakpoint: 500px;

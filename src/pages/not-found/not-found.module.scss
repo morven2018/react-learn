@@ -8,7 +8,8 @@
   align-items: center;
   justify-content: center;
   gap: 40px;
-  padding: $base-padding;
+  padding: $base-padding 40px;
+  border-radius: $border-radius;
 
   color: var(--secondary-light);
   text-align: center;

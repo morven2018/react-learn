@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest';
 import refreshSlice, {
   triggerRefresh,
   initialState,
-} from '@redux/refresh-slice';
+} from '@redux/slices/refresh-slice';
 
 describe('refreshSlice', () => {
   it('correct initial state', () => {

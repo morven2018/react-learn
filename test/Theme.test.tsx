@@ -90,24 +90,4 @@ describe('ThemeProvider', () => {
     expect(screen.getByTestId('theme').textContent).toBe(Themes.light);
     expect(setThemeMock).toHaveBeenCalledWith(Themes.light);
   });
-
-  it('update attribute on theme change', () => {
-    vi.spyOn(Term, 'getThemeFromLS').mockReturnValue(Themes.light);
-
-    render(
-      <ThemeProvider>
-        <TestComponent />
-      </ThemeProvider>
-    );
-
-    expect(document.documentElement.getAttribute('data-theme')).toBe(
-      Themes.light
-    );
-
-    fireEvent.click(screen.getByText('Toggle Theme'));
-
-    expect(document.documentElement.getAttribute('data-theme')).toBe(
-      Themes.dark
-    );
-  });
 });

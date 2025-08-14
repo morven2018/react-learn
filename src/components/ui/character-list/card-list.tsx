@@ -13,7 +13,7 @@ const CardList: React.FC<CardListProps> = ({ characters, isFetchingMore }) => {
     <>
       <ul className={style.list}>
         {characters.map((character) => (
-          <Card key={character.name} character={character} />
+          <Card key={character._id} character={character} />
         ))}
       </ul>
       {isFetchingMore && (

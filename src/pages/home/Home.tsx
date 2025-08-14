@@ -8,7 +8,7 @@ import type { SearchHandle } from '@components/layout/search/search-with-ref';
 import { ErrorMessage } from '@components/ui/error-message/error-message';
 import { Flyout } from '@components/ui/flyout/Flyout';
 import { RefreshButton } from '@components/ui/refresh-button/refresh-button';
-import { triggerRefresh } from '@redux/refresh-slice';
+import { triggerRefresh } from '@redux/slices/refresh-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 import { useSearchCharactersQuery } from '@services/api/character-api';
 import { getErrorMessage } from '@services/api/error-handler';

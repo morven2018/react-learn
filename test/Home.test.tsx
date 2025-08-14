@@ -1,11 +1,10 @@
 import Home from '@pages/home/Home';
 import { configureStore } from '@reduxjs/toolkit';
+import { characterApi } from '@services/api/character-api';
 import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { MemoryRouter, Route, Routes } from 'react-router-dom';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { characterApi } from '@services/api/character-api';
 
 const mockApiResponse = {
   data: {
