@@ -1,0 +1,84 @@
+@use '@assets/styles/globals.scss' as *;
+
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: $small-padding;
+  margin: $base-padding 0;
+  font-family: $font-medieval;
+}
+
+.pageButton {
+  min-width: 40px;
+  padding: $small-padding;
+
+  border-radius: $border-radius;
+  border: 1px solid rgba(var(--base-border), 0.3);
+  box-shadow: 0 2px 4px var(--shadow);
+
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  background: var(--card-background);
+
+  color: var(--secondary-light);
+  font-family: $font-base;
+  font-size: $text-typography;
+
+  &:hover:not(:disabled) {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px var(--shadow30);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &.active {
+    background: var(--gold);
+    color: var(--pagination-text);
+    font-weight: bold;
+    border-color: var(--gold);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.navButton {
+  @extend .pageButton;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: $small-padding;
+  font-weight: bold;
+  min-width: unset;
+
+  &:hover:not(:disabled) {
+    color: var(--gold);
+  }
+}
+
+.ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 $small-padding;
+  color: var(--unknown);
+  font-family: $font-base;
+  user-select: none;
+}
+
+@media (max-width: $breakpoint) {
+  .pagination {
+    gap: calc($small-padding / 2);
+  }
+
+  .pageButton {
+    min-width: 30px;
+    padding: calc($small-padding / 2);
+  }
+}
