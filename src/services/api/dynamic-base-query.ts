@@ -6,9 +6,9 @@ import {
 
 export const API_BASE = 'https://the-one-api.dev/v2/';
 export const API_KEY_PRIMARY =
-  import.meta.env.NEXT_PUBLIC_KEY ?? 'ksmnN0SYU1vcR69udsuY';
+  process.env.NEXT_PUBLIC_KEY ?? 'ksmnN0SYU1vcR69udsuY';
 export const API_KEY_SECONDARY =
-  import.meta.env.NEXT_PUBLIC_KEY2 ?? 'oJHunt00vrX9Yile7Jny';
+  process.env.NEXT_PUBLIC_KEY2 ?? 'oJHunt00vrX9Yile7Jny';
 
 export enum HttpStatus {
   BadRequest = 400,
