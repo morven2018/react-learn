@@ -1,30 +1,23 @@
 import './App.scss';
 import AboutPage from '@pages/about/about';
 import Header from '@components/layout/header/Header';
-import Home from '@pages/home/Home';
-import HomeLayout from '@components/layout/home-layout/home-layout';
-import NotFoundPage from '@pages/not-found/not-found';
 import ThemeProvider from '@context/theme-provider';
-import { Route, Routes } from 'react-router-dom';
 
-const HOME_PATH = '/';
+//import Home from '@pages/home/Home';
+//import HomeLayout from '@components/layout/home-layout/home-layout';
+//import NotFoundPage from '@pages/not-found/not-found';
+//import { Route, Routes } from 'react-router-dom';
+
+/*const HOME_PATH = '/';
 const RESERVE_HOME_PATH = '/index.html';
 const ABOUT_PATH = '/about';
-const OTHER_PATH = '*';
+const OTHER_PATH = '*';*/
 
 const App = () => {
   return (
     <ThemeProvider>
       <Header />
-      <Routes>
-        <Route element={<HomeLayout />}>
-          <Route path={HOME_PATH} element={<Home />} />
-          <Route path={RESERVE_HOME_PATH} element={<Home />} />
-        </Route>
-
-        <Route path={ABOUT_PATH} element={<AboutPage />} />
-        <Route path={OTHER_PATH} element={<NotFoundPage />} />
-      </Routes>
+      <AboutPage />
     </ThemeProvider>
   );
 };

@@ -1,6 +1,6 @@
 @use '@assets/styles/globals.scss' as *;
 
-$bg-image: url('@assets/images/background.png');
+$bg-image: url('../../../assets/images/background.png');
 
 .layout {
   display: flex;
