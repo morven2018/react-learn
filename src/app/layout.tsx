@@ -1,4 +1,6 @@
+import ErrorBoundary from '@components/common/error-boundary.tsx';
 import logo from '@assets/logo.svg';
+import { ReduxProvider } from 'src/providers/redux-provider';
 
 export default function RootLayout({
   children,
@@ -15,7 +17,9 @@ export default function RootLayout({
         <meta name="description" content="Lord of the rings. Search on Next" />
       </head>
       <body>
-        <div id="root">{children}</div>
+        <ReduxProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </ReduxProvider>
       </body>
     </html>
   );
