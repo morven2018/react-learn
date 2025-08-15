@@ -1,6 +1,9 @@
+import Image from 'next/image';
 import git from '@assets/logo/git.svg';
 import rss from '@assets/logo/rss.svg';
 import style from './about.module.scss';
+
+const ICON_SIZE = 36;
 
 export const AboutPage = () => {
   return (
@@ -16,7 +19,12 @@ export const AboutPage = () => {
             aria-label="Alena Pudina GitHub profile"
             className={style.link}
           >
-            <img src={git} alt="git logo" />
+            <Image
+              src={git}
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              alt="git logo"
+            />
           </a>
         </p>
         <div className={style.data}>
@@ -27,7 +35,13 @@ export const AboutPage = () => {
             rel="noreferrer"
             className={style.link}
           >
-            React Course <img src={rss} alt="rss logo" />
+            React Course{' '}
+            <Image
+              src={rss}
+              width={ICON_SIZE}
+              height={ICON_SIZE}
+              alt="rss logo"
+            />
           </a>
         </div>
       </div>

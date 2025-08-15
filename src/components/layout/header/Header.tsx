@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import darkMode from '@assets/logo/darkMode.svg';
 import lightMode from '@assets/logo/lightMode.svg';
 import logoDark from '@assets/images/image.png';
@@ -14,7 +15,7 @@ const Header = () => {
       <div className={style.controls}>
         <div className={style.linkWrapper}>
           <a href="/">
-            <img
+            <Image
               src={theme === Themes.dark ? logoDark : logoLight}
               alt="White tree"
               className={style.whiteTree}
@@ -33,8 +34,10 @@ const Header = () => {
               : 'Switch to dark theme'
           }
         >
-          <img
+          <Image
             src={theme === Themes.dark ? lightMode : darkMode}
+            width={24}
+            height={24}
             alt={
               theme === Themes.dark
                 ? 'Toggle to light theme'

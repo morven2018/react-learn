@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2022",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2022",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -29,35 +25,16 @@
     "incremental": true,
     "allowJs": true,
     "baseUrl": ".",
-    "typeRoots": [
-      "./node_modules/@types",
-      "./src/types"
-    ],
+    "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
-      "@assets/*": [
-        "./src/assets/*"
-      ],
-      "@components/*": [
-        "./src/components/*"
-      ],
-      "@shared/*": [
-        "./src/shared/*"
-      ],
-      "@pages/*": [
-        "./src/pages/*"
-      ],
-      "@services/*": [
-        "./src/services/*"
-      ],
-      "@hooks/*": [
-        "./src/components/hooks/*"
-      ],
-      "@redux/*": [
-        "./src/redux/*"
-      ],
-      "@context/*": [
-        "./src/context/*"
-      ]
+      "@assets/*": ["./src/assets/*"],
+      "@components/*": ["./src/components/*"],
+      "@shared/*": ["./src/shared/*"],
+      "@pages/*": ["./src/pages/*"],
+      "@services/*": ["./src/services/*"],
+      "@hooks/*": ["./src/components/hooks/*"],
+      "@redux/*": ["./src/redux/*"],
+      "@context/*": ["./src/context/*"]
     },
     "plugins": [
       {
@@ -66,13 +43,6 @@
     ],
     "resolveJsonModule": true
   },
-  "include": [
-    "src",
-    "test",
-    "./dist/types/**/*.ts",
-    "./next-env.d.ts"
-  ],
-  "exclude": [
-    "node_modules"
-  ]
+  "include": ["src", "test", "./dist/types/**/*.ts", "./next-env.d.ts"],
+  "exclude": ["node_modules"]
 }
