@@ -27,6 +27,7 @@
     "baseUrl": ".",
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "paths": {
+      "@/*": ["./src/*"],
       "@assets/*": ["./src/assets/*"],
       "@components/*": ["./src/components/*"],
       "@shared/*": ["./src/shared/*"],
@@ -43,6 +44,12 @@
     ],
     "resolveJsonModule": true
   },
-  "include": ["src", "test", "./dist/types/**/*.ts", "./next-env.d.ts"],
+  "include": [
+    "./dist/types/**/*.ts",
+    "./next-env.d.ts",
+    "src",
+    "test",
+    ".next/types/**/*.ts"
+  ],
   "exclude": ["node_modules"]
 }
