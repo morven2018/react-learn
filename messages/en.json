@@ -1,17 +1,7 @@
 {
-  "Metadata": {
+  "Index": {
     "title": "Lord of the Rings. Search",
     "description": "Search characters from Lord of the Rings"
-  },
-  "Header": {
-    "logoAlt": "White tree",
-    "aboutLink": "To about page",
-    "switchToLight": "Switch to light theme",
-    "switchToDark": "Switch to dark theme",
-    "lightThemeIcon": "Light theme icon",
-    "darkThemeIcon": "Dark theme icon",
-    "title": "Middle Earth",
-    "subtitle": "Search"
   },
   "Switcher": {
     "switchLocale": "Switch to {locale}"
@@ -20,5 +10,13 @@
     "title": "Page not found",
     "description": "The page you are looking for does not exist.",
     "tryAgain": "DDV"
+  },
+  "Header": {
+    "logoAlt": "Website logo",
+    "aboutLink": "About us",
+    "title": "Middle Earth",
+    "subtitle": "Search",
+    "toggleLight": "Switch to light theme",
+    "toggleDark": "Switch to dark theme"
   }
 }

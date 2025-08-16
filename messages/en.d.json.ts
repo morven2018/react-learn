@@ -1,0 +1,23 @@
+declare const messages: {
+  Index: {
+    title: 'Lord of the Rings. Search';
+    description: 'Search characters from Lord of the Rings';
+  };
+  Switcher: {
+    switchLocale: 'Switch to {locale}';
+  };
+  NotFound: {
+    title: 'Page not found';
+    description: 'The page you are looking for does not exist.';
+    tryAgain: 'DDV';
+  };
+  Header: {
+    logoAlt: 'Website logo';
+    aboutLink: 'About us';
+    title: 'Middle Earth';
+    subtitle: 'Search';
+    toggleLight: 'Switch to light theme';
+    toggleDark: 'Switch to dark theme';
+  };
+};
+export default messages;
