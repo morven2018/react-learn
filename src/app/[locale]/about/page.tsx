@@ -3,7 +3,8 @@ import git from '@assets/logo/git.svg';
 import rss from '@assets/logo/rss.svg';
 import style from './about.module.scss';
 import { useTranslations } from 'next-intl';
-import { Link } from '@/i18n/navigation';
+
+//import { Link } from '@/i18n/navigation';
 
 const ICON_SIZE = 36;
 export default function AboutPage() {

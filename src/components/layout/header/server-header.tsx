@@ -1,8 +1,8 @@
 import ClientHeader from './client-header';
-import Image from 'next/image';
-import logoLight from '@assets/images/imageL.png';
+import LocaleSwitcher from '@/components/ui/locale/locale-switcher';
 import styles from './header.module.scss';
 import { getTranslations } from 'next-intl/server';
+import { Logo } from './logo';
 import { Link } from '@/i18n/navigation';
 
 export default async function ServerHeader() {
@@ -14,17 +14,12 @@ export default async function ServerHeader() {
       <div className={styles.controls}>
         <div className={styles.linkWrapper}>
           <Link href="/">
-            <Image
-              src={logoLight}
-              width={LOGO_SIZE}
-              alt={t('logoAlt')}
-              className={styles.logo}
-              priority
-            />
+            <Logo size={LOGO_SIZE} />
           </Link>
           <Link href="/about" className={styles.aboutLink}>
             {t('aboutLink')}
           </Link>
+          <LocaleSwitcher />
         </div>
         <ClientHeader />
       </div>
