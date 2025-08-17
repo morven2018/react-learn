@@ -1,42 +1,52 @@
 'use client';
 import DetailsContent from './detail-content';
-import { useEffect, useState } from 'react';
-import type { Person } from '@/shared/types/response-types';
+import { useEffect } from 'react';
+import { useGetCharacterByIdQuery } from '@/services/api/character-api';
+import { getErrorMessage } from '@/services/api/error-handler';
 
 interface DetailCardProps {
-  character: Person;
+  characterId: string;
   onClose: () => void;
 }
 
 export default function DetailCard({
-  character,
+  characterId,
   onClose,
 }: Readonly<DetailCardProps>) {
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    data: character,
+    isLoading,
+    isError,
+    error,
+    isFetching,
+  } = useGetCharacterByIdQuery(characterId, {
+    skip: !characterId,
+    refetchOnMountOrArgChange: true,
+  });
 
   useEffect(() => {
-    if (!character) {
-      setIsLoading(true);
+    if (isError) {
+      console.error('Failed to load character:', error);
     }
-  }, [character]);
+  }, [isError, error]);
 
   return (
     <div className="detail-card">
       <div className="detail-card-header">
-        <h2>{character?.name || 'Character Details'}</h2>
+        <h2>
+          {isLoading || isFetching
+            ? 'Loading...'
+            : character?.name || 'Unknown Character'}
+        </h2>
         <button onClick={onClose}>×</button>
       </div>
 
-      {isLoading ? (
-        <div>Loading...</div>
-      ) : (
-        <DetailsContent
-          character={character}
-          isLoading={false}
-          isError={false}
-          errorData={''}
-        />
-      )}
+      <DetailsContent
+        character={character ?? null}
+        isLoading={isLoading || isFetching}
+        isError={isError}
+        errorData={getErrorMessage(error)}
+      />
     </div>
   );
 }

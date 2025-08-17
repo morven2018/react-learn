@@ -7,6 +7,7 @@ import { setCookie } from 'cookies-next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback } from 'react';
 import { Flyout } from '@/components/ui/flyout/Flyout';
+import { RefreshButton } from '@/components/ui/refresh-button/refresh-button';
 import { useSearchCharactersQuery } from '@/services/api/character-api';
 import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
 import type { Person } from '@/shared/types/response-types';
@@ -18,15 +19,12 @@ interface HomeClientProps {
     currentPage: number;
   };
   initialSearchTerm?: string;
-  characterDetails?: Person | null;
   characterId?: string;
 }
 
 export default function HomeClient({
   initialData,
   initialSearchTerm = '',
-  characterDetails,
-  characterId,
 }: Readonly<HomeClientProps>) {
   const router = useRouter();
   const pathname = usePathname();
@@ -40,10 +38,12 @@ export default function HomeClient({
     data: charactersData,
     isLoading,
     isFetching,
+    refetch,
   } = useSearchCharactersQuery(
     { name: searchTerm, page },
     {
       skip: !searchTerm,
+      refetchOnMountOrArgChange: true,
     }
   );
 
@@ -51,17 +51,20 @@ export default function HomeClient({
   const totalPages = charactersData?.data?.pages || initialData.totalPages;
   const currentPage = charactersData?.data?.page || page;
 
+  const handleRefresh = useCallback(() => {
+    refetch();
+  }, [refetch]);
+
   const handleSearch = useCallback(
     async (term: string) => {
       setCookie(COOKIE_LAST_SEARCH, term, { maxAge: 60 * 60 * 24 * 30 });
-
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(searchParams.toString());
       params.set('search', term);
       params.set('page', '1');
       if (detailsParam) params.set('details', detailsParam);
       await router.push(`${pathname}?${params.toString()}`);
     },
-    [router, pathname, detailsParam]
+    [router, pathname, detailsParam, searchParams]
   );
 
   const handlePageChange = useCallback(
@@ -85,34 +88,35 @@ export default function HomeClient({
   return (
     <div className="home-container">
       <div>
-        <div>
+        <div className="flex justify-between items-center mb-4">
           <SearchWithRef
             onSearch={handleSearch}
             initialSearchTerm={searchTerm}
             isLoading={isLoading || isFetching}
           />
-
-          <Results
-            characters={characters}
-            loadingState={isLoading || isFetching ? 'loading' : 'success'}
-            isFetchingMore={false}
+          <RefreshButton
+            onRefresh={handleRefresh}
+            isLoading={isLoading || isFetching}
           />
-
-          {totalPages > 1 && (
-            <Pagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-              isLoading={isLoading || isFetching}
-            />
-          )}
         </div>
 
-        {characterId && characterDetails && (
-          <DetailCard
-            character={characterDetails}
-            onClose={handleCloseDetails}
+        <Results
+          characters={characters}
+          loadingState={isLoading || isFetching ? 'loading' : 'success'}
+          isFetchingMore={false}
+        />
+
+        {totalPages > 1 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={totalPages}
+            onPageChange={handlePageChange}
+            isLoading={isLoading || isFetching}
           />
+        )}
+
+        {detailsParam && (
+          <DetailCard characterId={detailsParam} onClose={handleCloseDetails} />
         )}
       </div>
       <Flyout />

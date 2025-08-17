@@ -1,17 +1,11 @@
 import type { CharacterApiEndpoints } from './types';
 
-import {
-  createApi,
-  type FetchBaseQueryError,
-} from '@reduxjs/toolkit/query/react';
+import { createApi } from '@reduxjs/toolkit/query/react';
 
-import type {
-  ApiResponse,
-  Person,
-  PersonWithUrl,
-} from '@shared/types/response-types';
+import type { ApiResponse, Person } from '@shared/types/response-types';
 
 import {
+  API_BASE,
   ERROR_MESSAGES,
   HttpStatus,
   staggeredBaseQuery,
@@ -32,7 +26,10 @@ export const characterApi = createApi({
   tagTypes: ['Characters'],
   endpoints: (builder): CharacterApiEndpoints => ({
     getCharacterById: builder.query<Person, string>({
-      query: (id) => `character/${id}`,
+      query: (id) => ({
+        url: `${API_BASE}character/${id}`,
+        method: 'GET',
+      }),
       transformResponse: (response: { docs: Person[] }) => {
         if (!response?.docs?.[0])
           throw new Error(ERROR_MESSAGES[HttpStatus.NotFound]);
@@ -54,7 +51,11 @@ export const characterApi = createApi({
         if (name) params.append('name', `/${name}/i`);
         params.append('page', page.toString());
         params.append('limit', BASE_LIMIT);
-        return `character?${params.toString()}`;
+
+        return {
+          url: `${API_BASE}character?${params.toString()}`,
+          method: 'GET',
+        };
       },
       transformResponse: (response: ApiResponse) => ({
         data: response,
@@ -88,51 +89,6 @@ export const characterApi = createApi({
             ]
           : [{ type: 'Characters' as const, id: 'LIST' }],
     }),
-
-    getCharactersByIds: builder.query<PersonWithUrl[], string[]>({
-      async queryFn(ids, _queryApi) {
-        if (!ids || ids.length === 0) {
-          return { data: [] };
-        }
-
-        try {
-          const promises = ids.map((id) =>
-            _queryApi.dispatch(
-              characterApi.endpoints.getCharacterById.initiate(id)
-            )
-          );
-
-          const results = await Promise.all(promises);
-          const characters = results.map((result) => {
-            if ('data' in result && result.data) {
-              return {
-                ...result.data,
-                url: `character/${result.originalArgs}`,
-              };
-            }
-            return null;
-          });
-
-          const filteredCharacters = characters.filter(
-            (char): char is PersonWithUrl => char !== null
-          );
-
-          return { data: filteredCharacters };
-        } catch (error) {
-          return { error: error as FetchBaseQueryError };
-        }
-      },
-      providesTags: (result) =>
-        result
-          ? [
-              ...result.map(({ _id }) => ({
-                type: 'Characters' as const,
-                id: _id,
-              })),
-              { type: 'Characters', id: 'LIST' },
-            ]
-          : [{ type: 'Characters', id: 'LIST' }],
-    }),
   }),
 });
 
@@ -141,6 +97,4 @@ export const {
   useLazyGetCharacterByIdQuery,
   useSearchCharactersQuery,
   useLazySearchCharactersQuery,
-  useGetCharactersByIdsQuery,
-  useLazyGetCharactersByIdsQuery,
 } = characterApi;
