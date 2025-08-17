@@ -1,7 +1,7 @@
 import ClientHeader from './client-header';
 import LocaleSwitcher from '@/components/ui/locale/locale-switcher';
 import NavigationLink from '@/components/ui/link/navigation-link';
-import styles from './header.module.scss';
+import styles from './Header.module.scss';
 import { getTranslations } from 'next-intl/server';
 import { Logo } from './logo';
 

@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import logoDark from '@assets/images/image.png';
 import logoLight from '@assets/images/imageL.png';
-import styles from './header.module.scss';
+import styles from './Header.module.scss';
 import { useTranslations } from 'next-intl';
 import { useTheme } from '@/context/use-theme';
 

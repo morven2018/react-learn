@@ -2,7 +2,7 @@
 import Image from 'next/image';
 import darkModeIcon from '@assets/logo/darkMode.svg';
 import lightModeIcon from '@assets/logo/lightMode.svg';
-import styles from './header.module.scss';
+import styles from './Header.module.scss';
 import { useTranslations } from 'next-intl';
 import { useTheme } from '@/context/use-theme';
 import { Themes } from '@/shared/types/response-types';
