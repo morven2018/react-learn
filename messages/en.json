@@ -75,5 +75,15 @@
   },
   "Home": {
     "msg": "Change the search string for the new query"
+  },
+  "Flyout": {
+    "fail": "Failed to generate CSV",
+    "item": "Item ",
+    "items": "Items ",
+    "sel": "selected",
+    "sel2": "selected",
+    "unselect": "Unselect all",
+    "download-aria": "Download selected characters",
+    "download": "Download"
   }
 }

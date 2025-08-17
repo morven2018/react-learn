@@ -3,9 +3,10 @@ import React, { useEffect, useRef, useState } from 'react';
 import style from './Flyout.module.scss';
 import { clearSelectedCharacters } from '@redux/slices/characters-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
-import { useLocale } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 
 export const Flyout: React.FC = () => {
+  const t = useTranslations('Flyout');
   const [showComponent, setShowComponent] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement>(null);
   const dispatch = useAppDispatch();
@@ -36,7 +37,7 @@ export const Flyout: React.FC = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to generate CSV');
+        throw new Error(t('fail'));
       }
 
       const blob = await response.blob();
@@ -63,7 +64,8 @@ export const Flyout: React.FC = () => {
         <div className={style.info}>
           <span className={style.countBadge}>{selectedCharacters.length}</span>
           <span className={style.countText}>
-            {selectedCharacters.length === 1 ? 'Item' : 'Items'} selected
+            {selectedCharacters.length === 1 ? t('item') : t('items')}
+            {selectedCharacters.length === 1 ? t('sel') : t('sel2')}
           </span>
         </div>
 
@@ -71,19 +73,19 @@ export const Flyout: React.FC = () => {
           <button
             className={style.selectButton}
             onClick={handleUnselectAll}
-            aria-label="Unselect all"
-            title="Unselect all"
+            aria-label={t('unselect')}
+            title={t('unselect')}
           >
-            Unselect all
+            {t('unselect')}
           </button>
 
           <button
             className={style.downloadButton}
             onClick={handleDownload}
-            aria-label="Download selected characters"
-            title="Download selected characters"
+            aria-label={t('download-aria')}
+            title={t('download-aria')}
           >
-            Download
+            {t('download')}
           </button>
           <a ref={downloadLinkRef} style={{ display: 'none' }} />
         </div>
