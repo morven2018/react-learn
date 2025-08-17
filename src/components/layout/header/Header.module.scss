@@ -4,11 +4,10 @@
   max-width: $max-width;
   margin: 0 auto 10px;
   padding: $base-padding;
-
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: 20px;
 
@@ -16,6 +15,10 @@
   border-radius: $border-radius;
 
   font-family: $font-medieval;
+
+  @media (max-width: 550px) {
+    gap: 10px;
+  }
 
   .titles {
     display: flex;
@@ -26,9 +29,8 @@
   .controls {
     display: flex;
     flex-direction: row;
-    justify-content: space-around;
-    align-items: flex-start;
-
+    justify-content: space-evenly;
+    align-items: center;
     .themeButton {
       background-color: transparent;
       border: none;
@@ -100,5 +102,25 @@
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 50px;
+  gap: 15vw;
+
+  @media (max-width: 550px) {
+    gap: 40px;
+  }
+
+  a {
+    text-decoration: none;
+    cursor: pointer;
+    font-size: $controls-typography;
+    color: var(--primary-light);
+
+    &:hover {
+      transform: scale(1.1);
+      color: var(--gold);
+    }
+
+    &:active {
+      transform: scale(0.9);
+    }
+  }
 }

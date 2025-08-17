@@ -3,6 +3,7 @@ import DetailCard from '../detail-view/detail-card';
 import Pagination from '@/components/ui/pagination/Pagination';
 import Results from '../results/Results';
 import SearchWithRef from '../search/search-with-ref';
+import style from './home.module.scss';
 import { setCookie } from 'cookies-next';
 import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
@@ -82,7 +83,7 @@ export default function HomeClient({
       }
       setNotification(null);
     },
-    [router, pathname, refetch, searchTerm, detailsParam]
+    [router, pathname, refetch, searchTerm, detailsParam, t]
   );
 
   const handlePageChange = useCallback(
@@ -103,9 +104,9 @@ export default function HomeClient({
   }, [router, pathname, page, searchTerm]);
 
   return (
-    <div className="home-container">
+    <div className={style.home}>
       <div>
-        <div>
+        <div className={style.search}>
           <SearchWithRef
             onSearch={handleSearch}
             initialSearchTerm={searchTerm}
@@ -119,26 +120,37 @@ export default function HomeClient({
             isLoading={isLoading || isFetching}
           />
         )}
+        <div className={style.data}>
+          <div>
+            <Results
+              characters={characters}
+              loadingState={isLoading || isFetching ? 'loading' : 'success'}
+            />
 
-        <Results
-          characters={characters}
-          loadingState={isLoading || isFetching ? 'loading' : 'success'}
-        />
+            {totalPages > 1 && (
+              <Pagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+                isLoading={isLoading || isFetching}
+              />
+            )}
+          </div>
 
-        {totalPages > 1 && (
-          <Pagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-            isLoading={isLoading || isFetching}
-          />
-        )}
-
-        {detailsParam && (
-          <DetailCard characterId={detailsParam} onClose={handleCloseDetails} />
-        )}
+          {detailsParam && (
+            <div className={style.detailWrapper}>
+              <DetailCard
+                characterId={detailsParam}
+                onClose={handleCloseDetails}
+              />
+            </div>
+          )}
+        </div>
       </div>
-      <Flyout />
+      <div className={style.flyout}>
+        {' '}
+        <Flyout />
+      </div>
       {notification && (
         <CustomNotification
           message={notification.message}

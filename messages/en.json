@@ -1,8 +1,4 @@
 {
-  "Index": {
-    "title": "Lord of the Rings. Search",
-    "description": "Search characters from Lord of the Rings"
-  },
   "Switcher": {
     "switchLocale": "Switch to {locale}"
   },

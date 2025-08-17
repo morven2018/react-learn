@@ -4,9 +4,12 @@
   top: 30px;
   position: sticky;
   width: 350px;
+  padding: 16px;
   margin: 0 auto;
   color: var(--secondary-light);
   font-family: $font-base;
+  background-color: var(--shadow40);
+  border-radius: $border-radius;
 
   .header {
     margin: $base-padding;

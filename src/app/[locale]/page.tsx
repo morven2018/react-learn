@@ -1,8 +1,7 @@
 import HomeClient from '@/components/layout/home/home-client';
 import { cookies } from 'next/headers';
-import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
-
 import { searchCharacters } from '@/services/api/character-api.server';
+import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
 
 export default async function HomePage({
   searchParams,
