@@ -5,6 +5,7 @@ import Results from '../results/Results';
 import SearchWithRef from '../search/search-with-ref';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect } from 'react';
+import { Flyout } from '@/components/ui/flyout/Flyout';
 import { setLastSearchTerm } from '@/redux/slices/search-slice';
 import { useAppDispatch, useAppSelector } from '@/redux/store';
 import type { Person } from '@/shared/types/response-types';
@@ -71,30 +72,38 @@ export default function HomeClient({
 
   return (
     <div className="home-container">
-      <SearchWithRef
-        onSearch={handleSearch}
-        initialSearchTerm={initialSearchTerm}
-        isLoading={false}
-      />
+      <div>
+        <div>
+          <SearchWithRef
+            onSearch={handleSearch}
+            initialSearchTerm={initialSearchTerm}
+            isLoading={false}
+          />
 
-      <Results
-        characters={initialData.characters}
-        loadingState="success"
-        isFetchingMore={false}
-      />
+          <Results
+            characters={initialData.characters}
+            loadingState="success"
+            isFetchingMore={false}
+          />
 
-      {initialData.totalPages > 1 && (
-        <Pagination
-          currentPage={page}
-          totalPages={initialData.totalPages}
-          onPageChange={handlePageChange}
-          isLoading={false}
-        />
-      )}
+          {initialData.totalPages > 1 && (
+            <Pagination
+              currentPage={page}
+              totalPages={initialData.totalPages}
+              onPageChange={handlePageChange}
+              isLoading={false}
+            />
+          )}
+        </div>
 
-      {characterId && characterDetails && (
-        <DetailCard character={characterDetails} onClose={handleCloseDetails} />
-      )}
+        {characterId && characterDetails && (
+          <DetailCard
+            character={characterDetails}
+            onClose={handleCloseDetails}
+          />
+        )}
+      </div>
+      <Flyout />
     </div>
   );
 }

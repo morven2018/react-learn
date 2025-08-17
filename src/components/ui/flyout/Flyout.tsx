@@ -1,3 +1,4 @@
+'use client';
 import React, { useRef } from 'react';
 import convertToCSV from '@shared/lib/convert-to-csv';
 import style from './flyout.module.scss';
@@ -20,27 +21,31 @@ export const Flyout: React.FC = () => {
 
   const handleDownload = async () => {
     try {
-      const { data } = await fetchCharacters(selectedCharacters);
-
-      if (!data || data.length === 0) {
-        throw new Error('No data available to load');
-      }
-      const csvData = convertToCSV(data);
-      const fileName = `${selectedCharacters.length}_characters.csv`;
-      const BOM = '\uFEFF';
-      const blob = new Blob([BOM + csvData], {
-        type: 'text/csv;charset=utf-8;',
+      const response = await fetch('/api/generate-csv', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          characterIds: selectedCharacters,
+        }),
       });
 
+      if (!response.ok) {
+        throw new Error('Failed to generate CSV');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
       if (downloadLinkRef.current) {
-        const url = URL.createObjectURL(blob);
         downloadLinkRef.current.href = url;
-        downloadLinkRef.current.download = fileName;
+        downloadLinkRef.current.download = `${selectedCharacters.length}_characters.csv`;
         downloadLinkRef.current.click();
         URL.revokeObjectURL(url);
       }
     } catch (error) {
-      console.error('Error downloading characters:', error);
+      console.error('Error downloading CSV:', error);
     }
   };
 
@@ -67,7 +72,7 @@ export const Flyout: React.FC = () => {
           </button>
 
           <button
-            className={`${style.downloadButton}`}
+            className={style.downloadButton}
             onClick={handleDownload}
             aria-label="Download selected characters"
             title="Download selected characters"
