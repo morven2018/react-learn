@@ -37,7 +37,8 @@
 
   "Results": {
     "loading": "Loading characters...",
-    "noData": "No data found"
+    "noData": "No data found",
+    "spinner": "Loading"
   },
   "Search": {
     "placeholder": "Search characters...",
@@ -47,5 +48,28 @@
   "Refresh": {
     "aria": "Refresh data",
     "btn": "Refresh"
+  },
+  "Card": {
+    "label": "Choose character:",
+    "inboxTitle": "Select character",
+    "linkTitle": "More info",
+    "link": "See More Info"
+  },
+  "Content": {
+    "labels": {
+      "race": "Race",
+      "gender": "Gender",
+      "birth": "Birth",
+      "death": "Death",
+      "hair": "Hair",
+      "height": "Height",
+      "realm": "Realm",
+      "spouse": "Spouse"
+    },
+    "unknown": "unknown",
+    "loading": "Loading details...",
+    "noData": "No data is found",
+    "noDetails": "No additional details available",
+    "wikiLink": "You can see more info on Lotr wiki"
   }
 }

@@ -1,5 +1,7 @@
 import style from './details.module.scss';
 import type { Person } from '@shared/types/response-types';
+import { useTranslations } from 'next-intl';
+import { ExternalLink } from '@/components/ui/link/external-link';
 
 interface DetailsProps {
   character: Person | null;
@@ -14,23 +16,25 @@ const DetailsContent = ({
   isError,
   errorData,
 }: DetailsProps) => {
+  const t = useTranslations('Content');
+
   const formatValue = (value: string | null) => {
     if (!value) return null;
     return value === 'NaN' ? null : value;
   };
 
   const characterDetails = [
-    { label: 'Race', value: character?.race },
-    { label: 'Gender', value: character?.gender },
-    { label: 'Birth', value: character?.birth },
-    { label: 'Death', value: character?.death },
-    { label: 'Hair', value: character?.hair },
-    { label: 'Height', value: character?.height },
-    { label: 'Realm', value: character?.realm },
-    { label: 'Spouse', value: character?.spouse },
+    { key: 'race', value: character?.race },
+    { key: 'gender', value: character?.gender },
+    { key: 'birth', value: character?.birth },
+    { key: 'death', value: character?.death },
+    { key: 'hair', value: character?.hair },
+    { key: 'height', value: character?.height },
+    { key: 'realm', value: character?.realm },
+    { key: 'spouse', value: character?.spouse },
   ]
     .map((item) => ({
-      label: item.label,
+      label: t(`labels.${item.key}`),
       value: formatValue(item.value ?? ''),
     }))
     .filter((item) => item.value !== null);
@@ -38,11 +42,11 @@ const DetailsContent = ({
   return (
     <div className={style.detailsContainer}>
       {(isLoading || !character) && (
-        <div className={style.loading}>Loading details...</div>
+        <div className={style.loading}>{t('loading')}</div>
       )}
       {isError && (
         <div className={style.noData}>
-          No data is found. <br />
+          {t('noData')} <br />
           <span className={style.errorDetail}>{errorData}</span>
         </div>
       )}
@@ -63,12 +67,10 @@ const DetailsContent = ({
                 ))}
               </div>
             ) : (
-              <div className={style.noDetails}>
-                No additional details available
-              </div>
+              <div className={style.noDetails}>{t('noDetails')}</div>
             )}
 
-            <a
+            <ExternalLink
               href={character.wikiUrl || '#'}
               aria-disabled={!character.wikiUrl}
               target="_blank"
@@ -76,8 +78,8 @@ const DetailsContent = ({
               className={character.wikiUrl ? style.wikiLink : style.disableLink}
               onClick={(e) => !character.wikiUrl && e.preventDefault()}
             >
-              You can see more info on Lotr wiki
-            </a>
+              {t('wikiLink')}
+            </ExternalLink>
           </div>
         </>
       )}

@@ -5,21 +5,15 @@ import type { Person } from '@shared/types/response-types';
 
 interface CardListProps {
   characters: Person[];
-  isFetchingMore: boolean;
 }
 
-const CardList: React.FC<CardListProps> = ({ characters, isFetchingMore }) => {
+const CardList: React.FC<CardListProps> = ({ characters }) => {
   return (
-    <>
-      <ul className={style.list}>
-        {characters.map((character) => (
-          <Card key={character._id} character={character} />
-        ))}
-      </ul>
-      {isFetchingMore && (
-        <div className={style.loadMore}>Loading more characters...</div>
-      )}
-    </>
+    <ul className={style.list}>
+      {characters.map((character) => (
+        <Card key={character._id} character={character} />
+      ))}
+    </ul>
   );
 };
 

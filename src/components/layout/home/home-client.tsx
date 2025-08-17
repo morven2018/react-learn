@@ -105,7 +105,6 @@ export default function HomeClient({
         <Results
           characters={characters}
           loadingState={isLoading || isFetching ? 'loading' : 'success'}
-          isFetchingMore={false}
         />
 
         {totalPages > 1 && (
