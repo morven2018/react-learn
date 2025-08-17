@@ -33,5 +33,10 @@
   "HomeLayout": {
     "close": "Close",
     "loading": "Loading details..."
+  },
+
+  "Results": {
+    "loading": "Loading characters...",
+    "noData": "No data found"
   }
 }

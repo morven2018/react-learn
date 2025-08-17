@@ -61,8 +61,8 @@ export default function HomeClient({
       const params = new URLSearchParams(searchParams.toString());
       params.set('page', '1');
       if (detailsParam) params.set('details', detailsParam);
-      await router.push(`${pathname}?${params.toString()}`);
-      refetch();
+      router.push(`${pathname}?${params.toString()}`);
+      await refetch();
     },
     [router, pathname, detailsParam, searchParams]
   );
@@ -93,11 +93,14 @@ export default function HomeClient({
             initialSearchTerm={searchTerm}
             isLoading={isLoading || isFetching}
           />
+        </div>
+
+        {!isLoading && !isFetching && (
           <RefreshButton
             onRefresh={handleRefresh}
             isLoading={isLoading || isFetching}
           />
-        </div>
+        )}
 
         <Results
           characters={characters}

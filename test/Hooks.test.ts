@@ -1,7 +1,7 @@
-import { useRestoreSearchTerm } from '@components/hooks/use-restore-searchTerm';
 import { Term } from '@services/localStorage/LS-service';
 import { act, renderHook } from '@testing-library/react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { useRestoreSearchTerm } from '@/components/hooks/use-restore-searchTerm';
 
 vi.mock('@services/api/characterApi');
 
