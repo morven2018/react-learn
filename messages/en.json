@@ -71,5 +71,10 @@
     "noData": "No data is found",
     "noDetails": "No additional details available",
     "wikiLink": "You can see more info on Lotr wiki"
+  },
+  "Detail": {
+    "header": "Character Details",
+    "error": "Failed to load character:",
+    "close": "Close details"
   }
 }

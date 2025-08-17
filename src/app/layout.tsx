@@ -9,11 +9,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <ErrorBoundary>
-          <ThemeProvider>
-            <div className="themeWrapper dark">{children}</div>
-          </ThemeProvider>
-        </ErrorBoundary>
+        <ThemeProvider>
+          <ErrorBoundary>{children}</ErrorBoundary>
+        </ThemeProvider>
       </body>
     </html>
   );

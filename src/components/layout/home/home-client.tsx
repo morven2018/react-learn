@@ -64,7 +64,7 @@ export default function HomeClient({
       router.push(`${pathname}?${params.toString()}`);
       await refetch();
     },
-    [router, pathname, detailsParam, searchParams]
+    [router, pathname, detailsParam, searchParams, refetch]
   );
 
   const handlePageChange = useCallback(
@@ -74,7 +74,7 @@ export default function HomeClient({
       params.delete('details');
       window.location.href = `${pathname}?${params.toString()}`;
     },
-    [router, pathname]
+    [pathname]
   );
 
   const handleCloseDetails = useCallback(() => {
