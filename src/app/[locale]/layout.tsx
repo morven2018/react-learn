@@ -21,17 +21,13 @@ export default async function LocaleLayout({
   const messages = await getMessages();
 
   return (
-    <html lang={locale}>
-      <body>
-        <ReduxProvider>
-          <ServerThemeProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              <Header />
-              {children}
-            </NextIntlClientProvider>
-          </ServerThemeProvider>
-        </ReduxProvider>
-      </body>
-    </html>
+    <ReduxProvider>
+      <ServerThemeProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <Header />
+          {children}
+        </NextIntlClientProvider>
+      </ServerThemeProvider>
+    </ReduxProvider>
   );
 }

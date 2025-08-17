@@ -1,4 +1,3 @@
-'use client';
 import CharacterCharacteristics from './character-characteristics';
 import style from './character-list.module.scss';
 import { toggleCharacterSelection } from '@redux/slices/characters-slice';
