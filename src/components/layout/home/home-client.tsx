@@ -59,23 +59,22 @@ export default function HomeClient({
     async (term: string) => {
       setCookie(COOKIE_LAST_SEARCH, term, { maxAge: 60 * 60 * 24 * 30 });
       const params = new URLSearchParams(searchParams.toString());
-      params.set('search', term);
       params.set('page', '1');
       if (detailsParam) params.set('details', detailsParam);
       await router.push(`${pathname}?${params.toString()}`);
+      refetch();
     },
     [router, pathname, detailsParam, searchParams]
   );
 
   const handlePageChange = useCallback(
-    (newPage: number) => {
-      const params = new URLSearchParams();
+    async (newPage: number) => {
+      const params = new URLSearchParams(window.location.search);
       params.set('page', newPage.toString());
-      if (searchTerm) params.set('search', searchTerm);
-      if (detailsParam) params.set('details', detailsParam);
-      router.push(`${pathname}?${params.toString()}`);
+      params.delete('details');
+      window.location.href = `${pathname}?${params.toString()}`;
     },
-    [router, pathname, searchTerm, detailsParam]
+    [router, pathname]
   );
 
   const handleCloseDetails = useCallback(() => {
@@ -88,7 +87,7 @@ export default function HomeClient({
   return (
     <div className="home-container">
       <div>
-        <div className="flex justify-between items-center mb-4">
+        <div>
           <SearchWithRef
             onSearch={handleSearch}
             initialSearchTerm={searchTerm}
