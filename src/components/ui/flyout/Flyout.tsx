@@ -60,40 +60,38 @@ export const Flyout: React.FC = () => {
   if (selectedCharacters.length === 0) return null;
 
   return (
-    <div className={style.flyoutWrapper}>
-      <div className={style.flyout}>
-        <div className={style.info}>
-          <span className={style.countBadge}>{selectedCharacters.length}</span>
-          <span className={style.countText}>
-            {selectedCharacters.length === 1 ? t('item') : t('items')}
-            {selectedCharacters.length === 1 ? t('sel') : t('sel2')}
-          </span>
-        </div>
+    <div className={style.flyout}>
+      <div className={style.info}>
+        <span className={style.countBadge}>{selectedCharacters.length}</span>
+        <span className={style.countText}>
+          {selectedCharacters.length === 1 ? t('item') : t('items')}
+          {selectedCharacters.length === 1 ? t('sel') : t('sel2')}
+        </span>
+      </div>
 
-        <div className={style.buttonList}>
-          <button
-            className={style.selectButton}
-            onClick={handleUnselectAll}
-            aria-label={t('unselect')}
-            title={t('unselect')}
-          >
-            {t('unselect')}
-          </button>
+      <div className={style.buttonList}>
+        <button
+          className={style.selectButton}
+          onClick={handleUnselectAll}
+          aria-label={t('unselect')}
+          title={t('unselect')}
+        >
+          {t('unselect')}
+        </button>
 
-          <button
-            className={style.downloadButton}
-            onClick={handleDownload}
-            aria-label={t('download-aria')}
-            title={t('download-aria')}
-          >
-            {t('download')}
-          </button>
-          <NavigationLink
-            ref={downloadLinkRef}
-            style={{ display: 'none' }}
-            href={'api/generate-csv'}
-          />
-        </div>
+        <button
+          className={style.downloadButton}
+          onClick={handleDownload}
+          aria-label={t('download-aria')}
+          title={t('download-aria')}
+        >
+          {t('download')}
+        </button>
+        <NavigationLink
+          ref={downloadLinkRef}
+          style={{ display: 'none' }}
+          href={'api/generate-csv'}
+        />
       </div>
     </div>
   );
