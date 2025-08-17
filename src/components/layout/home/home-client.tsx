@@ -3,12 +3,13 @@ import DetailCard from '../detail-view/detail-card';
 import Pagination from '@/components/ui/pagination/Pagination';
 import Results from '../results/Results';
 import SearchWithRef from '../search/search-with-ref';
+import { setCookie } from 'cookies-next';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 import { Flyout } from '@/components/ui/flyout/Flyout';
-import { setLastSearchTerm } from '@/redux/slices/search-slice';
-import { useAppDispatch, useAppSelector } from '@/redux/store';
-import type { ApiResponse, Person } from '@/shared/types/response-types';
+import { useSearchCharactersQuery } from '@/services/api/character-api';
+import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
+import type { Person } from '@/shared/types/response-types';
 
 interface HomeClientProps {
   initialData: {
@@ -30,76 +31,56 @@ export default function HomeClient({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
 
-  const [characters, setCharacters] = useState(initialData.characters);
-  const [totalPages, setTotalPages] = useState(initialData.totalPages);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  const [isLoading, setIsLoading] = useState(false);
-
-  const lastSearchTerm = useAppSelector((state) => state.search.lastSearchTerm);
   const page = Number(searchParams.get('page')) || 1;
+  const searchTerm = searchParams.get('search') || initialSearchTerm;
   const detailsParam = searchParams.get('details');
-  const fetchCharacters = useCallback(
-    async (searchTerm: string, pageNum: number) => {
-      setIsLoading(true);
-      try {
-        const response = await fetch(`/api/characters?page=${pageNum}`, {
-          headers: {
-            'X-Search-Term': encodeURIComponent(searchTerm),
-          },
-        });
 
-        if (!response.ok) throw new Error('Failed to fetch');
-
-        const data: ApiResponse = await response.json();
-
-        setCharacters(data.docs || []);
-        setTotalPages(data.pages || 1);
-        setCurrentPage(data.page || 1);
-
-        dispatch(setLastSearchTerm(searchTerm));
-
-        const params = new URLSearchParams();
-        params.set('page', pageNum.toString());
-        if (detailsParam) params.set('details', detailsParam);
-        router.replace(`${pathname}?${params.toString()}`);
-      } catch (error) {
-        console.error('Fetch error:', error);
-        setCharacters([]);
-      } finally {
-        setIsLoading(false);
-      }
-    },
-    [router, pathname, detailsParam, dispatch]
+  const {
+    data: charactersData,
+    isLoading,
+    isFetching,
+  } = useSearchCharactersQuery(
+    { name: searchTerm, page },
+    {
+      skip: !searchTerm,
+    }
   );
+
+  const characters = charactersData?.data?.docs || initialData.characters;
+  const totalPages = charactersData?.data?.pages || initialData.totalPages;
+  const currentPage = charactersData?.data?.page || page;
 
   const handleSearch = useCallback(
     async (term: string) => {
-      await fetchCharacters(term, 1);
+      setCookie(COOKIE_LAST_SEARCH, term, { maxAge: 60 * 60 * 24 * 30 });
+
+      const params = new URLSearchParams();
+      params.set('search', term);
+      params.set('page', '1');
+      if (detailsParam) params.set('details', detailsParam);
+      await router.push(`${pathname}?${params.toString()}`);
     },
-    [fetchCharacters]
+    [router, pathname, detailsParam]
   );
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      fetchCharacters(lastSearchTerm, newPage);
+      const params = new URLSearchParams();
+      params.set('page', newPage.toString());
+      if (searchTerm) params.set('search', searchTerm);
+      if (detailsParam) params.set('details', detailsParam);
+      router.push(`${pathname}?${params.toString()}`);
     },
-    [fetchCharacters, lastSearchTerm]
+    [router, pathname, searchTerm, detailsParam]
   );
 
   const handleCloseDetails = useCallback(() => {
     const params = new URLSearchParams();
     params.set('page', page.toString());
+    if (searchTerm) params.set('search', searchTerm);
     router.push(`${pathname}?${params.toString()}`);
-  }, [router, pathname, page]);
-
-  useEffect(() => {
-    if (initialSearchTerm) {
-      fetchCharacters(initialSearchTerm, page);
-    }
-  }, []);
+  }, [router, pathname, page, searchTerm]);
 
   return (
     <div className="home-container">
@@ -107,13 +88,13 @@ export default function HomeClient({
         <div>
           <SearchWithRef
             onSearch={handleSearch}
-            initialSearchTerm={lastSearchTerm || initialSearchTerm}
-            isLoading={isLoading}
+            initialSearchTerm={searchTerm}
+            isLoading={isLoading || isFetching}
           />
 
           <Results
             characters={characters}
-            loadingState={isLoading ? 'loading' : 'success'}
+            loadingState={isLoading || isFetching ? 'loading' : 'success'}
             isFetchingMore={false}
           />
 
@@ -122,7 +103,7 @@ export default function HomeClient({
               currentPage={currentPage}
               totalPages={totalPages}
               onPageChange={handlePageChange}
-              isLoading={isLoading}
+              isLoading={isLoading || isFetching}
             />
           )}
         </div>
