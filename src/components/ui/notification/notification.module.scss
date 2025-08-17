@@ -1,0 +1,49 @@
+@use '@assets/styles/globals.scss' as *;
+
+.notification {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  z-index: 1000;
+  max-width: 300px;
+  transition: all 0.3s ease;
+}
+
+.notificationContent {
+  padding: 0.75rem 1.25rem;
+  border-radius: $border-radius;
+  box-shadow: 0 4px 6px var(--shadow);
+  font-family: $font-base;
+  font-size: $text-typography;
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--base-border);
+
+  animation: slideIn 0.3s ease-out forwards;
+
+  background-color: var(--input);
+  color: var(--secondary-light);
+  border-color: var(--hover-border);
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideOut {
+  to {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+}
+
+.hidden {
+  animation: slideOut 0.3s ease-in forwards;
+}

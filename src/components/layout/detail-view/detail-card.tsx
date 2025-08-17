@@ -31,7 +31,7 @@ export default function DetailCard({
     if (isError) {
       console.error(t('error'), error);
     }
-  }, [isError, error]);
+  }, [isError, error, t]);
 
   return (
     <div className={style.detailCard}>

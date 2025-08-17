@@ -4,9 +4,11 @@ import Pagination from '@/components/ui/pagination/Pagination';
 import Results from '../results/Results';
 import SearchWithRef from '../search/search-with-ref';
 import { setCookie } from 'cookies-next';
+import { useTranslations } from 'next-intl';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { Flyout } from '@/components/ui/flyout/Flyout';
+import { CustomNotification } from '@/components/ui/notification/notification';
 import { RefreshButton } from '@/components/ui/refresh-button/refresh-button';
 import { useSearchCharactersQuery } from '@/services/api/character-api';
 import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
@@ -29,10 +31,14 @@ export default function HomeClient({
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const t = useTranslations('Home');
 
   const page = Number(searchParams.get('page')) || 1;
   const searchTerm = searchParams.get('search') || initialSearchTerm;
   const detailsParam = searchParams.get('details');
+  const [notification, setNotification] = useState<{
+    message: string;
+  } | null>(null);
 
   const {
     data: charactersData,
@@ -57,14 +63,26 @@ export default function HomeClient({
 
   const handleSearch = useCallback(
     async (term: string) => {
+      const newTerm = term.trim().toLocaleLowerCase();
+      if (newTerm === searchTerm) {
+        setNotification({
+          message: t('msg'),
+        });
+        return;
+      }
+
       setCookie(COOKIE_LAST_SEARCH, term, { maxAge: 60 * 60 * 24 * 30 });
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams();
+      params.set('search', term);
       params.set('page', '1');
-      if (detailsParam) params.set('details', detailsParam);
-      router.push(`${pathname}?${params.toString()}`);
-      await refetch();
+
+      if (newTerm !== searchTerm || detailsParam) {
+        router.push(`${pathname}?${params.toString()}`);
+        await refetch();
+      }
+      setNotification(null);
     },
-    [router, pathname, detailsParam, searchParams, refetch]
+    [router, pathname, refetch, searchTerm, detailsParam]
   );
 
   const handlePageChange = useCallback(
@@ -121,6 +139,12 @@ export default function HomeClient({
         )}
       </div>
       <Flyout />
+      {notification && (
+        <CustomNotification
+          message={notification.message}
+          onClose={() => setNotification(null)}
+        />
+      )}
     </div>
   );
 }
