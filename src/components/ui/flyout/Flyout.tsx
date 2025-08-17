@@ -1,6 +1,6 @@
 'use client';
 import React, { useEffect, useRef, useState } from 'react';
-import style from './flyout.module.scss';
+import style from './Flyout.module.scss';
 import { clearSelectedCharacters } from '@redux/slices/characters-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
 import { useLocale } from 'next-intl';
