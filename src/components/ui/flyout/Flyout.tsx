@@ -1,23 +1,26 @@
 'use client';
-import React, { useRef } from 'react';
-import convertToCSV from '@shared/lib/convert-to-csv';
+import React, { useEffect, useRef, useState } from 'react';
 import style from './flyout.module.scss';
 import { clearSelectedCharacters } from '@redux/slices/characters-slice';
 import { useAppDispatch, useAppSelector } from '@redux/store';
-import { useLazyGetCharactersByIdsQuery } from '@services/api/character-api';
+import { useLocale } from 'next-intl';
 
 export const Flyout: React.FC = () => {
+  const [showComponent, setShowComponent] = useState(false);
   const downloadLinkRef = useRef<HTMLAnchorElement>(null);
   const dispatch = useAppDispatch();
   const selectedCharacters = useAppSelector(
     (state) => state.characters.selectedCharacters
   );
-
-  const [fetchCharacters] = useLazyGetCharactersByIdsQuery();
+  const locale = useLocale();
 
   const handleUnselectAll = () => {
     dispatch(clearSelectedCharacters());
   };
+
+  useEffect(() => {
+    setShowComponent(true);
+  }, []);
 
   const handleDownload = async () => {
     try {
@@ -28,6 +31,7 @@ export const Flyout: React.FC = () => {
         },
         body: JSON.stringify({
           characterIds: selectedCharacters,
+          locale,
         }),
       });
 
@@ -48,6 +52,8 @@ export const Flyout: React.FC = () => {
       console.error('Error downloading CSV:', error);
     }
   };
+
+  if (!showComponent || selectedCharacters.length === 0) return null;
 
   if (selectedCharacters.length === 0) return null;
 
