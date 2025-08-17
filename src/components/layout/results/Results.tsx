@@ -3,21 +3,23 @@ import React from 'react';
 import style from './Results.module.scss';
 import type { Person } from '@shared/types/response-types';
 
+//import { getTranslations } from 'next-intl/server';
+
 interface ResultsProps {
   characters: Person[];
   loadingState: 'loading' | 'success' | 'error';
   isFetchingMore: boolean;
 }
-
-const Results: React.FC<ResultsProps> = ({
+export default function Results({
   characters,
   loadingState,
   isFetchingMore,
-}) => {
+}: Readonly<ResultsProps>) {
+  //const t = await getTranslations('Results');
   return (
     <div className={style.resultsContainer}>
       {loadingState === 'loading' && (
-        <div className={style.messageIndicator}>Loading characters...</div>
+        <div className={style.messageIndicator}>loading</div>
       )}
 
       {loadingState === 'success' && !!characters.length && (
@@ -26,10 +28,8 @@ const Results: React.FC<ResultsProps> = ({
 
       {((loadingState === 'success' && !characters.length) ||
         loadingState === 'error') && (
-        <div className={style.messageIndicator}>No data found</div>
+        <div className={style.messageIndicator}>noData</div>
       )}
     </div>
   );
-};
-
-export default Results;
+}
