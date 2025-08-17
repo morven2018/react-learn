@@ -28,5 +28,10 @@
   "NotFound": {
     "title": "This page doesn't exist.",
     "homeButton": "Home"
+  },
+
+  "HomeLayout": {
+    "close": "Close",
+    "loading": "Loading details..."
   }
 }

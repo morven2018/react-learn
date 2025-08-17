@@ -8,32 +8,38 @@ enum StoredTerm {
 
 export class Term {
   public static getTermFromLS(): string | undefined {
-    return localStorage.getItem(StoredTerm.LastSearch) ?? undefined;
+    if (typeof window === 'undefined') return undefined;
+    return localStorage?.getItem(StoredTerm.LastSearch) ?? undefined;
   }
 
   public static setTermToLS(newTerm: string): void {
-    localStorage.setItem(StoredTerm.LastSearch, newTerm);
+    if (typeof window === 'undefined') return;
+    localStorage?.setItem(StoredTerm.LastSearch, newTerm);
   }
 
   public static getThemeFromLS(): keyof typeof Themes {
+    if (typeof window === 'undefined') return Themes.dark;
     return localStorage.getItem(StoredTerm.Theme) === Themes.light
       ? Themes.light
       : Themes.dark;
   }
 
   public static setThemeToLS(theme: keyof typeof Themes = Themes.dark): void {
+    if (typeof window === 'undefined') return;
     localStorage.setItem(StoredTerm.Theme, theme);
   }
 
   public static setSelectedToLS(selected: string[]): void {
-    localStorage.setItem(
+    if (typeof window === 'undefined') return;
+    localStorage?.setItem(
       StoredTerm.SelectedCharacters,
       JSON.stringify(selected)
     );
   }
 
   public static getSelectedFromLS(): string[] {
-    const saved = localStorage.getItem(StoredTerm.SelectedCharacters);
+    if (typeof window === 'undefined') return [];
+    const saved = localStorage?.getItem(StoredTerm.SelectedCharacters);
     return saved ? JSON.parse(saved) : [];
   }
 }

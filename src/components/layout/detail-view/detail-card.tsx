@@ -1,54 +1,42 @@
+'use client';
 import DetailsContent from './detail-content';
-import style from './details.module.scss';
-import { useAppSelector } from '@redux/store';
-import { useGetCharacterByIdQuery } from '@services/api/character-api';
-import { getErrorMessage } from '@services/api/error-handler';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import type { Person } from '@/shared/types/response-types';
 
 interface DetailCardProps {
-  id: string;
+  character: Person;
   onClose: () => void;
-  isLoading?: boolean;
 }
 
-export const DetailCard = ({ id, onClose, isLoading }: DetailCardProps) => {
-  const refreshVersion = useAppSelector((state) => state.refresh?.version ?? 1);
-  const {
-    data: character,
-    isLoading: isDetailsLoading,
-    isError,
-    error,
-    refetch,
-  } = useGetCharacterByIdQuery(id, {
-    skip: !id,
-  });
+export default function DetailCard({
+  character,
+  onClose,
+}: Readonly<DetailCardProps>) {
+  const [isLoading, setIsLoading] = useState(false);
+
   useEffect(() => {
-    if (refreshVersion > 0) {
-      refetch();
+    if (!character) {
+      setIsLoading(true);
     }
-  }, [refreshVersion, refetch]);
+  }, [character]);
 
   return (
-    <div className={style.detailCard}>
-      <div className={style.header}>
-        <h2 className={style.title}>Character Details</h2>
-        <div className={style.headerControls}>
-          <button
-            className={style.closeButton}
-            onClick={onClose}
-            aria-label="Close details"
-          >
-            &times;
-          </button>
-        </div>
+    <div className="detail-card">
+      <div className="detail-card-header">
+        <h2>{character?.name || 'Character Details'}</h2>
+        <button onClick={onClose}>×</button>
       </div>
 
-      <DetailsContent
-        character={character ?? null}
-        isLoading={isLoading || isDetailsLoading}
-        isError={isError}
-        errorData={getErrorMessage(error)}
-      />
+      {isLoading ? (
+        <div>Loading...</div>
+      ) : (
+        <DetailsContent
+          character={character}
+          isLoading={false}
+          isError={false}
+          errorData={''}
+        />
+      )}
     </div>
   );
-};
+}

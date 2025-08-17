@@ -1,19 +1,18 @@
+'use client';
 import CharacterCharacteristics from './character-characteristics';
-import React from 'react';
 import style from './character-list.module.scss';
 import { toggleCharacterSelection } from '@redux/slices/characters-slice';
 import type { RootState } from '@redux/store';
 import type { Person } from '@shared/types/response-types';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
 
 interface CardItemProps {
   character: Person;
 }
 
 const Card: React.FC<CardItemProps> = ({ character }) => {
-  const navigate = useNavigate();
-
+  const router = useRouter();
   const dispatch = useDispatch();
   const selectedCharacters = useSelector(
     (state: RootState) => state.characters.selectedCharacters
@@ -21,9 +20,9 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
   const isChecked = selectedCharacters.includes(character._id);
 
   const handleCardClick = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set('details', character._id);
-    navigate(`?${searchParams.toString()}`);
+    const params = new URLSearchParams(window.location.search);
+    params.set('details', character._id);
+    router.push(`?${params.toString()}`);
   };
 
   const handleWikiClick = (e: React.MouseEvent) => {

@@ -1,5 +1,6 @@
 import charactersSlice from './slices/characters-slice';
 import refreshReducer from './slices/refresh-slice';
+import searchReducer from './slices/search-slice';
 import { configureStore } from '@reduxjs/toolkit';
 import { characterApi } from '@services/api/character-api';
 
@@ -14,6 +15,7 @@ export const store = configureStore({
     characters: charactersSlice,
     [characterApi.reducerPath]: characterApi.reducer,
     refresh: refreshReducer,
+    search: searchReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware().concat(characterApi.middleware),

@@ -3,7 +3,8 @@ import Header from '@/components/layout/header/Header';
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { ThemeProvider } from '@/context/theme-provider';
+import { ServerThemeProvider } from '@/components/theme/server-theme-provider';
+import { ReduxProvider } from '@/providers/redux-provider';
 
 export default async function LocaleLayout({
   children,
@@ -22,12 +23,14 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body>
-        <ThemeProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            <Header />
-            {children}
-          </NextIntlClientProvider>
-        </ThemeProvider>
+        <ReduxProvider>
+          <ServerThemeProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <Header />
+              {children}
+            </NextIntlClientProvider>
+          </ServerThemeProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

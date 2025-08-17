@@ -1,10 +1,11 @@
 import { useContext } from 'react';
 import { ThemeContext } from './theme-context';
+import { Themes } from '@/shared/types/response-types';
 
 export const useTheme = () => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error('useTheme must be used within a ThemeProvider');
+    return { theme: Themes.dark };
   }
   return context;
 };
