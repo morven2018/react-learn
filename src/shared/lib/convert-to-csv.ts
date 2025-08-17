@@ -22,7 +22,7 @@ const convertToCSV = (
     'wikiUrl',
   ];
 
-  const headerRow = headers.join(',');
+  const headerRow = headers.join(separator);
 
   const dataRows = data.map((item) => {
     return headers
