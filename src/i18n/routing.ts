@@ -8,5 +8,6 @@ export const routing = defineRouting({
   pathnames: {
     '/': '/',
     '/about': '/about',
+    'api/generate-csv': '#',
   },
 });

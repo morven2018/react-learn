@@ -1,4 +1,5 @@
 'use client';
+import NavigationLink from '../link/navigation-link';
 import React, { useEffect, useRef, useState } from 'react';
 import style from './Flyout.module.scss';
 import { clearSelectedCharacters } from '@redux/slices/characters-slice';
@@ -87,7 +88,11 @@ export const Flyout: React.FC = () => {
           >
             {t('download')}
           </button>
-          <a ref={downloadLinkRef} style={{ display: 'none' }} />
+          <NavigationLink
+            ref={downloadLinkRef}
+            style={{ display: 'none' }}
+            href={'api/generate-csv'}
+          />
         </div>
       </div>
     </div>
