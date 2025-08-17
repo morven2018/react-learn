@@ -148,7 +148,6 @@ export default function HomeClient({
         </div>
       </div>
       <div className={style.flyout}>
-        {' '}
         <Flyout />
       </div>
       {notification && (
