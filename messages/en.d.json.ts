@@ -2,36 +2,35 @@
 // See: https://next-intl.dev/docs/workflows/typescript#messages-arguments
 
 declare const messages: {
-  Index: {
-    title: 'Lord of the Rings. Search';
-    description: 'Search characters from Lord of the Rings';
-  };
-  Switcher: {
-    switchLocale: 'Switch to {locale}';
-  };
-  NotFound: {
-    title: 'Page not found';
-    description: 'The page you are looking for does not exist.';
-    tryAgain: 'DDV';
-  };
-  About: {
-    header: 'About page';
-    done: 'Done by Alena Pudina';
-    gitAria: 'Alena Pudina GitHub profile';
-    course: 'Completed as part of the course';
-    linkText: 'React Course';
-    altRss: 'rss logo';
-    altGit: 'git logo';
-  };
+  "Index": {
+    "title": "Lord of the Rings. Search",
+    "description": "Search characters from Lord of the Rings"
+  },
+  "Switcher": {
+    "switchLocale": "Switch to {locale}"
+  },
+  "About": {
+    "header": "About page",
+    "done": "Done by Alena Pudina",
+    "gitAria": "Alena Pudina GitHub profile",
+    "course": "Completed as part of the course",
+    "linkText": "React Course",
+    "altRss": "rss logo",
+    "altGit": "git logo"
+  },
 
-  Header: {
-    logoAlt: 'Website logo';
-    aboutLink: 'About us';
-    title: 'Middle Earth';
-    subtitle: 'Search';
-    toggleLight: 'Switch to light theme';
-    toggleDark: 'Switch to dark theme';
-    whiteTree: 'White tree';
-  };
+  "Header": {
+    "logoAlt": "Website logo",
+    "aboutLink": "About us",
+    "title": "Middle Earth",
+    "subtitle": "Search",
+    "toggleLight": "Switch to light theme",
+    "toggleDark": "Switch to dark theme",
+    "whiteTree": "White tree"
+  },
+  "NotFound": {
+    "title": "This page doesn't exist.",
+    "homeButton": "Home"
+  }
 };
 export default messages;

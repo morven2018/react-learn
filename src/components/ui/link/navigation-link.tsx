@@ -1,14 +1,12 @@
 'use client';
-import { useSelectedLayoutSegment } from 'next/navigation';
 import type { ComponentProps } from 'react';
-import { Link } from '@/i18n/navigation';
+import { Link, usePathname } from '@/i18n/navigation';
 
 export default function NavigationLink({
   href,
   ...rest
 }: ComponentProps<typeof Link>) {
-  const selectedLayoutSegment = useSelectedLayoutSegment();
-  const pathname = selectedLayoutSegment ? `/${selectedLayoutSegment}` : '/';
+  const pathname = usePathname();
   const isActive = pathname === href;
 
   return (

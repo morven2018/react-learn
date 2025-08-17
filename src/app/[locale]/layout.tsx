@@ -1,20 +1,19 @@
 import './layout.scss';
 import Header from '@/components/layout/header/Header';
-import { NextIntlClientProvider, hasLocale } from 'next-intl';
+import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { ThemeProvider } from '@/context/theme-provider';
-import { routing } from '@/i18n/routing';
 
 export default async function LocaleLayout({
   children,
   params,
-}: {
+}: Readonly<{
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
-}) {
+}>) {
   const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
+  if (!['en', 'ru'].includes(locale)) {
     notFound();
   }
 
@@ -23,7 +22,6 @@ export default async function LocaleLayout({
   return (
     <html lang={locale}>
       <body>
-        {' '}
         <ThemeProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             <Header />

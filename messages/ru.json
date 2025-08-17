@@ -21,5 +21,9 @@
     "toggleLight": "Переключить на светлую тему",
     "toggleDark": "Переключить на тёмную тему",
     "whiteTree": "White tree"
+  },
+  "NotFound": {
+    "title": "Эта страница не существует",
+    "homeButton": "На главную"
   }
 }

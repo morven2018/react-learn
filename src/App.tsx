@@ -1,7 +1,5 @@
 import './App.scss';
-import AboutPage from '@pages/about/about';
 import Header from '@components/layout/header/Header';
-import ThemeProvider from '@context/theme-provider';
 
 //import Home from '@pages/home/Home';
 //import HomeLayout from '@components/layout/home-layout/home-layout';
@@ -14,12 +12,7 @@ const ABOUT_PATH = '/about';
 const OTHER_PATH = '*';*/
 
 const App = () => {
-  return (
-    <ThemeProvider>
-      <Header />
-      <AboutPage />
-    </ThemeProvider>
-  );
+  return <Header />;
 };
 
 export default App;

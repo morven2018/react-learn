@@ -1,9 +1,9 @@
 import ClientHeader from './client-header';
 import LocaleSwitcher from '@/components/ui/locale/locale-switcher';
+import NavigationLink from '@/components/ui/link/navigation-link';
 import styles from './header.module.scss';
 import { getTranslations } from 'next-intl/server';
 import { Logo } from './logo';
-import { Link } from '@/i18n/navigation';
 
 export default async function ServerHeader() {
   const t = await getTranslations('Header');
@@ -13,12 +13,12 @@ export default async function ServerHeader() {
     <header className={styles.header}>
       <div className={styles.controls}>
         <div className={styles.linkWrapper}>
-          <Link href="/">
+          <NavigationLink href="/">
             <Logo size={LOGO_SIZE} />
-          </Link>
-          <Link href="/about" className={styles.aboutLink}>
+          </NavigationLink>
+          <NavigationLink href="/about" className={styles.aboutLink}>
             {t('aboutLink')}
-          </Link>
+          </NavigationLink>
           <LocaleSwitcher />
         </div>
         <ClientHeader />

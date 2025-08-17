@@ -1,4 +1,4 @@
-import Card from './card';
+import Card from './Card';
 import React from 'react';
 import style from './character-list.module.scss';
 import type { Person } from '@shared/types/response-types';

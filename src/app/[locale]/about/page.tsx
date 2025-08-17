@@ -3,8 +3,7 @@ import git from '@assets/logo/git.svg';
 import rss from '@assets/logo/rss.svg';
 import style from './about.module.scss';
 import { useTranslations } from 'next-intl';
-
-//import { Link } from '@/i18n/navigation';
+import { ExternalLink } from '@/components/ui/link/external-link';
 
 const ICON_SIZE = 36;
 export default function AboutPage() {
@@ -15,10 +14,11 @@ export default function AboutPage() {
         <h2 className={style.header}>{t('header')}</h2>
         <p className={style.data}>
           <span>{t('done')}</span>
-          <a
+
+          <ExternalLink
             href="https://github.com/morven2018"
             target="_blank"
-            rel="noreferrer"
+            rel="noopener noreferrer"
             aria-label={t('gitAria')}
             className={style.link}
           >
@@ -28,11 +28,11 @@ export default function AboutPage() {
               height={ICON_SIZE}
               alt={t('altGit')}
             />
-          </a>
+          </ExternalLink>
         </p>
         <div className={style.data}>
           {t('course')}
-          <a
+          <ExternalLink
             href="https://rs.school/courses/reactjs"
             target="_blank"
             rel="noreferrer"
@@ -45,7 +45,7 @@ export default function AboutPage() {
               height={ICON_SIZE}
               alt={t('altRss')}
             />
-          </a>
+          </ExternalLink>
         </div>
       </div>
     </main>
