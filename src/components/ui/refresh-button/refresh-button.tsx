@@ -1,4 +1,5 @@
 import style from './refresh-button.module.scss';
+import { useTranslations } from 'next-intl';
 import { useCallback, useState } from 'react';
 
 interface RefreshButtonProps {
@@ -8,6 +9,7 @@ interface RefreshButtonProps {
 
 export const RefreshButton = ({ onRefresh, isLoading }: RefreshButtonProps) => {
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const t = useTranslations('Refresh');
 
   const handleClick = useCallback(async () => {
     setIsRefreshing(true);
@@ -23,9 +25,9 @@ export const RefreshButton = ({ onRefresh, isLoading }: RefreshButtonProps) => {
       onClick={handleClick}
       disabled={isLoading || isRefreshing}
       className={`${style.refreshButton}`}
-      aria-label="Refresh data"
+      aria-label={t('aria')}
     >
-      Refresh
+      {t('btn')}
     </button>
   );
 };

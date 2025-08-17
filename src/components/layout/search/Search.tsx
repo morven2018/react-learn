@@ -1,4 +1,5 @@
 import style from './Search.module.scss';
+import { useTranslations } from 'next-intl';
 
 import {
   forwardRef,
@@ -25,6 +26,7 @@ const Search = forwardRef<SearchHandle, SearchProps>(
   ({ onSearch, initialSearchTerm = '', isLoading }, ref) => {
     const [inputValue, setInputValue] = useState(initialSearchTerm);
     const [isSearching, setIsSearching] = useState(false);
+    const t = useTranslations('Search');
 
     useEffect(() => {
       setInputValue(initialSearchTerm ?? '');
@@ -66,7 +68,7 @@ const Search = forwardRef<SearchHandle, SearchProps>(
               type="text"
               value={inputValue}
               onChange={(e) => setInputValue(e.target.value)}
-              placeholder="Search characters..."
+              placeholder={t('placeholder')}
               className={style.input}
             />
             <button
@@ -74,7 +76,7 @@ const Search = forwardRef<SearchHandle, SearchProps>(
               disabled={isLoading || isSearching}
               className={style.searchButton}
             >
-              {isLoading || isSearching ? 'Searching...' : 'Search'}
+              {isLoading || isSearching ? t('btnLoad') : t('btnReady')}
             </button>
           </form>
         </div>
