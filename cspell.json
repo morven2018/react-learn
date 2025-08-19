@@ -1,0 +1,27 @@
+{
+  "version": "0.2",
+  "words": [
+    "hookform",
+    "jestdom",
+    "njsproj",
+    "ntvs",
+    "reduxjs",
+    "resolver",
+    "thunk",
+    "tsconfig",
+    "vercel",
+    "vite",
+    "Yup",
+    "Zod"
+  ],
+  "ignorePaths": [
+    "node_modules",
+    "dist",
+    "build",
+    "coverage",
+    "*.min.js",
+    "package-lock.json",
+    "yarn.lock"
+  ],
+  "useGitignore": true
+}
