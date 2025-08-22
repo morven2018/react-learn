@@ -1,4 +1,4 @@
-import { Submission } from '@/shared/types/types';
+import { Submission } from '../../shared/types/types';
 
 type ResultsProps = {
   submissions: Submission[];
