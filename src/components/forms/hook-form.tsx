@@ -108,20 +108,35 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
       </div>
 
       <div className={style.formGroup}>
-        <label>Gender:</label>
-        <div className={style.radioGroup}>
-          <label>
-            <input type="radio" value="male" {...register('gender')} />
+        <div
+          className={style.radioGroup}
+          role="radiogroup"
+          aria-labelledby="gender-label"
+        >
+          <span id="gender-label" className={style.legend}>
+            Gender:
+          </span>
+
+          <label htmlFor="gender-male">
+            <input
+              type="radio"
+              id="gender-male"
+              value="male"
+              {...register('gender')}
+            />
             Male
           </label>
-          <label>
-            <input type="radio" value="female" {...register('gender')} />
+
+          <label htmlFor="gender-female">
+            <input
+              type="radio"
+              id="gender-female"
+              value="female"
+              {...register('gender')}
+            />
             Female
           </label>
         </div>
-        {errors.gender && (
-          <span className={style.error}>{errors.gender.message}</span>
-        )}
       </div>
 
       <div className={style.formGroup}>

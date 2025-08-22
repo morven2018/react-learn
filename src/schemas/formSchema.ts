@@ -19,12 +19,12 @@ export const formSchema = z
     name: z
       .string()
       .min(1, 'This field is mandatory')
-      .regex(/^[A-ZA-Я]/, 'The name should start on UpperCase letter'),
+      .regex(/^[A-ZА-Я]/, 'The name should start on UpperCase letter'),
     age: z.number().min(0, 'The age could not be under 0'),
     email: z.string().email('Input correct email'),
     password: z
       .string()
-      .regex(/[0-9]/, 'Password must contain at least 1 digit')
+      .regex(/\d/, 'Password must contain at least 1 digit')
       .regex(/[A-Z]/, 'Password must have 1 uppercase letter')
       .regex(/[a-z]/, 'Password must have 1 lowercase letter')
       .regex(

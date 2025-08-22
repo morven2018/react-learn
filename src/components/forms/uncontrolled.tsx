@@ -123,18 +123,24 @@ function UncontrolledForm({
       </div>
 
       <div className={style.formGroup}>
-        <label>Gender:</label>
-        <div className={style.radioGroup}>
-          <label>
-            <input type="radio" name="gender" value="male" />
+        <div
+          className={style.radioGroup}
+          role="radiogroup"
+          aria-labelledby="gender-label"
+        >
+          <span id="gender-label" className={style.legend}>
+            Gender:
+          </span>
+          <label htmlFor="gender-male">
+            <input type="radio" id="gender-male" value="male" />
             Male
           </label>
-          <label>
-            <input type="radio" name="gender" value="female" />
+
+          <label htmlFor="gender-female">
+            <input type="radio" id="gender-female" value="female" />
             Female
           </label>
         </div>
-        {errors.gender && <span className={style.error}>{errors.gender}</span>}
       </div>
 
       <div className={style.formGroup}>
