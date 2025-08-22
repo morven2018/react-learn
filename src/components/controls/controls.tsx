@@ -1,5 +1,5 @@
 import styles from './controls.module.scss';
-import { Forms } from '@/shared/types/types';
+import { Forms } from '../../shared/types/types';
 
 type ControlsProps = {
   onFormSelect: (formType: Forms) => void;
