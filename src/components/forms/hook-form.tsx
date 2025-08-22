@@ -116,7 +116,6 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
           <span id="gender-label" className={style.legend}>
             Gender:
           </span>
-
           <label htmlFor="gender-male">
             <input
               type="radio"
@@ -126,7 +125,6 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
             />
             Male
           </label>
-
           <label htmlFor="gender-female">
             <input
               type="radio"
