@@ -16,8 +16,8 @@ function Results({ submissions }: Readonly<ResultsProps>) {
   return (
     <div className="results">
       <h2>Result</h2>
-      {submissions.map((submission: Submission, index: number) => (
-        <div key={index} className="result-item">
+      {submissions.map((submission: Submission) => (
+        <div key={submission.name} className="result-item">
           <strong>form:</strong> {submission.type}
           <br />
           <strong>name:</strong> {submission.name}
