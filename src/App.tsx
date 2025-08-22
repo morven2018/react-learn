@@ -4,6 +4,7 @@ import Modal from './components/modal/modal';
 import Results from './components/result/result';
 import UncontrolledForm from './components/forms/uncontrolled';
 import { useState } from 'react';
+import { FormValues } from './schemas/formSchema';
 import { Forms, Submission } from './shared/types/types';
 
 enum ModalTitle {
@@ -24,8 +25,8 @@ function App() {
       setModalTitle(ModalTitle.Uncontrolled);
       setModalContent(
         <UncontrolledForm
-          onSubmitSuccess={(name: string) =>
-            handleFormSubmit(Forms.Uncontrolled, name)
+          onSubmitSuccess={(data: FormValues) =>
+            handleFormSubmit(Forms.Uncontrolled, data.name)
           }
         />
       );
@@ -33,8 +34,8 @@ function App() {
       setModalTitle(ModalTitle.HookForm);
       setModalContent(
         <HookForm
-          onSubmitSuccess={(name: string) =>
-            handleFormSubmit(Forms.HookForm, name)
+          onSubmitSuccess={(data: FormValues) =>
+            handleFormSubmit(Forms.HookForm, data.name)
           }
         />
       );
