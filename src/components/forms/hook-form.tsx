@@ -218,7 +218,7 @@ function HookForm({
               value="male"
               {...register('gender')}
             />
-            Male
+            <span>Male</span>
           </label>
           <label htmlFor="gender-female">
             <input
@@ -227,7 +227,7 @@ function HookForm({
               value="female"
               {...register('gender')}
             />
-            Female
+            <span>Female</span>
           </label>
         </div>
         {errors.gender && (

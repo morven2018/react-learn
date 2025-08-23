@@ -360,7 +360,7 @@ function UncontrolledForm({
           </span>
           <label htmlFor="gender-male">
             <input type="radio" id="gender-male" name="gender" value="male" />
-            Male
+            <span>Male</span>
           </label>
           <label htmlFor="gender-female">
             <input
@@ -369,7 +369,7 @@ function UncontrolledForm({
               name="gender"
               value="female"
             />
-            Female
+            <span>Female</span>
           </label>
         </div>
         <span
