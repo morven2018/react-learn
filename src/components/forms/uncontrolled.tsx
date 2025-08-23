@@ -218,8 +218,8 @@ function UncontrolledForm({
     };
 
     if (errorRefs[field]?.current) {
-      errorRefs[field].current!.textContent = message;
-      errorRefs[field].current!.style.display = 'block';
+      errorRefs[field].current.textContent = message;
+      errorRefs[field].current.style.display = 'block';
     }
   };
 
