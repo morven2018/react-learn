@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import convertToBase64 from '../../shared/lib/converter';
 import style from './form.module.scss';
 import { z } from 'zod';
@@ -52,7 +52,7 @@ function UncontrolledForm({
   const pictureErrorRef = useRef<HTMLSpanElement>(null);
   const countryErrorRef = useRef<HTMLSpanElement>(null);
 
-  const saveDraft = () => {
+  const saveDraft = useCallback(() => {
     if (!formRef.current) return;
 
     const form = formRef.current;
@@ -71,7 +71,7 @@ function UncontrolledForm({
     };
 
     onSaveDraft(draft);
-  };
+  }, [imagePreview, onSaveDraft]);
 
   useEffect(() => {
     if (formRef.current && draftData) {
