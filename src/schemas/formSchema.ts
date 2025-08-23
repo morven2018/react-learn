@@ -32,10 +32,22 @@ export const formSchema = z
       .string()
       .min(1, 'This field is mandatory')
       .regex(/^[A-ZА-Я]/, 'The name should start on UpperCase letter'),
-    age: z.number().min(0, 'The age could not be under 0'),
-    email: z.string().email('Input correct email'),
+    age: z
+      .union([
+        z.number().min(0, 'The age should be over than 0'),
+        z.undefined(),
+      ])
+      .refine((val) => val !== undefined, {
+        message: 'This field is mandatory',
+        path: ['age'],
+      }),
+    email: z
+      .string()
+      .min(1, 'This field is mandatory')
+      .email('Input correct email'),
     password: z
       .string()
+      .min(1, 'This field is mandatory')
       .regex(/\d/, 'Password must contain at least 1 digit')
       .regex(/[A-Z]/, 'Password must have 1 uppercase letter')
       .regex(/[a-z]/, 'Password must have 1 lowercase letter')
@@ -44,23 +56,19 @@ export const formSchema = z
         'Password must contain at least one special character (e.g., !@#$%^&*)'
       )
       .min(8, 'The password should be at least 8 symbols'),
-    confirmPassword: z
-      .string()
-      .regex(/\d/, 'Password must contain at least 1 digit')
-      .regex(/[A-Z]/, 'Password must have 1 uppercase letter')
-      .regex(/[a-z]/, 'Password must have 1 lowercase letter')
-      .regex(
-        /[^A-Za-z0-9]/,
-        'Password must contain at least one special character (e.g., !@#$%^&*)'
-      )
-      .min(8, 'The password should be at least 8 symbols'),
-    gender: GenderEnum,
+    confirmPassword: z.string().min(1, 'Please confirm your password'),
+    gender: z
+      .union([GenderEnum, z.undefined()])
+      .refine((val) => val !== undefined, {
+        message: 'This field is mandatory',
+        path: ['gender'],
+      }),
     acceptTerms: z
       .boolean()
       .refine((val) => val === true, 'You should accept the condition'),
     picture: z
       .string()
-      .min(1, 'Picture is required')
+      .min(1, 'This field is mandatory')
       .refine((base64) => validateBase64Image(base64), {
         message: 'Only JPEG and PNG files up to 5MB are accepted',
       }),
