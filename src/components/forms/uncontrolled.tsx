@@ -69,11 +69,17 @@ function UncontrolledForm({
     if (!formRef.current) return;
 
     const form = formRef.current;
+    const ageValue = form.elements.age.value;
+
+    let age: number | undefined;
+    if (ageValue !== '') {
+      const parsed = parseInt(ageValue);
+      age = isNaN(parsed) ? undefined : parsed;
+    }
+
     const draft: DraftFormValues = {
       name: form.elements.name.value,
-      age: form.elements.age.value
-        ? parseInt(form.elements.age.value)
-        : undefined,
+      age: age,
       email: form.elements.email.value,
       password: form.elements.password.value,
       confirmPassword: form.elements.confirmPassword.value,
@@ -232,13 +238,27 @@ function UncontrolledForm({
 
     const form = formRef.current;
 
-    const formData: FormValues = {
+    const ageValue = form.elements.age.value;
+    let age: number;
+
+    if (ageValue === '') {
+      age = 0;
+    } else {
+      const parsed = parseInt(ageValue);
+      age = isNaN(parsed) ? 0 : parsed;
+    }
+
+    const genderValue = form.elements.gender.value;
+    const gender =
+      genderValue === '' ? undefined : (genderValue as 'male' | 'female');
+
+    const formData = {
       name: form.elements.name.value,
-      age: form.elements.age.value ? parseInt(form.elements.age.value) : NaN,
+      age: age,
       email: form.elements.email.value,
       password: form.elements.password.value,
       confirmPassword: form.elements.confirmPassword.value,
-      gender: form.elements.gender.value as 'male' | 'female',
+      gender: gender,
       acceptTerms: form.elements.acceptTerms.checked,
       picture: getCurrentPicture() || '',
       country: form.elements.country.value,
@@ -284,7 +304,7 @@ function UncontrolledForm({
       <div className={style.formGroup}>
         <label htmlFor="age">Age:</label>
         <input
-          type="number"
+          type="text"
           id="age"
           name="age"
           className={style.formInput}

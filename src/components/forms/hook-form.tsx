@@ -17,12 +17,14 @@ import {
 interface HookFormProps extends FormsProps {
   draftData: DraftFormValues;
   onSaveDraft: (data: DraftFormValues) => void;
+  onReset?: boolean;
 }
 
 function HookForm({
   onSubmitSuccess,
   draftData,
   onSaveDraft,
+  onReset,
 }: Readonly<HookFormProps>) {
   const [imagePreview, setImagePreview] = useState<string | null>(
     draftData.picture || null
@@ -33,6 +35,7 @@ function HookForm({
     formState: { errors, isValid },
     watch,
     setValue,
+    reset,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
@@ -51,6 +54,28 @@ function HookForm({
 
   const password = watch('password');
 
+  useEffect(() => {
+    if (onReset) {
+      reset({
+        name: '',
+        age: undefined,
+        email: '',
+        password: '',
+        confirmPassword: '',
+        gender: 'male',
+        country: '',
+        acceptTerms: false,
+        picture: '',
+      });
+      setImagePreview(null);
+
+      const fileInput = document.getElementById('picture') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+      }
+    }
+  }, [onReset, reset]);
+
   const debouncedSaveDraft = useCallback(
     (data: DraftFormValues) => {
       return debounce(() => {
@@ -59,6 +84,7 @@ function HookForm({
     },
     [onSaveDraft]
   );
+
   useEffect(() => {
     const subscription = watch((value) => {
       const formValues = value as Partial<FormValues>;
