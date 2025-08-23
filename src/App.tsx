@@ -3,6 +3,7 @@ import HookForm from './components/forms/hook-form';
 import Modal from './components/modal/modal';
 import Results from './components/result/result';
 import UncontrolledForm from './components/forms/uncontrolled';
+import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { FormValues } from './schemas/formSchema';
 import { Forms } from './shared/types/types';
@@ -12,6 +13,7 @@ import {
   closeModal,
   openModal,
   saveDraft,
+  clearDraft,
 } from './redux/slice/formSlice';
 
 enum ModalTitle {
@@ -21,6 +23,8 @@ enum ModalTitle {
 
 function App() {
   const dispatch = useAppDispatch();
+  const [resetSignal, setResetSignal] = useState(0);
+
   const { isModalOpen, modalTitle, currentFormType, submissions, draftData } =
     useAppSelector((state) => state.form);
 
@@ -42,11 +46,19 @@ function App() {
     }
   };
 
+  const handleResetForm = () => {
+    if (currentFormType) {
+      dispatch(clearDraft(currentFormType));
+      setResetSignal((prev) => prev + 1);
+    }
+  };
+
   const renderModalContent = () => {
     switch (currentFormType) {
       case Forms.Uncontrolled:
         return (
           <UncontrolledForm
+            key={`uncontrolled-${resetSignal}`}
             draftData={draftData[Forms.Uncontrolled]}
             onSaveDraft={(data) =>
               dispatch(
@@ -64,6 +76,7 @@ function App() {
       case Forms.HookForm:
         return (
           <HookForm
+            key={`hookform-${resetSignal}`}
             draftData={draftData[Forms.HookForm]}
             onSaveDraft={(data) =>
               dispatch(
@@ -87,7 +100,7 @@ function App() {
     const newSubmission = {
       type,
       name: data.name,
-      age: data.age.toString(),
+      age: data.age?.toString() ?? '',
       email: data.email,
       password: data.password,
       gender: data.gender,
@@ -112,6 +125,7 @@ function App() {
         isOpen={isModalOpen}
         title={modalTitle}
         onClose={closeModalHandler}
+        onResetForm={handleResetForm}
       >
         {renderModalContent()}
       </Modal>

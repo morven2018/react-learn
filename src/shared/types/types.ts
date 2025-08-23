@@ -9,7 +9,7 @@ export interface Submission {
   age: string;
   email: string;
   password: string;
-  gender: string;
+  gender: string | undefined;
   acceptTerms: string;
   picture: string;
   country: string;

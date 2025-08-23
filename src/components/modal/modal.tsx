@@ -7,9 +7,16 @@ type ModalProps = {
   title: string;
   children: React.ReactNode;
   onClose: () => void;
+  onResetForm?: () => void;
 };
 
-function Modal({ isOpen, title, children, onClose }: Readonly<ModalProps>) {
+function Modal({
+  isOpen,
+  title,
+  children,
+  onClose,
+  onResetForm,
+}: Readonly<ModalProps>) {
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
@@ -26,6 +33,10 @@ function Modal({ isOpen, title, children, onClose }: Readonly<ModalProps>) {
     };
   }, [isOpen, onClose]);
 
+  const handleResetForm = () => {
+    onResetForm?.();
+  };
+
   if (!isOpen) return null;
 
   return (
@@ -34,13 +45,24 @@ function Modal({ isOpen, title, children, onClose }: Readonly<ModalProps>) {
         <div className={style.modal} onClick={(e) => e.stopPropagation()}>
           <div className={style.header}>
             <h2 className={style.title}>{title}</h2>
-            <button
-              className={style.closeBtn}
-              onClick={onClose}
-              aria-label="Close modal"
-            >
-              ×
-            </button>
+            <div className={style.headerActions}>
+              <button
+                className={style.resetButton}
+                onClick={handleResetForm}
+                aria-label="Reset form"
+                title="Reset form"
+              >
+                ↺
+              </button>
+
+              <button
+                className={style.closeBtn}
+                onClick={onClose}
+                aria-label="Close modal"
+              >
+                ×
+              </button>
+            </div>
           </div>
           <div className={style.content}>{children}</div>
         </div>
