@@ -1,3 +1,5 @@
+import convertToBase64 from '../../src/shared/lib/converter';
+
 import {
   getPasswordStrength,
   strengthLabels,
@@ -117,5 +119,109 @@ describe('Password Strength Validation', () => {
       const score = getPasswordStrength('Very$tr0ngP@ss!');
       expect(strengthLabels[score]).toBe('Ideal');
     });
+  });
+});
+
+describe('convertToBase64', () => {
+  const originalBtoa = global.btoa;
+
+  beforeAll(() => {
+    global.btoa = (str: string) =>
+      Buffer.from(str, 'binary').toString('base64');
+  });
+
+  afterAll(() => {
+    global.btoa = originalBtoa;
+  });
+
+  const stringToArrayBuffer = (str: string): ArrayBuffer => {
+    const buffer = new ArrayBuffer(str.length);
+    const view = new Uint8Array(buffer);
+    for (let i = 0; i < str.length; i++) {
+      view[i] = str.charCodeAt(i);
+    }
+    return buffer;
+  };
+
+  it('convert a file to base64', async () => {
+    const textContent = 'Lorem';
+    const mockArrayBuffer = stringToArrayBuffer(textContent);
+
+    const mockFile = {
+      type: 'text/plain',
+      arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
+    } as unknown as File;
+
+    const result = await convertToBase64(mockFile);
+
+    const expectedBase64 = Buffer.from(textContent, 'binary').toString(
+      'base64'
+    );
+    expect(result).toBe(`data:text/plain;base64,${expectedBase64}`);
+    expect(mockFile.arrayBuffer).toHaveBeenCalledTimes(1);
+  });
+
+  it('preserve the file type in the data URL', async () => {
+    const content = 'test content';
+    const mockArrayBuffer = stringToArrayBuffer(content);
+    const mockFile = {
+      type: 'image/jpeg',
+      arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
+    } as unknown as File;
+
+    const result = await convertToBase64(mockFile);
+
+    expect(result).toContain('data:image/jpeg;base64,');
+  });
+
+  it('convert an image file to base64 with correct MIME type', async () => {
+    const pngHeader = new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]);
+    const mockArrayBuffer = pngHeader.buffer;
+
+    const mockFile = {
+      type: 'image/png',
+      arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
+    } as unknown as File;
+
+    const result = await convertToBase64(mockFile);
+
+    const headerString = String.fromCharCode(...pngHeader);
+    const expectedBase64 = Buffer.from(headerString, 'binary').toString(
+      'base64'
+    );
+
+    expect(result).toBe(`data:image/png;base64,${expectedBase64}`);
+    expect(mockFile.arrayBuffer).toHaveBeenCalledTimes(1);
+  });
+
+  it('convert a JPEG image file to base64', async () => {
+    const jpegData = new Uint8Array([255, 216, 255, 224]);
+    const mockArrayBuffer = jpegData.buffer;
+
+    const mockFile = {
+      type: 'image/jpeg',
+      arrayBuffer: jest.fn().mockResolvedValue(mockArrayBuffer),
+    } as unknown as File;
+
+    const result = await convertToBase64(mockFile);
+
+    const jpegString = String.fromCharCode(...jpegData);
+    const expectedBase64 = Buffer.from(jpegString, 'binary').toString('base64');
+
+    expect(result).toBe(`data:image/jpeg;base64,${expectedBase64}`);
+    expect(result).toContain('data:image/jpeg;base64,');
+  });
+
+  it('throw an error if file.arrayBuffer fails', async () => {
+    const mockFile = {
+      type: 'image/png',
+      arrayBuffer: jest
+        .fn()
+        .mockRejectedValue(new Error('Failed to read file')),
+    } as unknown as File;
+
+    await expect(convertToBase64(mockFile)).rejects.toThrow(
+      'Failed to read file'
+    );
   });
 });
