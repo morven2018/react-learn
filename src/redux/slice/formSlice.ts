@@ -17,7 +17,6 @@ interface FormState {
   currentFormData: FormValues | null;
   isModalOpen: boolean;
   modalTitle: string;
-  modalContent: React.ReactNode | null;
   currentFormType: Forms | null;
 }
 
@@ -30,7 +29,6 @@ const initialState: FormState = {
   currentFormData: null,
   isModalOpen: false,
   modalTitle: '',
-  modalContent: null,
   currentFormType: null,
 };
 
@@ -42,20 +40,17 @@ const formSlice = createSlice({
       state,
       action: PayloadAction<{
         title: string;
-        content: React.ReactNode;
         type: Forms;
       }>
     ) => {
       state.isModalOpen = true;
       state.modalTitle = action.payload.title;
-      state.modalContent = action.payload.content;
       state.currentFormType = action.payload.type;
     },
 
     closeModal: (state) => {
       state.isModalOpen = false;
       state.modalTitle = '';
-      state.modalContent = null;
       state.currentFormType = null;
     },
 
@@ -78,7 +73,6 @@ const formSlice = createSlice({
 
     addSubmission: (state, action: PayloadAction<Submission>) => {
       state.submissions.push(action.payload);
-      // Очищаем черновик только для этой формы
       state.draftData[action.payload.type] = {};
     },
 

@@ -4,14 +4,15 @@ import Modal from './components/modal/modal';
 import Results from './components/result/result';
 import UncontrolledForm from './components/forms/uncontrolled';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
+import { FormValues } from './schemas/formSchema';
+import { Forms } from './shared/types/types';
+
 import {
   addSubmission,
   closeModal,
   openModal,
   saveDraft,
 } from './redux/slice/formSlice';
-import { FormValues } from './schemas/formSchema';
-import { Forms } from './shared/types/types';
 
 enum ModalTitle {
   Uncontrolled = 'Form with uncontrolled Elements',
@@ -20,7 +21,7 @@ enum ModalTitle {
 
 function App() {
   const dispatch = useAppDispatch();
-  const { isModalOpen, modalTitle, modalContent, submissions, draftData } =
+  const { isModalOpen, modalTitle, currentFormType, submissions, draftData } =
     useAppSelector((state) => state.form);
 
   const handleFormSelect = (formType: Forms) => {
@@ -28,22 +29,6 @@ function App() {
       dispatch(
         openModal({
           title: ModalTitle.Uncontrolled,
-          content: (
-            <UncontrolledForm
-              draftData={draftData[Forms.Uncontrolled]}
-              onSaveDraft={(data) =>
-                dispatch(
-                  saveDraft({
-                    formType: Forms.Uncontrolled,
-                    data,
-                  })
-                )
-              }
-              onSubmitSuccess={(data: FormValues) =>
-                handleFormSubmit(Forms.Uncontrolled, data.name)
-              }
-            />
-          ),
           type: Forms.Uncontrolled,
         })
       );
@@ -51,25 +36,50 @@ function App() {
       dispatch(
         openModal({
           title: ModalTitle.HookForm,
-          content: (
-            <HookForm
-              draftData={draftData[Forms.HookForm]}
-              onSaveDraft={(data) =>
-                dispatch(
-                  saveDraft({
-                    formType: Forms.HookForm,
-                    data,
-                  })
-                )
-              }
-              onSubmitSuccess={(data: FormValues) =>
-                handleFormSubmit(Forms.HookForm, data.name)
-              }
-            />
-          ),
           type: Forms.HookForm,
         })
       );
+    }
+  };
+
+  const renderModalContent = () => {
+    switch (currentFormType) {
+      case Forms.Uncontrolled:
+        return (
+          <UncontrolledForm
+            draftData={draftData[Forms.Uncontrolled]}
+            onSaveDraft={(data) =>
+              dispatch(
+                saveDraft({
+                  formType: Forms.Uncontrolled,
+                  data,
+                })
+              )
+            }
+            onSubmitSuccess={(data: FormValues) =>
+              handleFormSubmit(Forms.Uncontrolled, data.name)
+            }
+          />
+        );
+      case Forms.HookForm:
+        return (
+          <HookForm
+            draftData={draftData[Forms.HookForm]}
+            onSaveDraft={(data) =>
+              dispatch(
+                saveDraft({
+                  formType: Forms.HookForm,
+                  data,
+                })
+              )
+            }
+            onSubmitSuccess={(data: FormValues) =>
+              handleFormSubmit(Forms.HookForm, data.name)
+            }
+          />
+        );
+      default:
+        return null;
     }
   };
 
@@ -97,7 +107,7 @@ function App() {
         title={modalTitle}
         onClose={closeModalHandler}
       >
-        {modalContent}
+        {renderModalContent()}
       </Modal>
       <Results submissions={submissions} />
     </>

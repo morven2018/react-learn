@@ -1,5 +1,6 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef } from 'react';
 import convertToBase64 from '../../shared/lib/converter';
+import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
 import { z } from 'zod';
 import { countries } from '../../shared/constants/countries';
@@ -38,9 +39,7 @@ function UncontrolledForm({
   onSaveDraft,
 }: Readonly<UncontrolledFormProps>) {
   const formRef = useRef<UncontrolledFormElement>(null);
-  const [imagePreview, setImagePreview] = useState<string | null>(
-    draftData.picture || null
-  );
+  const imagePreviewRef = useRef<HTMLDivElement>(null);
 
   const nameErrorRef = useRef<HTMLSpanElement>(null);
   const ageErrorRef = useRef<HTMLSpanElement>(null);
@@ -51,6 +50,19 @@ function UncontrolledForm({
   const acceptTermsErrorRef = useRef<HTMLSpanElement>(null);
   const pictureErrorRef = useRef<HTMLSpanElement>(null);
   const countryErrorRef = useRef<HTMLSpanElement>(null);
+
+  const debouncedSaveDraftRef = useRef(
+    debounce((...args: unknown[]) => {
+      const draft = args[0] as DraftFormValues;
+      onSaveDraft(draft);
+    }, 500)
+  );
+  useEffect(() => {
+    debouncedSaveDraftRef.current = debounce((...args: unknown[]) => {
+      const draft = args[0] as DraftFormValues;
+      onSaveDraft(draft);
+    }, 500);
+  }, [onSaveDraft]);
 
   const saveDraft = useCallback(() => {
     if (!formRef.current) return;
@@ -66,12 +78,33 @@ function UncontrolledForm({
       confirmPassword: form.elements.confirmPassword.value,
       gender: form.elements.gender.value as 'male' | 'female',
       acceptTerms: form.elements.acceptTerms.checked,
-      picture: imagePreview || undefined,
+      picture: getCurrentPicture(),
       country: form.elements.country.value,
     };
 
-    onSaveDraft(draft);
-  }, [imagePreview, onSaveDraft]);
+    debouncedSaveDraftRef.current(draft);
+  }, []);
+
+  const getCurrentPicture = (): string | undefined => {
+    if (!imagePreviewRef.current) return undefined;
+    const img = imagePreviewRef.current.querySelector('img');
+    return img ? img.src : undefined;
+  };
+
+  const updateImagePreview = (imageSrc: string | null) => {
+    if (!imagePreviewRef.current) return;
+
+    if (imageSrc) {
+      imagePreviewRef.current.innerHTML = `
+        <img src="${imageSrc}" alt="Preview" />
+        <p>Image selected</p>
+      `;
+      imagePreviewRef.current.style.display = 'block';
+    } else {
+      imagePreviewRef.current.innerHTML = '';
+      imagePreviewRef.current.style.display = 'none';
+    }
+  };
 
   useEffect(() => {
     const initializeFormFromDraft = () => {
@@ -90,7 +123,7 @@ function UncontrolledForm({
       };
 
       Object.entries(textFields).forEach(([field, value]) => {
-        if (value) {
+        if (value !== undefined) {
           const element = elements[field as keyof FormElements] as
             | HTMLInputElement
             | HTMLSelectElement;
@@ -114,32 +147,30 @@ function UncontrolledForm({
         const acceptTermsElement = elements.acceptTerms;
         acceptTermsElement.checked = draftData.acceptTerms;
       }
-      if (draftData.picture) {
-        setImagePreview(draftData.picture);
-      }
 
-      saveDraft();
+      if (draftData.picture) {
+        updateImagePreview(draftData.picture);
+      }
     };
 
     initializeFormFromDraft();
-  }, [draftData, saveDraft]);
+  }, [draftData]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       try {
         const base64 = await convertToBase64(file);
-        setImagePreview(base64);
+        updateImagePreview(base64);
         saveDraft();
-      } catch (error) {
-        setImagePreview(null);
+      } catch {
+        updateImagePreview(null);
         if (formRef.current) {
           formRef.current.elements.picture.value = '';
         }
-        showError('picture', error instanceof Error ? error.message : '');
       }
     } else {
-      setImagePreview(null);
+      updateImagePreview(null);
       saveDraft();
     }
   };
@@ -175,7 +206,7 @@ function UncontrolledForm({
       keyof FormValues,
       React.RefObject<HTMLSpanElement | null>
     > = {
-      name: nameErrorRef ?? '',
+      name: nameErrorRef,
       age: ageErrorRef,
       email: emailErrorRef,
       password: passwordErrorRef,
@@ -187,8 +218,8 @@ function UncontrolledForm({
     };
 
     if (errorRefs[field]?.current) {
-      errorRefs[field].current.textContent = message;
-      errorRefs[field].current.style.display = 'block';
+      errorRefs[field].current!.textContent = message;
+      errorRefs[field].current!.style.display = 'block';
     }
   };
 
@@ -208,7 +239,7 @@ function UncontrolledForm({
       confirmPassword: form.elements.confirmPassword.value,
       gender: form.elements.gender.value as 'male' | 'female',
       acceptTerms: form.elements.acceptTerms.checked,
-      picture: imagePreview || '',
+      picture: getCurrentPicture() || '',
       country: form.elements.country.value,
     };
 
@@ -374,12 +405,11 @@ function UncontrolledForm({
           onChange={handleImageChange}
           required
         />
-        {imagePreview && (
-          <div className={style.imagePreview}>
-            <img src={imagePreview} alt="Preview" />
-            <p>Image selected</p>
-          </div>
-        )}
+        <div
+          ref={imagePreviewRef}
+          className={style.imagePreview}
+          style={{ display: 'none' }}
+        />
         <span
           ref={pictureErrorRef}
           className={style.error}

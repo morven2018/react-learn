@@ -7,14 +7,23 @@ const validateBase64Image = (base64: string) => {
     return false;
   }
 
+  const mimeTypeMatch = RegExp(/^data:(image\/\w+);base64,/).exec(base64);
+  if (!mimeTypeMatch) return false;
+
+  const mimeType = mimeTypeMatch[1];
+  if (mimeType !== 'image/jpeg' && mimeType !== 'image/png') {
+    return false;
+  }
+
   const base64Data = base64.split(',')[1];
+  if (!base64Data) return false;
+
   const sizeInBytes = Math.ceil((base64Data.length * 3) / 4);
   if (sizeInBytes > 5 * 1024 * 1024) {
     return false;
   }
 
-  const mimeType = RegExp(/data:(image\/\w+);base64/).exec(base64)?.[1];
-  return mimeType === 'image/jpeg' || mimeType === 'image/png';
+  return true;
 };
 
 export const formSchema = z
@@ -35,7 +44,16 @@ export const formSchema = z
         'Password must contain at least one special character (e.g., !@#$%^&*)'
       )
       .min(8, 'The password should be at least 8 symbols'),
-    confirmPassword: z.string(),
+    confirmPassword: z
+      .string()
+      .regex(/\d/, 'Password must contain at least 1 digit')
+      .regex(/[A-Z]/, 'Password must have 1 uppercase letter')
+      .regex(/[a-z]/, 'Password must have 1 lowercase letter')
+      .regex(
+        /[^A-Za-z0-9]/,
+        'Password must contain at least one special character (e.g., !@#$%^&*)'
+      )
+      .min(8, 'The password should be at least 8 symbols'),
     gender: GenderEnum,
     acceptTerms: z
       .boolean()

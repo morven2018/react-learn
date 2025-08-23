@@ -1,7 +1,8 @@
 import convertToBase64 from '../../shared/lib/converter';
+import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { countries } from '../../shared/constants/countries';
 import { FormsProps, getPasswordStrength, strengthLabels } from './fields';
@@ -38,6 +39,8 @@ function HookForm({
       name: draftData.name || '',
       age: draftData.age || undefined,
       email: draftData.email || '',
+      password: draftData.password || '',
+      confirmPassword: draftData.confirmPassword || '',
       gender: draftData.gender || 'male',
       country: draftData.country || '',
       acceptTerms: draftData.acceptTerms || false,
@@ -46,22 +49,35 @@ function HookForm({
   });
 
   const password = watch('password');
-  const formValues = watch();
 
+  const debouncedSaveDraft = useCallback(
+    (data: DraftFormValues) => {
+      return debounce(() => {
+        onSaveDraft(data);
+      }, 500)();
+    },
+    [onSaveDraft]
+  );
   useEffect(() => {
-    const draft: DraftFormValues = {
-      name: formValues.name,
-      age: formValues.age,
-      email: formValues.email,
-      password: formValues.password,
-      confirmPassword: formValues.confirmPassword,
-      gender: formValues.gender,
-      acceptTerms: formValues.acceptTerms,
-      country: formValues.country,
-      picture: formValues.picture,
-    };
-    onSaveDraft(draft);
-  }, [formValues, onSaveDraft]);
+    const subscription = watch((value) => {
+      const formValues = value as Partial<FormValues>;
+      const draft: DraftFormValues = {
+        name: formValues.name,
+        age: formValues.age,
+        email: formValues.email,
+        password: formValues.password,
+        confirmPassword: formValues.confirmPassword,
+        gender: formValues.gender,
+        acceptTerms: formValues.acceptTerms,
+        country: formValues.country,
+        picture: formValues.picture,
+      };
+
+      debouncedSaveDraft(draft);
+    });
+
+    return () => subscription.unsubscribe();
+  }, [watch, debouncedSaveDraft]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -91,7 +107,7 @@ function HookForm({
     onSubmitSuccess(data);
   };
 
-  const passwordStrength = getPasswordStrength(password);
+  const passwordStrength = getPasswordStrength(password || '');
 
   return (
     <form
