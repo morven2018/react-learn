@@ -12,7 +12,7 @@ const convertToBase64 = (file: File): Promise<string> => {
 
     const reader = new FileReader();
     reader.readAsDataURL(file);
-    reader.onload = () => resolve(JSON.stringify(reader.result));
+    reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
 };
