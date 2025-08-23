@@ -1,20 +1,14 @@
-const convertToBase64 = (file: File): Promise<string> => {
-  return new Promise((resolve, reject) => {
-    if (!['image/jpeg', 'image/png'].includes(file.type)) {
-      reject(new Error('Only JPEG and PNG files are allowed'));
-      return;
-    }
+const convertToBase64 = async (file: File): Promise<string> => {
+  const arrayBuffer = await file.arrayBuffer();
 
-    if (file.size > 5 * 1024 * 1024) {
-      reject(new Error('File size should be less than 5MB'));
-      return;
-    }
+  const base64 = btoa(
+    new Uint8Array(arrayBuffer).reduce(
+      (data, byte) => data + String.fromCharCode(byte),
+      ''
+    )
+  );
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+  return `data:${file.type};base64,${base64}`;
 };
 
 export default convertToBase64;
