@@ -74,38 +74,54 @@ function UncontrolledForm({
   }, [imagePreview, onSaveDraft]);
 
   useEffect(() => {
-    if (formRef.current && draftData) {
-      const form = formRef.current;
+    const initializeFormFromDraft = () => {
+      if (!formRef.current || !draftData) return;
 
-      if (draftData.name) form.elements.name.value = draftData.name;
-      if (draftData.age) form.elements.age.value = draftData.age.toString();
-      if (draftData.email) form.elements.email.value = draftData.email;
-      if (draftData.password) form.elements.password.value = draftData.password;
-      if (draftData.confirmPassword)
-        form.elements.confirmPassword.value = draftData.confirmPassword;
-      if (draftData.country) form.elements.country.value = draftData.country;
+      const form = formRef.current;
+      const { elements } = form;
+
+      const textFields = {
+        name: draftData.name,
+        age: draftData.age?.toString(),
+        email: draftData.email,
+        password: draftData.password,
+        confirmPassword: draftData.confirmPassword,
+        country: draftData.country,
+      };
+
+      Object.entries(textFields).forEach(([field, value]) => {
+        if (value) {
+          const element = elements[field as keyof FormElements] as
+            | HTMLInputElement
+            | HTMLSelectElement;
+          if (element) {
+            element.value = value;
+          }
+        }
+      });
 
       if (draftData.gender) {
-        const radios = form.elements.gender;
-        for (const element of radios) {
-          const radio = element as HTMLInputElement;
-          if (radio.value === draftData.gender) {
-            radio.checked = true;
-            break;
-          }
+        const radios = elements.gender;
+        const targetRadio = Array.from(radios).find(
+          (radio) => (radio as HTMLInputElement).value === draftData.gender
+        ) as HTMLInputElement;
+        if (targetRadio) {
+          targetRadio.checked = true;
         }
       }
 
       if (draftData.acceptTerms !== undefined) {
-        form.elements.acceptTerms.checked = draftData.acceptTerms;
+        const acceptTermsElement = elements.acceptTerms;
+        acceptTermsElement.checked = draftData.acceptTerms;
       }
-
       if (draftData.picture) {
         setImagePreview(draftData.picture);
       }
 
       saveDraft();
-    }
+    };
+
+    initializeFormFromDraft();
   }, [draftData, saveDraft]);
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
