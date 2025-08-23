@@ -1,3 +1,4 @@
+import Accordion from '../accordion/accordion';
 import React, { useCallback, useEffect, useRef } from 'react';
 import convertToBase64 from '../../shared/lib/converter';
 import debounce from '../../shared/lib/debounce';
@@ -383,9 +384,7 @@ function UncontrolledForm({
           <input type="checkbox" name="acceptTerms" autoComplete="off" />
           I accepted condition
           <br />
-          <a href="#" target="_blank">
-            Terms and Conditions agreement
-          </a>
+          <Accordion title={'Terms and Conditions Agreement'} />
         </label>
         <span
           ref={acceptTermsErrorRef}

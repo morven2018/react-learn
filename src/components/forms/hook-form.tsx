@@ -1,3 +1,4 @@
+import Accordion from '../accordion/accordion';
 import convertToBase64 from '../../shared/lib/converter';
 import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
@@ -243,9 +244,7 @@ function HookForm({
           />
           I accepted condition
           <br />
-          <a href="#" target="_blank">
-            Terms and Conditions agreement
-          </a>
+          <Accordion title={'Terms and Conditions Agreement'} />
         </label>
         {errors.acceptTerms && (
           <span className={style.error}>{errors.acceptTerms.message}</span>
