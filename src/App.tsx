@@ -14,7 +14,7 @@ import {
   openModal,
   saveDraft,
   clearDraft,
-} from './redux/slice/formSlice';
+} from './redux/slice/form-slice';
 
 enum ModalTitle {
   Uncontrolled = 'Form with uncontrolled Elements',
