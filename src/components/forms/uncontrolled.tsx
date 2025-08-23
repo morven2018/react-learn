@@ -4,7 +4,10 @@ import convertToBase64 from '../../shared/lib/converter';
 import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
 import { z } from 'zod';
-import { countries } from '../../shared/constants/countries';
+
+import AutocompleteCountry, {
+  AutocompleteCountryRef,
+} from '../autocomplete-country/autocomplete-country';
 
 import {
   formSchema,
@@ -27,7 +30,6 @@ interface FormElements extends HTMLFormControlsCollection {
   gender: RadioNodeList;
   acceptTerms: HTMLInputElement;
   picture: HTMLInputElement;
-  country: HTMLSelectElement;
 }
 
 interface UncontrolledFormElement extends HTMLFormElement {
@@ -41,6 +43,7 @@ function UncontrolledForm({
 }: Readonly<UncontrolledFormProps>) {
   const formRef = useRef<UncontrolledFormElement>(null);
   const imagePreviewRef = useRef<HTMLDivElement>(null);
+  const countryRef = useRef<AutocompleteCountryRef>(null);
 
   const nameErrorRef = useRef<HTMLSpanElement>(null);
   const ageErrorRef = useRef<HTMLSpanElement>(null);
@@ -58,6 +61,7 @@ function UncontrolledForm({
       onSaveDraft(draft);
     }, 500)
   );
+
   useEffect(() => {
     debouncedSaveDraftRef.current = debounce((...args: unknown[]) => {
       const draft = args[0] as DraftFormValues;
@@ -66,7 +70,7 @@ function UncontrolledForm({
   }, [onSaveDraft]);
 
   const saveDraft = useCallback(() => {
-    if (!formRef.current) return;
+    if (!formRef.current || !countryRef.current) return;
 
     const form = formRef.current;
     const ageValue = form.elements.age.value;
@@ -86,7 +90,7 @@ function UncontrolledForm({
       gender: form.elements.gender.value as 'male' | 'female',
       acceptTerms: form.elements.acceptTerms.checked,
       picture: getCurrentPicture(),
-      country: form.elements.country.value,
+      country: countryRef.current.value,
     };
 
     debouncedSaveDraftRef.current(draft);
@@ -115,7 +119,7 @@ function UncontrolledForm({
 
   useEffect(() => {
     const initializeFormFromDraft = () => {
-      if (!formRef.current || !draftData) return;
+      if (!formRef.current || !countryRef.current || !draftData) return;
 
       const form = formRef.current;
       const { elements } = form;
@@ -126,7 +130,6 @@ function UncontrolledForm({
         email: draftData.email,
         password: draftData.password,
         confirmPassword: draftData.confirmPassword,
-        country: draftData.country,
       };
 
       Object.entries(textFields).forEach(([field, value]) => {
@@ -139,6 +142,13 @@ function UncontrolledForm({
           }
         }
       });
+
+      if (draftData.country && countryRef.current) {
+        const input = document.getElementById('country') as HTMLInputElement;
+        if (input) {
+          input.value = draftData.country;
+        }
+      }
 
       if (draftData.gender) {
         const radios = elements.gender;
@@ -234,7 +244,7 @@ function UncontrolledForm({
     e.preventDefault();
     clearErrors();
 
-    if (!formRef.current) return;
+    if (!formRef.current || !countryRef.current) return;
 
     const form = formRef.current;
 
@@ -261,7 +271,7 @@ function UncontrolledForm({
       gender: gender,
       acceptTerms: form.elements.acceptTerms.checked,
       picture: getCurrentPicture() || '',
-      country: form.elements.country.value,
+      country: countryRef.current.value,
     };
 
     try {
@@ -438,19 +448,13 @@ function UncontrolledForm({
 
       <div className={style.formGroup}>
         <label htmlFor="country">Country:</label>
-        <select
+        <AutocompleteCountry
+          ref={countryRef}
           id="country"
           name="country"
-          className={style.formInput}
-          autoComplete="country"
-        >
-          <option value="">Select country</option>
-          {countries.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
+          placeholder="Start typing country name..."
+          onInputChange={handleChange}
+        />
         <span
           ref={countryErrorRef}
           className={style.error}

@@ -1,11 +1,11 @@
 import Accordion from '../accordion/accordion';
+import AutocompleteCountry from '../autocomplete-country/autocomplete-country';
 import convertToBase64 from '../../shared/lib/converter';
 import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useCallback, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { countries } from '../../shared/constants/countries';
 import { FormsProps, getPasswordStrength, strengthLabels } from './fields';
 
 import {
@@ -299,23 +299,18 @@ function HookForm({
       </div>
 
       <div className={style.formGroup}>
-        <label htmlFor="country">Country:</label>
-        <select
-          id="country"
-          className={style.formInput}
-          autoComplete="country"
-          {...register('country')}
-        >
-          <option value="">Select country</option>
-          {countries.map((country) => (
-            <option key={country} value={country}>
-              {country}
-            </option>
-          ))}
-        </select>
-        {errors.country && (
-          <span className={style.error}>{errors.country.message}</span>
-        )}
+        <div className={style.formGroup}>
+          <label htmlFor="country">Country:</label>
+          <AutocompleteCountry
+            id="country"
+            name="country"
+            value={watch('country') || ''}
+            onChange={(value) =>
+              setValue('country', value, { shouldValidate: true })
+            }
+            error={errors.country?.message}
+          />
+        </div>
       </div>
 
       <button type="submit" className={style.submitButton} disabled={!isValid}>
