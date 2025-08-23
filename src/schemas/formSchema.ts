@@ -1,18 +1,21 @@
 import { z } from 'zod';
 
-export interface FormValues {
-  name: string;
-  age: number;
-  email: string;
-  password: string;
-  confirmPassword: string;
-  gender: 'male' | 'female';
-  acceptTerms: boolean;
-  country: string;
-  avatar?: FileList;
-}
-
 const GenderEnum = z.enum(['male', 'female']);
+
+const validateBase64Image = (base64: string) => {
+  if (!base64.startsWith('data:image/')) {
+    return false;
+  }
+
+  const base64Data = base64.split(',')[1];
+  const sizeInBytes = Math.ceil((base64Data.length * 3) / 4);
+  if (sizeInBytes > 5 * 1024 * 1024) {
+    return false;
+  }
+
+  const mimeType = RegExp(/data:(image\/\w+);base64/).exec(base64)?.[1];
+  return mimeType === 'image/jpeg' || mimeType === 'image/png';
+};
 
 export const formSchema = z
   .object({
@@ -37,20 +40,12 @@ export const formSchema = z
     acceptTerms: z
       .boolean()
       .refine((val) => val === true, 'You should accept the condition'),
-    avatar: z
-      .instanceof(FileList)
-      .optional()
-      .refine(
-        (files) => !files || files.length === 0 || files[0]?.size <= 5000000,
-        'The file should be less than 5MB'
-      )
-      .refine(
-        (files) =>
-          !files ||
-          files.length === 0 ||
-          ['image/jpeg', 'image/png'].includes(files[0]?.type),
-        'Only the JPEG и PNG files accepted'
-      ),
+    picture: z
+      .string()
+      .min(1, 'Picture is required')
+      .refine((base64) => validateBase64Image(base64), {
+        message: 'Only JPEG and PNG files up to 5MB are accepted',
+      }),
     country: z.string().min(1, 'Choose country'),
   })
   .refine((data) => data.password === data.confirmPassword, {
@@ -58,4 +53,5 @@ export const formSchema = z
     path: ['confirmPassword'],
   });
 
-export type FormData = z.infer<typeof formSchema>;
+export type FormValues = z.infer<typeof formSchema>;
+export type DraftFormValues = Partial<FormValues>;

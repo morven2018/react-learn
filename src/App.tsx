@@ -3,9 +3,15 @@ import HookForm from './components/forms/hook-form';
 import Modal from './components/modal/modal';
 import Results from './components/result/result';
 import UncontrolledForm from './components/forms/uncontrolled';
-import { useState } from 'react';
+import { useAppDispatch, useAppSelector } from './redux/hooks';
+import {
+  addSubmission,
+  closeModal,
+  openModal,
+  saveDraft,
+} from './redux/slice/formSlice';
 import { FormValues } from './schemas/formSchema';
-import { Forms, Submission } from './shared/types/types';
+import { Forms } from './shared/types/types';
 
 enum ModalTitle {
   Uncontrolled = 'Form with uncontrolled Elements',
@@ -13,54 +19,84 @@ enum ModalTitle {
 }
 
 function App() {
-  const [modalOpen, setModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<React.ReactNode>(null);
-  const [modalTitle, setModalTitle] = useState('');
-  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const dispatch = useAppDispatch();
+  const { isModalOpen, modalTitle, modalContent, submissions, draftData } =
+    useAppSelector((state) => state.form);
 
   const handleFormSelect = (formType: Forms) => {
-    setModalOpen(true);
-
     if (formType === Forms.Uncontrolled) {
-      setModalTitle(ModalTitle.Uncontrolled);
-      setModalContent(
-        <UncontrolledForm
-          onSubmitSuccess={(data: FormValues) =>
-            handleFormSubmit(Forms.Uncontrolled, data.name)
-          }
-        />
+      dispatch(
+        openModal({
+          title: ModalTitle.Uncontrolled,
+          content: (
+            <UncontrolledForm
+              draftData={draftData[Forms.Uncontrolled]}
+              onSaveDraft={(data) =>
+                dispatch(
+                  saveDraft({
+                    formType: Forms.Uncontrolled,
+                    data,
+                  })
+                )
+              }
+              onSubmitSuccess={(data: FormValues) =>
+                handleFormSubmit(Forms.Uncontrolled, data.name)
+              }
+            />
+          ),
+          type: Forms.Uncontrolled,
+        })
       );
     } else {
-      setModalTitle(ModalTitle.HookForm);
-      setModalContent(
-        <HookForm
-          onSubmitSuccess={(data: FormValues) =>
-            handleFormSubmit(Forms.HookForm, data.name)
-          }
-        />
+      dispatch(
+        openModal({
+          title: ModalTitle.HookForm,
+          content: (
+            <HookForm
+              draftData={draftData[Forms.HookForm]}
+              onSaveDraft={(data) =>
+                dispatch(
+                  saveDraft({
+                    formType: Forms.HookForm,
+                    data,
+                  })
+                )
+              }
+              onSubmitSuccess={(data: FormValues) =>
+                handleFormSubmit(Forms.HookForm, data.name)
+              }
+            />
+          ),
+          type: Forms.HookForm,
+        })
       );
     }
   };
 
   const handleFormSubmit = (type: Forms, name: string) => {
-    const newSubmission: Submission = {
+    const newSubmission = {
       type,
       name,
+      timestamp: new Date().toISOString(),
     };
 
-    setSubmissions((prev) => [...prev, newSubmission]);
-    setModalOpen(false);
+    dispatch(addSubmission(newSubmission));
+    dispatch(closeModal());
   };
 
-  const closeModal = () => {
-    setModalOpen(false);
+  const closeModalHandler = () => {
+    dispatch(closeModal());
   };
 
   return (
     <>
       <header>React Forms</header>
       <Controls onFormSelect={handleFormSelect} />
-      <Modal isOpen={modalOpen} title={modalTitle} onClose={closeModal}>
+      <Modal
+        isOpen={isModalOpen}
+        title={modalTitle}
+        onClose={closeModalHandler}
+      >
         {modalContent}
       </Modal>
       <Results submissions={submissions} />

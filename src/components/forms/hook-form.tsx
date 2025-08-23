@@ -1,22 +1,91 @@
+import convertToBase64 from '../../shared/lib/converter';
 import style from './form.module.scss';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { FormValues, formSchema } from '../../schemas/formSchema';
 import { countries } from '../../shared/constants/countries';
 import { FormsProps, getPasswordStrength, strengthLabels } from './fields';
 
-function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
+import {
+  FormValues,
+  formSchema,
+  DraftFormValues,
+} from '../../schemas/formSchema';
+
+interface HookFormProps extends FormsProps {
+  draftData: DraftFormValues;
+  onSaveDraft: (data: DraftFormValues) => void;
+}
+
+function HookForm({
+  onSubmitSuccess,
+  draftData,
+  onSaveDraft,
+}: Readonly<HookFormProps>) {
+  const [imagePreview, setImagePreview] = useState<string | null>(
+    draftData.picture || null
+  );
   const {
     register,
     handleSubmit,
     formState: { errors, isValid },
     watch,
+    setValue,
   } = useForm<FormValues>({
     resolver: zodResolver(formSchema),
     mode: 'onChange',
+    defaultValues: {
+      name: draftData.name || '',
+      age: draftData.age || undefined,
+      email: draftData.email || '',
+      gender: draftData.gender || 'male',
+      country: draftData.country || '',
+      acceptTerms: draftData.acceptTerms || false,
+      picture: draftData.picture || '',
+    },
   });
 
   const password = watch('password');
+  const formValues = watch();
+
+  useEffect(() => {
+    const draft: DraftFormValues = {
+      name: formValues.name,
+      age: formValues.age,
+      email: formValues.email,
+      password: formValues.password,
+      confirmPassword: formValues.confirmPassword,
+      gender: formValues.gender,
+      acceptTerms: formValues.acceptTerms,
+      country: formValues.country,
+      picture: formValues.picture,
+    };
+    onSaveDraft(draft);
+  }, [formValues, onSaveDraft]);
+
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      try {
+        const base64 = await convertToBase64(file);
+        setImagePreview(base64);
+        setValue('picture', base64, { shouldValidate: true });
+      } catch {
+        setValue('picture', '', { shouldValidate: true });
+        setImagePreview(null);
+      }
+    } else {
+      setValue('picture', '', { shouldValidate: true });
+      setImagePreview(null);
+    }
+  };
+
+  useEffect(() => {
+    if (draftData.picture && typeof draftData.picture === 'string') {
+      setImagePreview(draftData.picture);
+      setValue('picture', draftData.picture);
+    }
+  }, [draftData.picture, setValue]);
 
   const onSubmit = (data: FormValues) => {
     onSubmitSuccess(data);
@@ -25,7 +94,11 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
   const passwordStrength = getPasswordStrength(password);
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className={style.form}>
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className={style.form}
+      autoComplete="on"
+    >
       <div className={style.formGroup}>
         <label htmlFor="name">Name:</label>
         <input
@@ -33,6 +106,7 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
           id="name"
           className={style.formInput}
           placeholder="Your name"
+          autoComplete="given-name"
           {...register('name')}
         />
         {errors.name && (
@@ -45,6 +119,7 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
         <input
           type="number"
           id="age"
+          autoComplete="off"
           className={style.formInput}
           placeholder="Your age"
           {...register('age', { valueAsNumber: true })}
@@ -57,10 +132,11 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
       <div className={style.formGroup}>
         <label htmlFor="email">Email:</label>
         <input
-          type="email"
+          type="text"
           id="email"
           className={style.formInput}
           placeholder="Your email"
+          autoComplete="email"
           {...register('email')}
         />
         {errors.email && (
@@ -75,6 +151,7 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
           id="password"
           className={style.formInput}
           placeholder="Your password"
+          autoComplete="new-password"
           {...register('password')}
         />
         {errors.password && (
@@ -100,6 +177,7 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
           id="confirmPassword"
           className={style.formInput}
           placeholder="Confirm password"
+          autoComplete="new-password"
           {...register('confirmPassword')}
         />
         {errors.confirmPassword && (
@@ -135,12 +213,19 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
             Female
           </label>
         </div>
+        {errors.gender && (
+          <span className={style.error}>{errors.gender.message}</span>
+        )}
       </div>
 
       <div className={style.formGroup}>
         <label className={style.checkboxLabel}>
-          <input type="checkbox" {...register('acceptTerms')} />I accepted
-          condition
+          <input
+            type="checkbox"
+            autoComplete="off"
+            {...register('acceptTerms')}
+          />
+          I accepted condition
           <br />
           <a href="#" target="_blank">
             Terms and Conditions agreement
@@ -152,15 +237,23 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
       </div>
 
       <div className={style.formGroup}>
-        <label htmlFor="avatar">Picture:</label>
+        <label htmlFor="picture">Picture (required):</label>
         <input
           type="file"
-          id="avatar"
+          id="picture"
           accept="image/jpeg,image/png"
-          {...register('avatar')}
+          autoComplete="off"
+          onChange={handleImageChange}
+          required
         />
-        {errors.avatar && (
-          <span className={style.error}>{errors.avatar.message}</span>
+        {imagePreview && (
+          <div className={style.imagePreview}>
+            <img src={imagePreview} alt="Preview" />
+            <p>Image selected</p>
+          </div>
+        )}
+        {errors.picture && (
+          <span className={style.error}>{errors.picture.message}</span>
         )}
       </div>
 
@@ -169,6 +262,7 @@ function HookForm({ onSubmitSuccess }: Readonly<FormsProps>) {
         <select
           id="country"
           className={style.formInput}
+          autoComplete="country"
           {...register('country')}
         >
           <option value="">Select country</option>
