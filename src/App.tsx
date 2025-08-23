@@ -57,7 +57,7 @@ function App() {
               )
             }
             onSubmitSuccess={(data: FormValues) =>
-              handleFormSubmit(Forms.Uncontrolled, data.name)
+              handleFormSubmit(Forms.Uncontrolled, data)
             }
           />
         );
@@ -74,7 +74,7 @@ function App() {
               )
             }
             onSubmitSuccess={(data: FormValues) =>
-              handleFormSubmit(Forms.HookForm, data.name)
+              handleFormSubmit(Forms.HookForm, data)
             }
           />
         );
@@ -83,11 +83,17 @@ function App() {
     }
   };
 
-  const handleFormSubmit = (type: Forms, name: string) => {
+  const handleFormSubmit = (type: Forms, data: FormValues) => {
     const newSubmission = {
       type,
-      name,
-      timestamp: new Date().toISOString(),
+      name: data.name,
+      age: data.age.toString(),
+      email: data.email,
+      password: data.password,
+      gender: data.gender,
+      acceptTerms: data.acceptTerms.toString(),
+      picture: data.picture,
+      country: data.country,
     };
 
     dispatch(addSubmission(newSubmission));

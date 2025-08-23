@@ -1,12 +1,6 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { FormValues } from '../../schemas/formSchema';
-import { Forms } from '../../shared/types/types';
-
-interface Submission {
-  type: Forms;
-  name: string;
-  timestamp: string;
-}
+import { Forms, Submission } from '../../shared/types/types';
 
 interface FormState {
   submissions: Submission[];
