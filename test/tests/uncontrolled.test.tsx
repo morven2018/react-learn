@@ -1,7 +1,7 @@
 import UncontrolledForm from '../../src/components/forms/uncontrolled';
 import convertToBase64 from '../../src/shared/lib/converter';
 import userEvent from '@testing-library/user-event';
-import { render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { ChangeEvent } from 'react';
 import { formSchema } from '../../src/schemas/formSchema';
 
@@ -167,5 +167,20 @@ describe('UncontrolledForm', () => {
 
     const invalidData = { ...validData, email: 'invalid-email' };
     expect(() => formSchema.parse(invalidData)).toThrow();
+  });
+
+  it('handle file upload and conversion', async () => {
+    const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
+    renderComponent();
+
+    const fileInput = screen.getByLabelText(/picture:/i);
+
+    await waitFor(() => {
+      fireEvent.change(fileInput, { target: { files: [file] } });
+    });
+
+    await waitFor(() => {
+      expect(convertToBase64).toHaveBeenCalledWith(file);
+    });
   });
 });
