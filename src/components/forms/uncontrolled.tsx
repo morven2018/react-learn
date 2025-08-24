@@ -140,7 +140,6 @@ function UncontrolledForm({
       confirmPassword: form.elements.confirmPassword.value,
       gender: form.elements.gender.value as 'male' | 'female',
       acceptTerms: form.elements.acceptTerms.checked,
-      picture: getCurrentPicture(),
       country: countryRef.current.value,
     };
 
