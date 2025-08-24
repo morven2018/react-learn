@@ -1,35 +1,14 @@
 import { FormValues, formSchema } from '../../src/schemas/formSchema';
+import { TEST_PASSWORDS, validData } from '../mock/test-data';
 
 describe('Form Validation', () => {
   describe('formSchema validation', () => {
     test('validate correct form data', () => {
-      const validData: FormValues = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/',
-        country: 'United States',
-      };
-
       expect(() => formSchema.parse(validData)).not.toThrow();
     });
 
     test('reject empty name', () => {
-      const invalidData = {
-        name: '',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
-      };
+      const invalidData = { ...validData, name: '' };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
         'This field is mandatory'
@@ -37,17 +16,7 @@ describe('Form Validation', () => {
     });
 
     test('reject name not starting with uppercase', () => {
-      const invalidData = {
-        name: 'john doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
-      };
+      const invalidData = { ...validData, name: 'john doe' };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
         'The name should start on UpperCase letter'
@@ -55,17 +24,7 @@ describe('Form Validation', () => {
     });
 
     test('reject negative age', () => {
-      const invalidData = {
-        name: 'John Doe',
-        age: -5,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
-      };
+      const invalidData = { ...validData, age: -5 };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
         'The age should be over than 0'
@@ -73,17 +32,7 @@ describe('Form Validation', () => {
     });
 
     test('should reject undefined age', () => {
-      const invalidData = {
-        name: 'John Doe',
-        age: undefined,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
-      };
+      const invalidData = { ...validData, age: undefined };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
         'This field is mandatory'
@@ -91,17 +40,7 @@ describe('Form Validation', () => {
     });
 
     test('reject invalid email', () => {
-      const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'invalid-email',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
-      };
+      const invalidData = { ...validData, email: 'invalid-email' };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
         'Input correct email'
@@ -110,15 +49,9 @@ describe('Form Validation', () => {
 
     test('reject password without digit', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password!',
-        confirmPassword: 'Password!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.NO_DIGIT,
+        confirmPassword: TEST_PASSWORDS.NO_DIGIT,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -128,15 +61,9 @@ describe('Form Validation', () => {
 
     test('reject password without uppercase', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'password123!',
-        confirmPassword: 'password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.NO_UPPERCASE,
+        confirmPassword: TEST_PASSWORDS.NO_UPPERCASE,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -146,15 +73,9 @@ describe('Form Validation', () => {
 
     test('reject password without lowercase', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'PASSWORD123!',
-        confirmPassword: 'PASSWORD123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.NO_LOWERCASE,
+        confirmPassword: TEST_PASSWORDS.NO_LOWERCASE,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -164,15 +85,9 @@ describe('Form Validation', () => {
 
     test('reject password without special character', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123',
-        confirmPassword: 'Password123',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.NO_SPECIAL,
+        confirmPassword: TEST_PASSWORDS.NO_SPECIAL,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -182,15 +97,9 @@ describe('Form Validation', () => {
 
     test('reject short password (less 8)', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Pass1!',
-        confirmPassword: 'Pass1!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.TOO_SHORT,
+        confirmPassword: TEST_PASSWORDS.TOO_SHORT,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -200,15 +109,9 @@ describe('Form Validation', () => {
 
     test('reject mismatched passwords', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'DifferentPassword123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
+        ...validData,
+        password: TEST_PASSWORDS.VALID,
+        confirmPassword: TEST_PASSWORDS.DIFFERENT,
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -218,15 +121,8 @@ describe('Form Validation', () => {
 
     test('reject undefined gender', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
+        ...validData,
         gender: undefined,
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -236,15 +132,8 @@ describe('Form Validation', () => {
 
     test('reject not accepted terms', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
+        ...validData,
         acceptTerms: false,
-        picture: 'data:image/jpeg;base64,test',
-        country: 'United States',
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -254,15 +143,8 @@ describe('Form Validation', () => {
 
     test('reject invalid image format', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
+        ...validData,
         picture: 'invalid-base64-string',
-        country: 'United States',
       };
 
       expect(() => formSchema.parse(invalidData)).toThrow(
@@ -272,14 +154,7 @@ describe('Form Validation', () => {
 
     test('reject empty country', () => {
       const invalidData = {
-        name: 'John Doe',
-        age: 25,
-        email: 'john.doe@example.com',
-        password: 'Password123!',
-        confirmPassword: 'Password123!',
-        gender: 'male',
-        acceptTerms: true,
-        picture: 'data:image/jpeg;base64,test',
+        ...validData,
         country: '',
       };
 
