@@ -1,69 +1,55 @@
-# React + TypeScript + Vite
+# React Forms Task
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+You could see test in this files:
 
-Currently, two official plugins are available:
+- Form Components Testing: Test both uncontrolled and React Hook Form implementations - hook-form.test.tsx and uncontrolled.test.tsx
+  - Test form rendering with all required fields
+  - Test field validation (name, age, email, passwords, etc.)
+  - Test password strength calculation
+  - Test form submission with valid/invalid data
+  - Test error message display and clearing
+  - Modal Components Testing:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- Test modal opening/closing functionality
+  - Test accessibility features (focus management, ESC key) - modal.test.tsx
+  - Test click outside to close behavior - modal.test.tsx
+  - Test portal rendering - portal.test.tsx
 
-## Expanding the ESLint configuration
+- Redux Store Testing
+  - Test actions and action creators - form-slice.test.ts
+  - Test reducers with different action types - reducer.test.ts
+  - Test selectors - selectors.test.ts
+  - Test store state updates after form submissions - integration.test.ts
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+- Utility Functions Testing:
+  - Test password strength validation - utility-functions.test.ts
+  - Test image to base64 conversion - utility-functions.test.ts
+  - Test form validation helpers - form-validation.test.ts
+  - Test country autocomplete filtering - autocomplete.test.tsx
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+All components test in corresponding files
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## Setup and Running
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+**Before use**
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+- Clone the repository: $ git clone https://github.com/morven2018/react-learn
+- Install dependencies: $ npm install
+- Switch to the corresponding branch
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+### Commands
 
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-]);
-```
+- Start the development server: `$ npm run dev`
+- Build the project for production: `$ npm run build`
+- Run ESLint to check for linting issues and automatically fix them: `$ npm run lint`
+- Formats the codebase using ESLint: `$ npm run lint:fix`
+- Formats the codebase using Prettier: `$ npm run format:fix`
+- Preview the production build locally using Vite: `$ npm run preview`
+- Prepares the project for Git hooks using Husky: `$ npm run prepare`
+- Run unit tests: $ npm run test
+- Run tests with coverage: $ npm run test:coverage
+
+### Prerequisites
+
+- Node.js (v18+ recommended)
+- npm (v9+ recommended)
