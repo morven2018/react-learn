@@ -41,7 +41,11 @@ function Modal({
 
   return (
     <Portal>
-      <div className={style.overlay} onClick={onClose}>
+      <div
+        className={style.overlay}
+        onClick={onClose}
+        data-testid="modal-overlay"
+      >
         <div className={style.modal} onClick={(e) => e.stopPropagation()}>
           <div className={style.header}>
             <h2 className={style.title}>{title}</h2>
