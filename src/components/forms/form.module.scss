@@ -1,4 +1,4 @@
-@import '../../assets/globals.scss';
+@use '../../assets/globals.scss' as *;
 
 .form {
   max-width: 600px;

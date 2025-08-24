@@ -18,8 +18,8 @@ function Results({ submissions }: Readonly<ResultsProps>) {
     if (submissions.length > 0) {
       const lastIndex = submissions.length - 1;
       const lastSubmission = submissions[lastIndex];
-
-      const isNew = Date.now() - lastSubmission.timestamp < delay;
+      const time = lastSubmission.timestamp || 0;
+      const isNew = Date.now() - time < delay;
 
       if (isNew && !newSubmissions.has(lastIndex)) {
         const updatedSet = new Set(newSubmissions);

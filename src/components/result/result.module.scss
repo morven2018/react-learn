@@ -1,4 +1,4 @@
-@import '../../assets/globals.scss';
+@use '../../assets/globals.scss' as *;
 
 .results {
   padding: 20px;
