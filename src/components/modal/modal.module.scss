@@ -10,6 +10,7 @@
   align-items: center;
   z-index: 1000;
   padding: 20px;
+  overflow: hidden;
 }
 
 .modal {
@@ -19,8 +20,30 @@
   width: 100%;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   color: black;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+
+  &::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 4px;
+
+    &:hover {
+      background: #a8a8a8;
+    }
+  }
+
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #f1f1f1;
 }
 
 .header {
@@ -29,22 +52,47 @@
   align-items: center;
   padding: 20px;
   border-bottom: 1px solid #e5e5e5;
+  position: sticky;
+  top: 0;
+  background: white;
+  z-index: 10;
 }
 
 .title {
   margin: 0;
   font-size: 1.5rem;
   color: #333;
+  word-break: break-word;
+  flex: 1;
+  min-width: 0;
 }
 
 .headerActions {
   display: flex;
   gap: 10px;
-  align-items: flex-end;
+  align-items: center;
+  flex-shrink: 0;
 }
+
+.content {
+  padding: 20px;
+  overflow-x: hidden;
+
+  form {
+    max-width: 100%;
+    overflow-x: hidden;
+  }
+
+  * {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+}
+
 button {
   border: none;
 }
+
 .resetButton {
   background: none;
   border: none;
@@ -55,6 +103,7 @@ button {
   color: #666;
   padding: 5px;
   border-radius: 50%;
+  flex-shrink: 0;
 
   &:hover {
     background-color: #f5f5f5;
@@ -73,18 +122,21 @@ button {
   height: 30px;
   display: flex;
   align-items: center;
+  justify-content: center;
   border-radius: 50%;
+  flex-shrink: 0;
 
   &:hover {
     background-color: #f5f5f5;
     color: #333;
   }
+
   &:focus,
   &:active {
     border: none;
   }
 }
 
-.content {
-  padding: 20px;
+body.modal-open {
+  overflow: hidden;
 }
