@@ -17,13 +17,14 @@ interface AutocompleteCountryProps {
   onInputChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 }
 
-interface ConverterFunction {
-  (file: File): Promise<string>;
-}
+type ConverterFunction = (file: File) => Promise<string>;
 
-interface DebounceFunction {
-  <T extends (...args: unknown[]) => void>(fn: T, delay: number): T;
-}
+type DebounceFunction = <T extends (...args: unknown[]) => void>(
+  fn: T,
+  delay: number
+) => T;
+
+const password = 'Draft123!';
 
 jest.mock('../../src/components/accordion/accordion', () => ({
   __esModule: true,
@@ -70,7 +71,7 @@ jest.mock('../../src/shared/lib/converter', () => ({
 
 jest.mock('../../src/shared/lib/debounce', () => ({
   __esModule: true,
-  default: jest.fn((fn, delay) => fn) as DebounceFunction,
+  default: jest.fn((fn) => fn) as DebounceFunction,
 }));
 
 jest.mock('../../src/components/forms/fields', () => ({
@@ -197,10 +198,8 @@ describe('HookForm Component', () => {
     expect(screen.getByLabelText(/name:/i)).toHaveValue('Jane Doe');
     expect(screen.getByLabelText(/age:/i)).toHaveValue(30);
     expect(screen.getByLabelText(/email:/i)).toHaveValue('jane@example.com');
-    expect(screen.getByLabelText('Password:')).toHaveValue('Draft123!');
-    expect(screen.getByLabelText(/confirm password:/i)).toHaveValue(
-      'Draft123!'
-    );
+    expect(screen.getByLabelText('Password:')).toHaveValue(password);
+    expect(screen.getByLabelText(/confirm password:/i)).toHaveValue(password);
     expect(screen.getByLabelText(/female/i)).toBeChecked();
     expect(screen.getByLabelText(/i accepted condition/i)).toBeChecked();
     expect(screen.getByTestId('country-input')).toHaveValue('Canada');

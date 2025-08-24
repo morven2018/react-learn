@@ -5,6 +5,8 @@ import { useAppDispatch, useAppSelector } from '../../src/redux/hooks';
 import { FormValues } from '../../src/schemas/formSchema';
 import { Forms, Submission } from '../../src/shared/types/types';
 
+const password = '123456';
+
 jest.mock('../../src/components/controls/controls', () => ({
   __esModule: true,
   default: ({ onFormSelect }: { onFormSelect: (formType: Forms) => void }) => (
@@ -36,7 +38,7 @@ jest.mock('../../src/components/forms/hook-form', () => ({
           onSubmitSuccess({
             name: 'Test',
             email: 'test@test.com',
-            password: '123456',
+            password: password,
             acceptTerms: true,
           } as FormValues)
         }
@@ -66,7 +68,7 @@ jest.mock('../../src/components/forms/uncontrolled', () => ({
           onSubmitSuccess({
             name: 'Test',
             email: 'test@test.com',
-            password: '123456',
+            password: password,
             acceptTerms: true,
           } as FormValues)
         }

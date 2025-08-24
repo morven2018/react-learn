@@ -1,11 +1,13 @@
 import { FormValues } from '../../src/schemas/formSchema';
 import { Forms } from '../../src/shared/types/types';
 
+const pass = 'password123';
+
 export const createTestSubmission = (overrides = {}, index = 1) => ({
   type: Forms.Uncontrolled,
   name: `User ${index}`,
   email: 'john@example.com',
-  password: 'password123',
+  password: pass,
   acceptTerms: 'true',
   age: '25',
   gender: 'male',
