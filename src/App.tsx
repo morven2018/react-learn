@@ -3,6 +3,7 @@ import HookForm from './components/forms/hook-form';
 import Modal from './components/modal/modal';
 import Results from './components/result/result';
 import UncontrolledForm from './components/forms/uncontrolled';
+import style from './App.module.scss';
 import { useState } from 'react';
 import { useAppDispatch, useAppSelector } from './redux/hooks';
 import { FormValues } from './schemas/formSchema';
@@ -107,6 +108,7 @@ function App() {
       acceptTerms: data.acceptTerms.toString(),
       picture: data.picture,
       country: data.country,
+      timestamp: Date.now(),
     };
 
     dispatch(addSubmission(newSubmission));
@@ -119,7 +121,7 @@ function App() {
 
   return (
     <>
-      <header>React Forms</header>
+      <header className={style.header}>React Forms</header>
       <Controls onFormSelect={handleFormSelect} />
       <Modal
         isOpen={isModalOpen}
