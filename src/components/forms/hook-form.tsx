@@ -29,6 +29,9 @@ function HookForm({
   const [imagePreview, setImagePreview] = useState<string | null>(
     draftData.picture || null
   );
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -68,6 +71,8 @@ function HookForm({
         picture: '',
       });
       setImagePreview(null);
+      setShowPassword(false);
+      setShowConfirmPassword(false);
 
       const fileInput = document.getElementById('picture') as HTMLInputElement;
       if (fileInput) {
@@ -136,6 +141,14 @@ function HookForm({
 
   const passwordStrength = getPasswordStrength(password || '');
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const toggleConfirmPasswordVisibility = () => {
+    setShowConfirmPassword(!showConfirmPassword);
+  };
+
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
@@ -189,14 +202,24 @@ function HookForm({
 
       <div className={style.formGroup}>
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          className={style.formInput}
-          placeholder="Your password"
-          autoComplete="new-password"
-          {...register('password')}
-        />
+        <div className={style.passwordInputWrapper}>
+          <input
+            type={showPassword ? 'text' : 'password'}
+            id="password"
+            className={style.formInput}
+            placeholder="Your password"
+            autoComplete="new-password"
+            {...register('password')}
+          />
+          <button
+            type="button"
+            className={style.togglePasswordButton}
+            onClick={togglePasswordVisibility}
+            aria-label={showPassword ? 'Hide password' : 'Show password'}
+          >
+            {showPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
         {errors.password && (
           <span className={style.error}>{errors.password.message}</span>
         )}
@@ -215,14 +238,24 @@ function HookForm({
 
       <div className={style.formGroup}>
         <label htmlFor="confirmPassword">Confirm password:</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          className={style.formInput}
-          placeholder="Confirm password"
-          autoComplete="new-password"
-          {...register('confirmPassword')}
-        />
+        <div className={style.passwordInputWrapper}>
+          <input
+            type={showConfirmPassword ? 'text' : 'password'}
+            id="confirmPassword"
+            className={style.formInput}
+            placeholder="Confirm password"
+            autoComplete="new-password"
+            {...register('confirmPassword')}
+          />
+          <button
+            type="button"
+            className={style.togglePasswordButton}
+            onClick={toggleConfirmPasswordVisibility}
+            aria-label={showConfirmPassword ? 'Hide password' : 'Show password'}
+          >
+            {showConfirmPassword ? 'Hide' : 'Show'}
+          </button>
+        </div>
         {errors.confirmPassword && (
           <span className={style.error}>{errors.confirmPassword.message}</span>
         )}
