@@ -1,3 +1,5 @@
+@import '../../assets/globals.scss';
+
 .form {
   max-width: 600px;
   margin: 0 auto;
@@ -12,35 +14,53 @@
   flex-direction: column;
 }
 
+.formGroupCondition {
+  flex-direction: column;
+}
+
 .formGroup label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #333;
+  color: $text-primary;
   font-size: 14px;
+}
+.passwordInputWrapper {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+
+  .formInput {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  @media (max-width: 500px) {
+    flex-direction: column;
+  }
 }
 
 .formInput {
   padding: 12px 16px;
-  border: 2px solid #e1e5e9;
+  border: 2px solid $border;
   border-radius: 8px;
   font-size: 16px;
   transition: border-color 0.3s ease;
-  background-color: #fff;
-  color: black;
+  background-color: $surface;
+  color: $text-primary;
 
   &:focus {
     outline: none;
-    border-color: #007bff;
-    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.1);
+    border-color: $primary;
+    box-shadow: 0 0 0 3px rgba($primary, 0.1);
   }
 
   &::placeholder {
-    color: #645959;
+    color: $gray-600;
   }
 }
 
 .error {
-  color: #dc3545;
+  color: $error;
   font-size: 14px;
   margin-top: 6px;
   font-weight: 500;
@@ -55,7 +75,7 @@
 
 .radioGroup .legend {
   font-weight: 600;
-  color: #333;
+  color: $text-primary;
   margin-right: 10px;
 }
 
@@ -93,13 +113,13 @@
 .passwordStrength {
   margin-top: 8px;
   font-size: 14px;
-  color: #666;
+  color: $text-secondary;
 }
 
 .strengthBar {
   width: 100%;
   height: 6px;
-  background-color: #e9ecef;
+  background-color: $gray-200;
   border-radius: 3px;
   margin-top: 4px;
   overflow: hidden;
@@ -107,28 +127,28 @@
 
 .strengthFill {
   height: 100%;
-  background-color: #dc3545;
+  background-color: $error;
   transition: all 0.3s ease;
   border-radius: 3px;
 
   &[style*='width: 20%'] {
-    background-color: #dc3545;
+    background-color: $error;
   }
 
   &[style*='width: 40%'] {
-    background-color: #fd7e14;
+    background-color: $warning;
   }
 
   &[style*='width: 60%'] {
-    background-color: #ffc107;
+    background-color: $accent;
   }
 
   &[style*='width: 80%'] {
-    background-color: #28a745;
+    background-color: $success;
   }
 
   &[style*='width: 100%'] {
-    background-color: #20c997;
+    background-color: $primary;
   }
 }
 
@@ -140,21 +160,22 @@
     max-width: 200px;
     max-height: 200px;
     border-radius: 8px;
-    border: 2px solid #e1e5e9;
+    border: 2px solid $border;
   }
 
   p {
     margin-top: 8px;
-    color: #28a745;
+    color: $success;
     font-weight: 500;
   }
 }
 
 .submitButton {
-  background-color: #007bff;
-  color: white;
+  background-color: $primary;
+  color: $text-light;
   padding: 14px 28px;
   border: none;
+  width: 100%;
   border-radius: 8px;
   font-size: 16px;
   font-weight: 600;
@@ -163,11 +184,11 @@
   margin-top: 10px;
 
   &:hover:not(:disabled) {
-    background-color: #0056b3;
+    background-color: $primary-dark;
   }
 
   &:disabled {
-    background-color: #6c757d;
+    background-color: $gray-600;
     cursor: not-allowed;
     opacity: 0.7;
   }
@@ -179,16 +200,16 @@ input[type='file'] {
 
   &::file-selector-button {
     padding: 8px 16px;
-    border: 2px solid #e1e5e9;
+    border: 2px solid $border;
     border-radius: 6px;
-    background-color: #f8f9fa;
-    color: #333;
+    background-color: $gray-100;
+    color: $text-primary;
     cursor: pointer;
     margin-right: 12px;
     transition: all 0.3s ease;
 
     &:hover {
-      background-color: #e9ecef;
+      background-color: $gray-200;
     }
   }
 }
@@ -210,9 +231,17 @@ input[type='file'] {
 }
 
 .formInput:invalid:not(:focus):not(:placeholder-shown) {
-  border-color: #dc3545;
+  border-color: $error;
 }
 
 .formInput:valid:not(:focus):not(:placeholder-shown) {
-  border-color: #28a745;
+  border-color: $success;
+}
+
+.autocompleteWrapper {
+  width: 100%;
+  input {
+    width: calc(100% - 40px);
+    max-width: 370px;
+  }
 }
