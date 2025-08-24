@@ -2,7 +2,7 @@ import style from './result.module.scss';
 import { useEffect, useState } from 'react';
 import { Submission } from '../../shared/types/types';
 
-const delay = 20000;
+const delay = 5000;
 
 type ResultsProps = {
   submissions: Submission[];
@@ -37,7 +37,7 @@ function Results({ submissions }: Readonly<ResultsProps>) {
         return () => clearTimeout(timer);
       }
     }
-  }, [submissions, newSubmissions]);
+  }, [submissions]);
 
   const togglePasswordVisibility = (index: number) => {
     setVisiblePasswords((prev) => {
@@ -68,7 +68,7 @@ function Results({ submissions }: Readonly<ResultsProps>) {
 
   return (
     <div className={style.results}>
-      <h2>Results ({submissions.length})</h2>
+      <h2 className={style.subheader}>Results ({submissions.length})</h2>
       <div className={style.resultsList}>
         {reversedSubmissions.map((submission: Submission, index: number) => {
           const originalIndex = submissions.length - 1 - index;
