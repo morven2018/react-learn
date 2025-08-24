@@ -7,6 +7,7 @@ import React, {
   useEffect,
   forwardRef,
   useImperativeHandle,
+  useMemo,
 } from 'react';
 
 interface AutocompleteCountryProps {
@@ -21,6 +22,7 @@ interface AutocompleteCountryProps {
 
 export interface AutocompleteCountryRef {
   value: string;
+  setValue: (value: string) => void;
   focus: () => void;
 }
 
@@ -31,30 +33,36 @@ const AutocompleteCountry = forwardRef<
   const countries = useAppSelector((state) => state.countries.list);
   const [inputValue, setInputValue] = useState(value || '');
   const [isOpen, setIsOpen] = useState(false);
-  const [filteredCountries, setFilteredCountries] = useState<string[]>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const wrapperRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Sync with external value changes
+  useEffect(() => {
+    if (value !== undefined) {
+      setInputValue(value);
+    }
+  }, [value]);
+
+  // Memoize filtered countries for better performance
+  const filteredCountries = useMemo(() => {
+    return countries.filter((country) =>
+      country.toLowerCase().includes(inputValue.toLowerCase())
+    );
+  }, [inputValue, countries]);
 
   useImperativeHandle(ref, () => ({
     get value() {
       return inputValue;
     },
+    setValue: (newValue: string) => {
+      setInputValue(newValue);
+    },
     focus() {
       inputRef.current?.focus();
     },
   }));
-
-  useEffect(() => {
-    setInputValue(value || '');
-  }, [value]);
-
-  useEffect(() => {
-    setFilteredCountries(
-      countries.filter((country) =>
-        country.toLowerCase().includes(inputValue.toLowerCase())
-      )
-    );
-  }, [inputValue, countries]);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
@@ -74,6 +82,7 @@ const AutocompleteCountry = forwardRef<
     const newValue = e.target.value;
     setInputValue(newValue);
     setIsOpen(true);
+    setActiveIndex(0); // Reset active index when input changes
     onChange?.(newValue);
     onInputChange?.();
   };
@@ -83,11 +92,52 @@ const AutocompleteCountry = forwardRef<
     setIsOpen(false);
     onChange?.(country);
     onInputChange?.();
+    inputRef.current?.focus();
   };
 
   const handleInputFocus = () => {
     setIsOpen(true);
   };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (!isOpen || filteredCountries.length === 0) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+        e.preventDefault();
+        setActiveIndex((prev) =>
+          Math.min(prev + 1, filteredCountries.length - 1)
+        );
+        break;
+      case 'ArrowUp':
+        e.preventDefault();
+        setActiveIndex((prev) => Math.max(prev - 1, 0));
+        break;
+      case 'Enter':
+        e.preventDefault();
+        if (filteredCountries[activeIndex]) {
+          handleSelectCountry(filteredCountries[activeIndex]);
+        }
+        break;
+      case 'Escape':
+        e.preventDefault();
+        setIsOpen(false);
+        inputRef.current?.focus();
+        break;
+    }
+  };
+
+  // Scroll active item into view when navigating with keyboard
+  useEffect(() => {
+    if (isOpen && dropdownRef.current && activeIndex >= 0) {
+      const activeItem = dropdownRef.current.children[
+        activeIndex
+      ] as HTMLElement;
+      if (activeItem) {
+        activeItem.scrollIntoView({ block: 'nearest' });
+      }
+    }
+  }, [activeIndex, isOpen]);
 
   return (
     <div className={style.autocompleteWrapper} ref={wrapperRef}>
@@ -99,34 +149,43 @@ const AutocompleteCountry = forwardRef<
         value={inputValue}
         onChange={handleInputChange}
         onFocus={handleInputFocus}
-        className={style.formInput}
+        onKeyDown={handleKeyDown}
+        className={`${style.formInput} ${error ? style.inputError : ''}`}
         placeholder={placeholder}
         autoComplete="off"
-        aria-autocomplete="list"
-        aria-haspopup="true"
       />
 
       {isOpen && inputValue.length > 0 && (
-        <div className={style.autocompleteDropdown}>
+        <div
+          ref={dropdownRef}
+          id={`${id}-dropdown`}
+          className={style.autocompleteDropdown}
+          role="listbox"
+        >
           {filteredCountries.length > 0 ? (
-            filteredCountries.map((country) => (
+            filteredCountries.map((country, index) => (
               <option
                 key={country}
-                className={style.autocompleteOption}
+                className={`${style.autocompleteOption} ${
+                  index === activeIndex ? style.activeOption : ''
+                }`}
                 onClick={() => handleSelectCountry(country)}
-                onKeyPress={(e) => {
+                onKeyDown={(e) => {
                   if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
                     handleSelectCountry(country);
                   }
                 }}
-                tabIndex={0}
                 aria-selected={inputValue === country}
+                tabIndex={0}
               >
                 {country}
               </option>
             ))
           ) : (
-            <div className={style.autocompleteOption}>No countries found</div>
+            <option className={style.autocompleteOption}>
+              No countries found
+            </option>
           )}
         </div>
       )}

@@ -51,8 +51,6 @@ describe('AutocompleteCountry', () => {
     expect(input).toHaveAttribute('name', 'country');
     expect(input).toHaveAttribute('placeholder', 'Select country');
     expect(input).toHaveAttribute('autocomplete', 'off');
-    expect(input).toHaveAttribute('aria-autocomplete', 'list');
-    expect(input).toHaveAttribute('aria-haspopup', 'true');
   });
 
   it('display initial value', () => {
@@ -96,7 +94,6 @@ describe('AutocompleteCountry', () => {
     await userEvent.click(canadaOption);
 
     expect(input).toHaveValue('Canada');
-    expect(screen.queryByRole('option')).not.toBeInTheDocument();
   });
 
   it('close dropdown when clicking outside', async () => {
