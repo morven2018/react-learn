@@ -11,15 +11,22 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
 
   moduleNameMapper: {
-    '\\.(css|less|scss|sass)$': 'identity-obj-proxy',
+    '\\.module\\.(css|scss|sass)$': 'identity-obj-proxy',
+    '\\.(css|scss|sass)$': '<rootDir>/test/mocks/styleMock.js',
     '\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$':
       '<rootDir>/test/mocks/fileMock.js',
     '^@/(.*)$': '<rootDir>/src/$1',
   },
 
   transform: {
-    '^.+\\.(ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': [
+      'ts-jest',
+      {
+        tsconfig: './tsconfig.app.json',
+      },
+    ],
   },
+
   testMatch: ['<rootDir>/test/tests/*.[jt]s?(x)'],
   collectCoverageFrom: [
     'src/**/*.{ts,tsx}',
@@ -29,6 +36,12 @@ const config: Config = {
     '!src/**/index.ts',
   ],
   modulePaths: ['<rootDir>/src'],
+
+  globals: {
+    'ts-jest': {
+      tsconfig: './tsconfig.app.json',
+    },
+  },
 };
 
 export default config;

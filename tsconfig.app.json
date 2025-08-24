@@ -18,5 +18,5 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true
   },
-  "include": ["src", "test"]
+  "include": ["src", "test", "fxb.ts", "**/*.d.ts", "**/*.ts", "**/*.tsx"]
 }
