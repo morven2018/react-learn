@@ -7,6 +7,17 @@ const config: Config = {
   coverageProvider: 'v8',
   testEnvironment: 'jsdom',
 
+  coveragePathIgnorePatterns: ['/node_modules/', '/dist/', '/coverage/'],
+  coverageReporters: ['text', 'lcov', 'html'],
+  coverageThreshold: {
+    global: {
+      branches: 50,
+      functions: 50,
+      lines: 50,
+      statements: 80,
+    },
+  },
+
   preset: 'ts-jest',
   setupFilesAfterEnv: ['<rootDir>/test/setupTests.ts'],
 
