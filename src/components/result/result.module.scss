@@ -10,6 +10,10 @@
   }
 }
 
+.noData {
+  color: $primary-light;
+}
+
 .resultsList {
   display: flex;
   flex-wrap: wrap;
