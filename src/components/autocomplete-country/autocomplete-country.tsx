@@ -38,14 +38,12 @@ const AutocompleteCountry = forwardRef<
   const wrapperRef = useRef<HTMLDivElement>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Sync with external value changes
   useEffect(() => {
     if (value !== undefined) {
       setInputValue(value);
     }
   }, [value]);
 
-  // Memoize filtered countries for better performance
   const filteredCountries = useMemo(() => {
     return countries.filter((country) =>
       country.toLowerCase().includes(inputValue.toLowerCase())
@@ -82,7 +80,7 @@ const AutocompleteCountry = forwardRef<
     const newValue = e.target.value;
     setInputValue(newValue);
     setIsOpen(true);
-    setActiveIndex(0); // Reset active index when input changes
+    setActiveIndex(0);
     onChange?.(newValue);
     onInputChange?.();
   };
@@ -127,7 +125,6 @@ const AutocompleteCountry = forwardRef<
     }
   };
 
-  // Scroll active item into view when navigating with keyboard
   useEffect(() => {
     if (isOpen && dropdownRef.current && activeIndex >= 0) {
       const activeItem = dropdownRef.current.children[
