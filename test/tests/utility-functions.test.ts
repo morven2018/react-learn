@@ -1,4 +1,5 @@
 import convertToBase64 from '../../src/shared/lib/converter';
+import debounce from '../../src/shared/lib/debounce';
 
 import {
   getPasswordStrength,
@@ -122,7 +123,7 @@ describe('Password Strength Validation', () => {
   });
 });
 
-describe('convertToBase64', () => {
+describe('Base64 conversion', () => {
   const originalBtoa = global.btoa;
 
   beforeAll(() => {
@@ -223,5 +224,33 @@ describe('convertToBase64', () => {
     await expect(convertToBase64(mockFile)).rejects.toThrow(
       'Failed to read file'
     );
+  });
+});
+
+describe('debounce function', () => {
+  jest.useFakeTimers();
+
+  beforeEach(() => {
+    jest.clearAllMocks();
+    jest.clearAllTimers();
+  });
+
+  afterEach(() => {
+    jest.useRealTimers();
+  });
+
+  test('delay function execute', () => {
+    const mockFn = jest.fn();
+    const debouncedFn = debounce(mockFn, 1000);
+
+    debouncedFn('test', 123);
+    expect(mockFn).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(500);
+    expect(mockFn).not.toHaveBeenCalled();
+
+    jest.advanceTimersByTime(500);
+    expect(mockFn).toHaveBeenCalledWith('test', 123);
+    expect(mockFn).toHaveBeenCalledTimes(1);
   });
 });
