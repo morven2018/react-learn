@@ -2,6 +2,8 @@ import style from './result.module.scss';
 import { useEffect, useState } from 'react';
 import { Submission } from '../../shared/types/types';
 
+const delay = 20000;
+
 type ResultsProps = {
   submissions: Submission[];
 };
@@ -15,7 +17,11 @@ function Results({ submissions }: Readonly<ResultsProps>) {
   useEffect(() => {
     if (submissions.length > 0) {
       const lastIndex = submissions.length - 1;
-      if (!newSubmissions.has(lastIndex)) {
+      const lastSubmission = submissions[lastIndex];
+
+      const isNew = Date.now() - lastSubmission.timestamp < delay;
+
+      if (isNew && !newSubmissions.has(lastIndex)) {
         const updatedSet = new Set(newSubmissions);
         updatedSet.add(lastIndex);
         setNewSubmissions(updatedSet);
@@ -26,7 +32,7 @@ function Results({ submissions }: Readonly<ResultsProps>) {
             updated.delete(lastIndex);
             return updated;
           });
-        }, 50000);
+        }, delay);
 
         return () => clearTimeout(timer);
       }
@@ -58,19 +64,24 @@ function Results({ submissions }: Readonly<ResultsProps>) {
     );
   }
 
+  const reversedSubmissions = [...submissions].reverse();
+
   return (
     <div className={style.results}>
-      <h2>Results</h2>
+      <h2>Results ({submissions.length})</h2>
       <div className={style.resultsList}>
-        {submissions.map((submission: Submission, index: number) => {
-          const isNew = newSubmissions.has(index);
-          const isPasswordVisible = visiblePasswords.has(index);
+        {reversedSubmissions.map((submission: Submission, index: number) => {
+          const originalIndex = submissions.length - 1 - index;
+          const isNew = newSubmissions.has(originalIndex);
+          const isPasswordVisible = visiblePasswords.has(originalIndex);
 
           return (
             <div
-              key={index}
+              key={`${submission.timestamp}-${originalIndex}`}
               className={`${style.resultItem} ${isNew ? style.newItem : ''}`}
             >
+              {isNew && <div className={style.newIndicator}>NEW</div>}
+
               <div className={style.resultHeader}>
                 <strong>Form Type:</strong> {submission.type}
               </div>
@@ -101,7 +112,10 @@ function Results({ submissions }: Readonly<ResultsProps>) {
                   <button
                     type="button"
                     className={style.togglePassword}
-                    onClick={() => togglePasswordVisibility(index)}
+                    onClick={() => togglePasswordVisibility(originalIndex)}
+                    aria-label={
+                      isPasswordVisible ? 'Hide password' : 'Show password'
+                    }
                   >
                     {isPasswordVisible ? 'Hide' : 'Show'}
                   </button>

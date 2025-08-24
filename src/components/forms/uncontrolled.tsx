@@ -530,7 +530,7 @@ function UncontrolledForm({
       </div>
 
       <div className={style.formGroup}>
-        <label htmlFor="picture">Picture (required):</label>
+        <label htmlFor="picture">Picture:</label>
         <input
           type="file"
           id="picture"
@@ -538,7 +538,6 @@ function UncontrolledForm({
           accept="image/jpeg,image/png"
           autoComplete="off"
           onChange={handleImageChange}
-          required
         />
         <div
           ref={imagePreviewRef}
