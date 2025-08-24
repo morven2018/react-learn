@@ -51,7 +51,7 @@ function HookForm({
       gender: draftData.gender || 'male',
       country: draftData.country || '',
       acceptTerms: draftData.acceptTerms || false,
-      picture: draftData.picture || '',
+      picture: '',
     },
   });
 
@@ -102,7 +102,6 @@ function HookForm({
         gender: formValues.gender,
         acceptTerms: formValues.acceptTerms,
         country: formValues.country,
-        picture: formValues.picture,
       };
 
       debouncedSaveDraft(draft);
@@ -148,6 +147,19 @@ function HookForm({
   const toggleConfirmPasswordVisibility = () => {
     setShowConfirmPassword(!showConfirmPassword);
   };
+
+  useEffect(() => {
+    if (draftData.picture && typeof draftData.picture === 'string') {
+      setImagePreview(draftData.picture);
+      setValue('picture', draftData.picture);
+
+      const fileInput = document.getElementById('picture') as HTMLInputElement;
+      if (fileInput) {
+        fileInput.value = '';
+        fileInput.setAttribute('data-has-draft-image', 'true');
+      }
+    }
+  }, [draftData.picture, setValue]);
 
   return (
     <form
@@ -294,7 +306,7 @@ function HookForm({
         )}
       </div>
 
-      <div className={style.formGroup}>
+      <div className={style.formGroup} id="condition">
         <label className={style.checkboxLabel}>
           <input
             type="checkbox"
@@ -302,23 +314,21 @@ function HookForm({
             {...register('acceptTerms')}
           />
           I accepted condition
-          <br />
-          <Accordion title={'Terms and Conditions Agreement'} />
         </label>
         {errors.acceptTerms && (
           <span className={style.error}>{errors.acceptTerms.message}</span>
         )}
+        <Accordion title={'Terms and Conditions Agreement'} />
       </div>
 
       <div className={style.formGroup}>
-        <label htmlFor="picture">Picture (required):</label>
+        <label htmlFor="picture">Picture:</label>
         <input
           type="file"
           id="picture"
           accept="image/jpeg,image/png"
           autoComplete="off"
           onChange={handleImageChange}
-          required
         />
         {imagePreview && (
           <div className={style.imagePreview}>

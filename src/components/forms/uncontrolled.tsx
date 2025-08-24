@@ -520,13 +520,13 @@ function UncontrolledForm({
           <input type="checkbox" name="acceptTerms" autoComplete="off" />
           I accepted condition
           <br />
-          <Accordion title={'Terms and Conditions Agreement'} />
         </label>
         <span
           ref={acceptTermsErrorRef}
           className={style.error}
           style={{ display: 'none' }}
         ></span>
+        <Accordion title={'Terms and Conditions Agreement'} />
       </div>
 
       <div className={style.formGroup}>
