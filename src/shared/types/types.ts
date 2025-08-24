@@ -13,4 +13,5 @@ export interface Submission {
   acceptTerms: string;
   picture: string;
   country: string;
+  timestamp: number;
 }

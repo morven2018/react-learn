@@ -100,7 +100,7 @@ describe('UncontrolledForm', () => {
     expect(screen.getByLabelText('Male')).toBeInTheDocument();
     expect(screen.getByLabelText(/female/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/i accepted condition/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/picture \(required\):/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/picture:/i)).toBeInTheDocument();
     expect(screen.getByTestId('country-input')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
   });
@@ -118,7 +118,7 @@ describe('UncontrolledForm', () => {
     renderComponent();
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const fileInput = screen.getByLabelText(/picture \(required\):/i);
+    const fileInput = screen.getByLabelText(/picture:/i);
 
     await userEvent.upload(fileInput, file);
 
@@ -129,11 +129,11 @@ describe('UncontrolledForm', () => {
   });
 
   it('show validation errors for invalid form', async () => {
-    renderComponent();
+    renderComponent({ ...defaultDraftData, age: -9 });
 
     const submitButton = screen.getByRole('button', { name: /submit/i });
     await userEvent.click(submitButton);
-    expect(await screen.findAllByText(/required/i)).toHaveLength(1);
+    expect(await screen.findAllByText(/age/i)).toHaveLength(1);
   });
 
   it('clear errors when form changes', async () => {

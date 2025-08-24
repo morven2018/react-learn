@@ -115,7 +115,7 @@ describe('HookForm Component', () => {
     const countryInput = screen.getByTestId('country-input');
     await userEvent.type(countryInput, 'United States');
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const fileInput = screen.getByLabelText(/picture \(required\):/i);
+    const fileInput = screen.getByLabelText(/picture:/i);
     await userEvent.upload(fileInput, file);
   };
 
@@ -130,7 +130,7 @@ describe('HookForm Component', () => {
     expect(screen.getByLabelText('Male')).toBeInTheDocument();
     expect(screen.getByLabelText(/female/i)).toBeInTheDocument();
     expect(screen.getByLabelText(/i accepted condition/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/picture \(required\):/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/picture:/i)).toBeInTheDocument();
     expect(screen.getByTestId('country-input')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /submit/i })).toBeInTheDocument();
   });
@@ -171,7 +171,7 @@ describe('HookForm Component', () => {
     renderComponent();
 
     const file = new File(['test'], 'test.jpg', { type: 'image/jpeg' });
-    const fileInput = screen.getByLabelText(/picture \(required\):/i);
+    const fileInput = screen.getByLabelText(/picture:/i);
 
     await userEvent.upload(fileInput, file);
 
