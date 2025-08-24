@@ -173,7 +173,6 @@
   }
 }
 
-// Стили для файлового инпута
 input[type='file'] {
   padding: 8px 0;
   font-size: 14px;
@@ -194,7 +193,6 @@ input[type='file'] {
   }
 }
 
-// Адаптивность
 @media (max-width: 768px) {
   .form {
     padding: 15px;
@@ -207,11 +205,10 @@ input[type='file'] {
   }
 
   .formInput {
-    font-size: 16px; // Предотвращает zoom на iOS
+    font-size: 16px;
   }
 }
 
-// Стили для состояний валидации
 .formInput:invalid:not(:focus):not(:placeholder-shown) {
   border-color: #dc3545;
 }

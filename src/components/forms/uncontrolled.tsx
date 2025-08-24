@@ -4,6 +4,7 @@ import convertToBase64 from '../../shared/lib/converter';
 import debounce from '../../shared/lib/debounce';
 import style from './form.module.scss';
 import { z } from 'zod';
+import { getPasswordStrength, strengthLabels } from './fields';
 
 import AutocompleteCountry, {
   AutocompleteCountryRef,
@@ -45,6 +46,13 @@ function UncontrolledForm({
   const imagePreviewRef = useRef<HTMLDivElement>(null);
   const countryRef = useRef<AutocompleteCountryRef>(null);
 
+  const passwordStrengthRef = useRef<HTMLDivElement>(null);
+  const strengthLabelRef = useRef<HTMLSpanElement>(null);
+  const strengthBarRef = useRef<HTMLDivElement>(null);
+
+  const togglePasswordRef = useRef<HTMLButtonElement>(null);
+  const toggleConfirmPasswordRef = useRef<HTMLButtonElement>(null);
+
   const nameErrorRef = useRef<HTMLSpanElement>(null);
   const ageErrorRef = useRef<HTMLSpanElement>(null);
   const emailErrorRef = useRef<HTMLSpanElement>(null);
@@ -68,6 +76,49 @@ function UncontrolledForm({
       onSaveDraft(draft);
     }, 500);
   }, [onSaveDraft]);
+
+  const togglePasswordVisibility = (
+    inputId: string,
+    buttonRef: React.RefObject<HTMLButtonElement | null>
+  ) => {
+    const input = document.getElementById(inputId) as HTMLInputElement;
+    if (input && buttonRef.current) {
+      if (input.type === 'password') {
+        input.type = 'text';
+        buttonRef.current.textContent = 'Hide';
+        buttonRef.current.setAttribute('aria-label', 'Hide password');
+      } else {
+        input.type = 'password';
+        buttonRef.current.textContent = 'Show';
+        buttonRef.current.setAttribute('aria-label', 'Show password');
+      }
+    }
+  };
+
+  const updatePasswordStrengthDisplay = (password: string) => {
+    if (
+      !passwordStrengthRef.current ||
+      !strengthLabelRef.current ||
+      !strengthBarRef.current
+    )
+      return;
+
+    if (password) {
+      const strength = getPasswordStrength(password);
+
+      passwordStrengthRef.current.style.display = 'block';
+
+      strengthLabelRef.current.textContent = strengthLabels[strength];
+
+      strengthBarRef.current.style.width = `${(strength / 5) * 100}%`;
+
+      const strengthClass = `strength-${strength}`;
+      strengthLabelRef.current.className = `${style.strengthLabel} ${style[strengthClass]}`;
+      strengthBarRef.current.className = `${style.strengthFill} ${style[strengthClass]}`;
+    } else {
+      passwordStrengthRef.current.style.display = 'none';
+    }
+  };
 
   const saveDraft = useCallback(() => {
     if (!formRef.current || !countryRef.current) return;
@@ -143,6 +194,10 @@ function UncontrolledForm({
         }
       });
 
+      if (draftData.password) {
+        updatePasswordStrengthDisplay(draftData.password);
+      }
+
       if (draftData.country && countryRef.current) {
         const input = document.getElementById('country') as HTMLInputElement;
         if (input) {
@@ -190,6 +245,12 @@ function UncontrolledForm({
       updateImagePreview(null);
       saveDraft();
     }
+  };
+
+  const handlePasswordChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const password = e.target.value;
+    updatePasswordStrengthDisplay(password);
+    handleChange();
   };
 
   const handleChange = () => {
@@ -347,31 +408,76 @@ function UncontrolledForm({
 
       <div className={style.formGroup}>
         <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          className={style.formInput}
-          placeholder="Your password"
-          autoComplete="new-password"
-        />
+        <div className={style.passwordInputWrapper}>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            className={style.formInput}
+            placeholder="Your password"
+            autoComplete="new-password"
+            onChange={handlePasswordChange}
+          />
+          <button
+            type="button"
+            ref={togglePasswordRef}
+            className={style.togglePasswordButton}
+            onClick={() =>
+              togglePasswordVisibility('password', togglePasswordRef)
+            }
+            aria-label="Show password"
+          >
+            Show
+          </button>
+        </div>
         <span
           ref={passwordErrorRef}
           className={style.error}
           style={{ display: 'none' }}
         ></span>
+
+        <div
+          ref={passwordStrengthRef}
+          className={style.passwordStrength}
+          style={{ display: 'none' }}
+        >
+          <div className={style.strengthInfo}>
+            <span>Password Strength: </span>
+            <span ref={strengthLabelRef} className={style.strengthLabel}></span>
+          </div>
+
+          <div className={style.strengthBar}>
+            <div ref={strengthBarRef} className={style.strengthFill} />
+          </div>
+        </div>
       </div>
 
       <div className={style.formGroup}>
         <label htmlFor="confirmPassword">Confirm password:</label>
-        <input
-          type="password"
-          id="confirmPassword"
-          name="confirmPassword"
-          className={style.formInput}
-          placeholder="Confirm password"
-          autoComplete="new-password"
-        />
+        <div className={style.passwordInputWrapper}>
+          <input
+            type="password"
+            id="confirmPassword"
+            name="confirmPassword"
+            className={style.formInput}
+            placeholder="Confirm password"
+            autoComplete="new-password"
+          />
+          <button
+            type="button"
+            ref={toggleConfirmPasswordRef}
+            className={style.togglePasswordButton}
+            onClick={() =>
+              togglePasswordVisibility(
+                'confirmPassword',
+                toggleConfirmPasswordRef
+              )
+            }
+            aria-label="Show password"
+          >
+            Show
+          </button>
+        </div>
         <span
           ref={confirmPasswordErrorRef}
           className={style.error}
