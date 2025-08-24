@@ -1,0 +1,13 @@
+@import '../../assets/globals.scss';
+
+.wrapper {
+  color: $text-primary;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 40px;
+
+  button:hover {
+    transform: scale(1.1);
+  }
+}

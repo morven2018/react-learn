@@ -1,0 +1,109 @@
+@import '../../assets/globals.scss';
+
+.results {
+  padding: 20px;
+  color: $text-primary;
+
+  .subheader {
+    margin-bottom: 20px;
+    color: $primary-light;
+  }
+}
+
+.resultsList {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+}
+
+.resultItem {
+  border: 1px solid $border;
+  border-radius: 8px;
+  padding: 16px;
+  background: $surface;
+  position: relative;
+  transition: all 0.3s ease;
+
+  &.newItem {
+    border-color: $success;
+    box-shadow: 0 0 10px rgba($success, 0.3);
+    background: $info;
+  }
+
+  &.latestItem {
+    border: 2px solid $primary;
+
+    .latestBadge {
+      position: absolute;
+      top: -10px;
+      right: 16px;
+      background: $primary;
+      color: $text-light;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-size: 12px;
+      font-weight: bold;
+    }
+  }
+}
+
+.resultHeader {
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid $border;
+  font-size: 16px;
+  color: $text-primary;
+}
+
+.resultContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 12px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+
+  strong {
+    margin-bottom: 4px;
+    font-size: 14px;
+  }
+}
+
+.passwordField {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  strong {
+    margin-bottom: 0;
+  }
+}
+
+.passwordValue {
+  font-family: monospace;
+}
+
+.togglePassword {
+  background: none;
+  border: 1px solid $border;
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  color: $text-secondary;
+
+  &:hover {
+    background: $gray-100;
+  }
+}
+
+.profileImage {
+  width: 200px;
+  border-radius: 4px;
+  object-fit: cover;
+  margin-top: 4px;
+  border: 1px solid $border;
+}
