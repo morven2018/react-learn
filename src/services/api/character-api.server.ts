@@ -1,8 +1,5 @@
-import {
-  API_BASE,
-  API_KEY_PRIMARY,
-  API_KEY_SECONDARY,
-} from './dynamic-base-query';
+import { API_BASE, ERROR_MESSAGES, getApiKeys } from './config';
+
 import type {
   ApiResponse,
   Person,
@@ -14,29 +11,51 @@ const fetchWithRetry = async (
   options: RequestInit = {},
   attempt = 0
 ): Promise<Response> => {
-  const maxRetries = API_KEY_SECONDARY ? 2 : 1;
-  const apiKey = attempt === 0 ? API_KEY_PRIMARY : API_KEY_SECONDARY;
+  const { primary, secondary } = getApiKeys();
+  let apiKey = primary;
+  const maxRetries = secondary ? 2 : 1;
 
-  const response = await fetch(`${API_BASE}${url}`, {
-    ...options,
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      'Content-Type': 'application/json',
-      ...options.headers,
-    },
-  });
-
-  if (!response.ok) {
-    if (
-      (response.status === 401 || response.status === 429) &&
-      attempt < maxRetries - 1
-    ) {
-      return fetchWithRetry(url, options, attempt + 1);
-    }
-    throw response;
+  if (!apiKey) {
+    throw new Error('API key not configured');
   }
 
-  return response;
+  while (attempt < maxRetries) {
+    try {
+      const response = await fetch(`${API_BASE}${url}`, {
+        ...options,
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+          ...options.headers,
+        },
+      });
+
+      if (!response.ok) {
+        if (
+          (response.status === 401 || response.status === 429) &&
+          attempt < maxRetries - 1
+        ) {
+          attempt++;
+          apiKey = secondary!;
+          continue;
+        }
+        throw new Error(
+          ERROR_MESSAGES[response.status] || ERROR_MESSAGES[9999]
+        );
+      }
+
+      return response;
+    } catch (error) {
+      if (attempt < maxRetries - 1 && secondary) {
+        attempt++;
+        apiKey = secondary;
+        continue;
+      }
+      throw error;
+    }
+  }
+
+  throw new Error(ERROR_MESSAGES[9999]);
 };
 
 export const getCharacterById = async (id: string): Promise<Person> => {

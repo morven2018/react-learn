@@ -1,58 +1,37 @@
-'use client';
 import DetailsContent from './detail-content';
 import style from './details.module.scss';
-import { useTranslations } from 'next-intl';
-import { useEffect } from 'react';
-import { useGetCharacterByIdQuery } from '@/services/api/character-api';
+import { getTranslations } from 'next-intl/server';
+import { getCharacterById } from '@/services/api/character-api.server';
 import { getErrorMessage } from '@/services/api/error-handler';
 
-interface DetailCardProps {
+interface ServerDetailCardProps {
   characterId: string;
-  onClose: () => void;
 }
 
-export default function DetailCard({
+export default async function DetailCard({
   characterId,
-  onClose,
-}: Readonly<DetailCardProps>) {
-  const {
-    data: character,
-    isLoading,
-    isError,
-    error,
-    isFetching,
-  } = useGetCharacterByIdQuery(characterId, {
-    skip: !characterId,
-    refetchOnMountOrArgChange: true,
-  });
-  const t = useTranslations('Detail');
+}: ServerDetailCardProps) {
+  const t = await getTranslations('Detail');
 
-  useEffect(() => {
-    if (isError) {
-      console.error(t('error'), error);
-    }
-  }, [isError, error, t]);
+  let character = null;
+  let error = null;
+
+  try {
+    character = await getCharacterById(characterId);
+  } catch (err) {
+    error = err;
+  }
+
+  const isError = !!error;
 
   return (
     <div className={style.detailCard}>
       <div className={style.header}>
         <h2 className={style.title}>{t('header')}</h2>
-
-        <div className={style.headerControls}>
-          <button
-            className={style.closeButton}
-            onClick={onClose}
-            title={t('close')}
-            aria-label={t('close')}
-          >
-            &times;
-          </button>
-        </div>
       </div>
 
       <DetailsContent
-        character={character ?? null}
-        isLoading={isLoading || isFetching}
+        character={character}
         isError={isError}
         errorData={getErrorMessage(error)}
       />

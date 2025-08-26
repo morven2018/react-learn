@@ -1,3 +1,4 @@
+import DetailCardHome from '@/components/layout/detail-view/detail-card-home';
 import HomeClient from '@/components/layout/home/home-client';
 import { cookies } from 'next/headers';
 import { searchCharacters } from '@/services/api/character-api.server';
@@ -9,9 +10,9 @@ export default async function HomePage({
   params: { locale: string };
   searchParams: { page?: string; details?: string; search?: string };
 }>) {
-  const { page = '1', details, search } = searchParams;
+  const resolvedSearchParams = await searchParams;
+  const { page = '1', details, search } = resolvedSearchParams;
   const currentPage = Number(page) || 1;
-  const characterId = details;
 
   const cookieStore = await cookies();
   const lastSearch = cookieStore.get(COOKIE_LAST_SEARCH)?.value;
@@ -23,14 +24,17 @@ export default async function HomePage({
   });
 
   return (
-    <HomeClient
-      initialData={{
-        characters: charactersData.docs,
-        totalPages: charactersData.pages,
-        currentPage: currentPage,
-      }}
-      initialSearchTerm={searchTerm}
-      characterId={characterId}
-    />
+    <>
+      <HomeClient
+        initialData={{
+          characters: charactersData.docs,
+          totalPages: charactersData.pages,
+          currentPage: currentPage,
+        }}
+        initialSearchTerm={searchTerm}
+      />
+
+      {details && <DetailCardHome characterId={details} />}
+    </>
   );
 }

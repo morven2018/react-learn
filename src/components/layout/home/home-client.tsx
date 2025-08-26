@@ -1,5 +1,4 @@
 'use client';
-import DetailCard from '../detail-view/detail-card';
 import Pagination from '@/components/ui/pagination/Pagination';
 import Results from '../results/Results';
 import SearchWithRef from '../search/search-with-ref';
@@ -65,6 +64,7 @@ export default function HomeClient({
   const handleSearch = useCallback(
     async (term: string) => {
       const newTerm = term.trim().toLocaleLowerCase();
+
       if (newTerm === searchTerm) {
         setNotification({
           message: t('msg'),
@@ -73,12 +73,9 @@ export default function HomeClient({
       }
 
       setCookie(COOKIE_LAST_SEARCH, term, { maxAge: 60 * 60 * 24 * 30 });
-      const params = new URLSearchParams();
-      params.set('search', term);
-      params.set('page', '1');
 
       if (newTerm !== searchTerm || detailsParam) {
-        router.push(`${pathname}?${params.toString()}`);
+        router.push(pathname);
         await refetch();
       }
       setNotification(null);
@@ -88,20 +85,13 @@ export default function HomeClient({
 
   const handlePageChange = useCallback(
     async (newPage: number) => {
-      const params = new URLSearchParams(window.location.search);
+      const params = new URLSearchParams();
       params.set('page', newPage.toString());
-      params.delete('details');
-      window.location.href = `${pathname}?${params.toString()}`;
-    },
-    [pathname]
-  );
 
-  const handleCloseDetails = useCallback(() => {
-    const params = new URLSearchParams();
-    params.set('page', page.toString());
-    if (searchTerm) params.set('search', searchTerm);
-    router.push(`${pathname}?${params.toString()}`);
-  }, [router, pathname, page, searchTerm]);
+      router.push(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router]
+  );
 
   return (
     <div className={style.home}>
@@ -136,15 +126,6 @@ export default function HomeClient({
               />
             )}
           </div>
-
-          {detailsParam && (
-            <div className={style.detailWrapper}>
-              <DetailCard
-                characterId={detailsParam}
-                onClose={handleCloseDetails}
-              />
-            </div>
-          )}
         </div>
       </div>
       <div className={style.flyout}>
