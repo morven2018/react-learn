@@ -1,9 +1,9 @@
 import Link from 'next/link';
 import styles from '../not-found.module.scss';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
-export default function NotFound() {
-  const t = useTranslations('NotFound');
+export default async function NotFound() {
+  const t = await getTranslations('NotFound');
 
   return (
     <div className={styles.notFoundPage}>
