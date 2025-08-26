@@ -1,0 +1,89 @@
+{
+  "Switcher": {
+    "switchLocale": "Switch to {locale}"
+  },
+  "About": {
+    "header": "About page",
+    "done": "Done by Alena Pudina",
+    "gitAria": "Alena Pudina GitHub profile",
+    "course": "Completed as part of the course",
+    "linkText": "React Course",
+    "altRss": "rss logo",
+    "altGit": "git logo"
+  },
+
+  "Header": {
+    "logoAlt": "Website logo",
+    "aboutLink": "About us",
+    "title": "Middle Earth",
+    "subtitle": "Search",
+    "toggleLight": "Switch to light theme",
+    "toggleDark": "Switch to dark theme",
+    "whiteTree": "White tree"
+  },
+  "NotFound": {
+    "title": "This page doesn't exist.",
+    "homeButton": "Home"
+  },
+
+  "HomeLayout": {
+    "close": "Close",
+    "loading": "Loading details..."
+  },
+
+  "Results": {
+    "loading": "Loading characters...",
+    "noData": "No data found",
+    "spinner": "Loading"
+  },
+  "Search": {
+    "placeholder": "Search characters...",
+    "btnLoad": "Searching...",
+    "btnReady": "Search"
+  },
+  "Refresh": {
+    "aria": "Refresh data",
+    "btn": "Refresh"
+  },
+  "Card": {
+    "label": "Choose character:",
+    "inboxTitle": "Select character",
+    "linkTitle": "More info",
+    "link": "See More Info"
+  },
+  "Content": {
+    "labels": {
+      "race": "Race",
+      "gender": "Gender",
+      "birth": "Birth",
+      "death": "Death",
+      "hair": "Hair",
+      "height": "Height",
+      "realm": "Realm",
+      "spouse": "Spouse"
+    },
+    "unknown": "unknown",
+    "loading": "Loading details...",
+    "noData": "No data is found",
+    "noDetails": "No additional details available",
+    "wikiLink": "You can see more info on Lotr wiki"
+  },
+  "Detail": {
+    "header": "Character Details",
+    "error": "Failed to load character:",
+    "close": "Close details"
+  },
+  "Home": {
+    "msg": "Change the search string for the new query"
+  },
+  "Flyout": {
+    "fail": "Failed to generate CSV",
+    "item": "Item ",
+    "items": "Items ",
+    "sel": "selected",
+    "sel2": "selected",
+    "unselect": "Unselect all",
+    "download-aria": "Download selected characters",
+    "download": "Download"
+  }
+}

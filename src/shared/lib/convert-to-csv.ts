@@ -1,7 +1,12 @@
 import type { PersonWithUrl } from '@shared/types/response-types';
 
-const convertToCSV = (data: PersonWithUrl[]): string => {
+const convertToCSV = (
+  data: PersonWithUrl[],
+  locale: 'ru' | 'en' = 'en'
+): string => {
   if (data.length === 0) return '';
+
+  const separator = locale === 'ru' ? ';' : ',';
 
   const headers: Array<keyof PersonWithUrl> = [
     'name',
@@ -17,7 +22,7 @@ const convertToCSV = (data: PersonWithUrl[]): string => {
     'wikiUrl',
   ];
 
-  const headerRow = headers.join(',');
+  const headerRow = headers.join(separator);
 
   const dataRows = data.map((item) => {
     return headers
@@ -29,13 +34,13 @@ const convertToCSV = (data: PersonWithUrl[]): string => {
 
         const stringValue = String(value);
 
-        if (stringValue.includes(',') || stringValue.includes('"')) {
+        if (stringValue.includes(separator) || stringValue.includes('"')) {
           return `"${stringValue.replace(/"/g, '""')}"`;
         }
 
         return stringValue;
       })
-      .join(',');
+      .join(separator);
   });
 
   return [headerRow, ...dataRows].join('\n');

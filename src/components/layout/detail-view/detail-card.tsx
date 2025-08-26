@@ -1,54 +1,40 @@
 import DetailsContent from './detail-content';
 import style from './details.module.scss';
-import { useAppSelector } from '@redux/store';
-import { useGetCharacterByIdQuery } from '@services/api/character-api';
-import { getErrorMessage } from '@services/api/error-handler';
-import { useEffect } from 'react';
+import { getTranslations } from 'next-intl/server';
+import { getCharacterById } from '@/services/api/character-api.server';
+import { getErrorMessage } from '@/services/api/error-handler';
 
-interface DetailCardProps {
-  id: string;
-  onClose: () => void;
-  isLoading?: boolean;
+interface ServerDetailCardProps {
+  characterId: string;
 }
 
-export const DetailCard = ({ id, onClose, isLoading }: DetailCardProps) => {
-  const refreshVersion = useAppSelector((state) => state.refresh?.version ?? 1);
-  const {
-    data: character,
-    isLoading: isDetailsLoading,
-    isError,
-    error,
-    refetch,
-  } = useGetCharacterByIdQuery(id, {
-    skip: !id,
-  });
-  useEffect(() => {
-    if (refreshVersion > 0) {
-      refetch();
-    }
-  }, [refreshVersion, refetch]);
+export default async function DetailCard({
+  characterId,
+}: Readonly<ServerDetailCardProps>) {
+  const t = await getTranslations('Detail');
+
+  let character = null;
+  let error = null;
+
+  try {
+    character = await getCharacterById(characterId);
+  } catch (err) {
+    error = err;
+  }
+
+  const isError = !!error;
 
   return (
-    <div className={style.detailCard}>
+    <>
       <div className={style.header}>
-        <h2 className={style.title}>Character Details</h2>
-        <div className={style.headerControls}>
-          <button
-            className={style.closeButton}
-            onClick={onClose}
-            aria-label="Close details"
-          >
-            &times;
-          </button>
-        </div>
+        <h2 className={style.title}>{t('header')}</h2>
       </div>
 
       <DetailsContent
-        character={character ?? null}
-        isLoading={isLoading || isDetailsLoading}
+        character={character}
         isError={isError}
         errorData={getErrorMessage(error)}
       />
-    </div>
+    </>
   );
-};
+}

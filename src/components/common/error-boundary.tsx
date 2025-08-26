@@ -1,4 +1,6 @@
+'use client';
 import React from 'react';
+import router from 'next/router';
 import style from './error-boundary.module.scss';
 
 interface ErrorBoundaryProps {
@@ -97,6 +99,7 @@ class ErrorBoundary extends React.Component<
       error: undefined,
       hasLoggedError: false,
     });
+    router.push('/');
   };
 
   render() {

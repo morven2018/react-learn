@@ -1,25 +1,19 @@
-import Card from './card';
+import Card from './Card';
 import React from 'react';
 import style from './character-list.module.scss';
 import type { Person } from '@shared/types/response-types';
 
 interface CardListProps {
   characters: Person[];
-  isFetchingMore: boolean;
 }
 
-const CardList: React.FC<CardListProps> = ({ characters, isFetchingMore }) => {
+const CardList: React.FC<CardListProps> = ({ characters }) => {
   return (
-    <>
-      <ul className={style.list}>
-        {characters.map((character) => (
-          <Card key={character._id} character={character} />
-        ))}
-      </ul>
-      {isFetchingMore && (
-        <div className={style.loadMore}>Loading more characters...</div>
-      )}
-    </>
+    <ul className={style.list}>
+      {characters.map((character) => (
+        <Card key={character._id} character={character} />
+      ))}
+    </ul>
   );
 };
 

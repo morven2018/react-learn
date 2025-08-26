@@ -39,8 +39,6 @@ A React app for searching characters from the Lord of the Rings universe using T
 - Formats the codebase using Prettier: `$ npm run format:fix`
 - Preview the production build locally using Vite: `$ npm run preview`
 - Prepares the project for Git hooks using Husky: `$ npm run prepare`
-- Run unit tests: `$ npm run test`
-- Run tests with coverage: `$ npm run test:coverage`
 
 ### Prerequisites
 

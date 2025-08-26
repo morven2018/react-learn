@@ -1,19 +1,20 @@
 import CharacterCharacteristics from './character-characteristics';
-import React from 'react';
 import style from './character-list.module.scss';
 import { toggleCharacterSelection } from '@redux/slices/characters-slice';
 import type { RootState } from '@redux/store';
 import type { Person } from '@shared/types/response-types';
+import { useTranslations } from 'next-intl';
+import { useRouter } from 'next/navigation';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { ExternalLink } from '../link/external-link';
 
 interface CardItemProps {
   character: Person;
 }
 
 const Card: React.FC<CardItemProps> = ({ character }) => {
-  const navigate = useNavigate();
-
+  const t = useTranslations('Card');
+  const router = useRouter();
   const dispatch = useDispatch();
   const selectedCharacters = useSelector(
     (state: RootState) => state.characters.selectedCharacters
@@ -21,9 +22,9 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
   const isChecked = selectedCharacters.includes(character._id);
 
   const handleCardClick = () => {
-    const searchParams = new URLSearchParams(window.location.search);
-    searchParams.set('details', character._id);
-    navigate(`?${searchParams.toString()}`);
+    const params = new URLSearchParams(window.location.search);
+    params.set('details', character._id);
+    router.push(`?${params.toString()}`);
   };
 
   const handleWikiClick = (e: React.MouseEvent) => {
@@ -42,10 +43,10 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
     <li key={character.name} className={style.cardWrapper}>
       <button onClick={handleCardClick} className={style.card}>
         <div className={style.checkboxWrapper}>
-          <label htmlFor={character._id}>Choose character:</label>
+          <label htmlFor={character._id}>{t('label')}</label>
           <input
             type="checkbox"
-            title="Select character"
+            title={t('inboxTitle')}
             checked={isChecked}
             id={character._id}
             onChange={handleCheckboxChange}
@@ -55,17 +56,17 @@ const Card: React.FC<CardItemProps> = ({ character }) => {
         </div>
         <h3 className={style.name}>{character.name}</h3>
         <CharacterCharacteristics character={character} />
-        <a
+        <ExternalLink
           href={character.wikiUrl ?? '#'}
           aria-disabled={!character.wikiUrl}
-          title="More info"
+          title={t('linkTitle')}
           target="_blank"
           rel="noopener noreferrer"
           className={character.wikiUrl ? style.wikiLink : style.disableLink}
           onClick={handleWikiClick}
         >
-          See More Info
-        </a>
+          {t('link')}
+        </ExternalLink>
       </button>
     </li>
   );

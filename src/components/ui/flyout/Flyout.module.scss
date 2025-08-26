@@ -1,29 +1,10 @@
 @use '@assets/styles/globals.scss' as *;
 
-.flyoutWrapper {
-  position: -webkit-sticky;
-  position: sticky;
-
-  display: flex;
-  justify-content: center;
-  max-width: $max-width;
-
-  bottom: 20px;
-  width: calc(100vw - 60px);
-  margin-top: 40px;
-  z-index: 1000;
-
-  @media (max-width: $breakpoint3) {
-    transform: translateX(calc(-0.25 * (100vw - 60px)));
-  }
-}
-
 .flyout {
   display: flex;
+  width: 100%;
   justify-content: space-between;
   align-items: center;
-  min-width: 200px;
-  width: 60vw;
   padding: $small-padding;
   border: 2px solid var(--base-border);
   border-radius: $border-radius;
@@ -33,12 +14,7 @@
 
   @media (max-width: 700px) {
     flex-direction: column;
-    transform: translateX(60px);
-  }
-
-  @media (max-width: 700px) {
-    flex-direction: column;
-    transform: translateX(100px);
+    gap: 40px;
   }
 }
 
@@ -59,7 +35,7 @@
   background-color: var(--primary-black);
   color: var(--gold);
   font-weight: bold;
-  font-size: 14px;
+  font-size: 18px;
 }
 
 .countText {

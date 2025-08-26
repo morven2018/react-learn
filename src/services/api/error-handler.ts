@@ -1,8 +1,4 @@
-import {
-  CustomErrorCode,
-  ERROR_MESSAGES,
-  HttpStatus,
-} from './dynamic-base-query';
+import { CustomErrorCode, ERROR_MESSAGES, HttpStatus } from './config';
 
 type ApiErrorObject = {
   status?: number;

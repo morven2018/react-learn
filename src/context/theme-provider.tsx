@@ -1,23 +1,18 @@
-import { Term } from '@services/localStorage/LS-service';
+'use client';
 import { Themes } from '@shared/types/response-types';
-import { type FC, type ReactNode, useCallback, useMemo, useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ThemeContext } from './theme-context';
 
-const ThemeProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState(Term.getThemeFromLS());
+export const ThemeProvider = ({ children }: { children: React.ReactNode }) => {
+  const [theme, setTheme] = useState<Themes>(Themes.dark);
 
   const toggleTheme = useCallback(() => {
-    const newTheme = theme === Themes.light ? Themes.dark : Themes.light;
-    Term.setThemeToLS(newTheme);
-    setTheme(newTheme);
-  }, [theme]);
+    setTheme((prev) => (prev === Themes.dark ? Themes.light : Themes.dark));
+  }, []);
 
-  const value = useMemo(() => ({ theme, toggleTheme }), [theme, toggleTheme]);
   return (
-    <ThemeContext.Provider value={value}>
-      <div className={theme}>{children}</div>
+    <ThemeContext.Provider value={{ theme, toggleTheme }}>
+      <div className={`themeWrapper ${theme}`}>{children}</div>
     </ThemeContext.Provider>
   );
 };
-
-export default ThemeProvider;

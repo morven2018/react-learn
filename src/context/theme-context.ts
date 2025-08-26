@@ -1,7 +1,12 @@
-import { Term } from '@services/localStorage/LS-service';
+import { Themes } from '@shared/types/response-types';
 import { createContext } from 'react';
 
-export const ThemeContext = createContext({
-  theme: Term.getThemeFromLS(),
+type ThemeContextType = {
+  theme: Themes;
+  toggleTheme: () => void;
+};
+
+export const ThemeContext = createContext<ThemeContextType>({
+  theme: Themes.dark,
   toggleTheme: () => {},
 });

@@ -1,10 +1,6 @@
 import type { BaseQueryFn, QueryDefinition } from '@reduxjs/toolkit/query';
 
-import type {
-  ApiResponse,
-  Person,
-  PersonWithUrl,
-} from '@shared/types/response-types';
+import type { ApiResponse, Person } from '@shared/types/response-types';
 
 export type CharacterApiEndpoints = {
   getCharacterById: QueryDefinition<
@@ -23,13 +19,6 @@ export type CharacterApiEndpoints = {
       state: 'loading' | 'success' | 'error';
       error?: string;
     },
-    'characterApi'
-  >;
-  getCharactersByIds: QueryDefinition<
-    string[],
-    BaseQueryFn,
-    'Characters',
-    PersonWithUrl[],
     'characterApi'
   >;
 };
