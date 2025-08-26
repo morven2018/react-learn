@@ -11,6 +11,27 @@
   background-color: var(--shadow40);
   border-radius: $border-radius;
 
+  .closeBtn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    margin: 0 0 0 auto;
+    padding: 0;
+    background: none;
+    border: none;
+    color: var(--primary-light);
+    background-color: transparent;
+    font-size: 24px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      color: var(--primary-light);
+      transform: scale(1.2);
+      border: none;
+    }
+  }
+
   .header {
     margin: $base-padding;
     display: flex;
@@ -24,25 +45,6 @@
       font-family: $font-medieval;
       font-size: $card-header;
       margin: 0;
-    }
-
-    .closeButton {
-      width: 28px;
-      height: 28px;
-      padding: 0;
-      margin: 0;
-      background: none;
-      border: none;
-      color: var(--primary-light);
-      font-size: 24px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-
-      &:hover {
-        color: var(--primary-light);
-        transform: scale(1.2);
-        border: none;
-      }
     }
   }
 }

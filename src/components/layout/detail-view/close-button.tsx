@@ -13,7 +13,7 @@ export function CloseButton() {
 
   return (
     <button
-      className={style.closeButton}
+      className={style.closeBtn}
       onClick={handleClose}
       title="Close"
       aria-label="Close"

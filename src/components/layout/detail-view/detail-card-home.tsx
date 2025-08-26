@@ -8,12 +8,10 @@ interface DetailCardClientProps {
 
 export default function DetailCardClient({
   characterId,
-}: DetailCardClientProps) {
+}: Readonly<DetailCardClientProps>) {
   return (
-    <div className={style.detailWrapper}>
-      <div className={style.detailHeader}>
-        <CloseButton />
-      </div>
+    <div className={style.detailCard}>
+      <CloseButton />
       <DetailCard characterId={characterId} />
     </div>
   );

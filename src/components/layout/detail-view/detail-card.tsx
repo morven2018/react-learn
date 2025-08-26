@@ -10,7 +10,7 @@ interface ServerDetailCardProps {
 
 export default async function DetailCard({
   characterId,
-}: ServerDetailCardProps) {
+}: Readonly<ServerDetailCardProps>) {
   const t = await getTranslations('Detail');
 
   let character = null;
@@ -25,7 +25,7 @@ export default async function DetailCard({
   const isError = !!error;
 
   return (
-    <div className={style.detailCard}>
+    <>
       <div className={style.header}>
         <h2 className={style.title}>{t('header')}</h2>
       </div>
@@ -35,6 +35,6 @@ export default async function DetailCard({
         isError={isError}
         errorData={getErrorMessage(error)}
       />
-    </div>
+    </>
   );
 }

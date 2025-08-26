@@ -4,11 +4,10 @@
   display: flex;
   flex-direction: column;
   gap: $base-padding;
-  max-width: ($max-width + 2 * $base-padding);
   margin: 0 auto;
   padding: $base-padding;
   min-height: 100vh;
-  background-image: url('/assets/images/background.png');
+
   background-repeat: repeat-y;
   background-position: top center;
   background-size: cover;
@@ -24,7 +23,7 @@
   }
 
   .search {
-    max-width: calc($max-width - 60px);
+    max-width: calc(100% - 60px);
   }
 
   .flyout {
@@ -38,7 +37,7 @@
     background-color: transparent;
 
     bottom: 20px;
-    width: 60vw;
+    width: 80vw;
     min-width: 200px;
     margin-top: 40px;
     z-index: 1000;
@@ -52,15 +51,6 @@
     @media (max-width: 850px) {
       flex-direction: column-reverse;
       align-items: center;
-    }
-  }
-
-  .detailWrapper {
-    width: 380px;
-    margin: 0 30px;
-    padding-top: 16px;
-    @media (max-width: 400px) {
-      width: calc(100vw - 100px);
     }
   }
 

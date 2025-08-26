@@ -1,0 +1,24 @@
+@use '@assets/styles/globals.scss' as *;
+
+.wrapper {
+  display: flex;
+  flex-wrap: nowrap;
+  margin: 0 auto;
+  max-width: 1240px;
+  width: 100%;
+  background-image: url('/assets/images/background.png');
+
+  .mainWrapper {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .detailWrapper {
+    width: 380px;
+    margin: 0 30px;
+    padding-top: 16px;
+    @media (max-width: 400px) {
+      width: calc(100vw - 100px);
+    }
+  }
+}

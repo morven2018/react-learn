@@ -1,5 +1,6 @@
 import DetailCardHome from '@/components/layout/detail-view/detail-card-home';
 import HomeClient from '@/components/layout/home/home-client';
+import style from './home.module.scss';
 import { cookies } from 'next/headers';
 import { searchCharacters } from '@/services/api/character-api.server';
 import { COOKIE_LAST_SEARCH } from '@/shared/constants/cookies';
@@ -24,17 +25,23 @@ export default async function HomePage({
   });
 
   return (
-    <>
-      <HomeClient
-        initialData={{
-          characters: charactersData.docs,
-          totalPages: charactersData.pages,
-          currentPage: currentPage,
-        }}
-        initialSearchTerm={searchTerm}
-      />
+    <div className={style.wrapper}>
+      <div className={style.mainWrapper}>
+        <HomeClient
+          initialData={{
+            characters: charactersData.docs,
+            totalPages: charactersData.pages,
+            currentPage: currentPage,
+          }}
+          initialSearchTerm={searchTerm}
+        />
+      </div>
 
-      {details && <DetailCardHome characterId={details} />}
-    </>
+      {details && (
+        <div className={style.detailWrapper}>
+          <DetailCardHome characterId={details} />
+        </div>
+      )}
+    </div>
   );
 }
