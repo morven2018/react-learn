@@ -16,9 +16,6 @@ export const dynamicBaseQuery: BaseQueryFn = async (
   let attempt = 0;
   const maxRetries = secondary ? 2 : 1;
 
-  console.log('API_BASE:', API_BASE);
-  console.log('API Key available:', !!apiKey);
-
   const baseQuery = fetchBaseQuery({
     baseUrl: API_BASE,
     prepareHeaders: (headers) => {
@@ -39,7 +36,6 @@ export const dynamicBaseQuery: BaseQueryFn = async (
       if (!result.error) return result;
 
       const status = result.error.status;
-      console.log('API Error Status:', status);
 
       if (status !== 401 && status !== 429) {
         return {
