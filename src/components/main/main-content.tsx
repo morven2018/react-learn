@@ -1,5 +1,7 @@
 import CountriesList from '../list/countries-list';
-import isCountry from '../../shared/utils/country-filter';
+import isCountry from '../../shared/utils/is-country';
+import styles from './main-content.module.scss';
+import { useState } from 'react';
 import { fetchCO2Data } from '../../shared/api/api';
 import { CO2Data, Country } from '../../shared/types/types';
 
@@ -7,6 +9,9 @@ const NO_DATA = 'N/A';
 
 const MainContent: React.FC = () => {
   const data = fetchCO2Data();
+  const [selectedCountryKey, setSelectedCountryKey] = useState<string | null>(
+    null
+  );
 
   const getCountries = (data: CO2Data): Country[] => {
     const countries: Country[] = [];
@@ -22,12 +27,29 @@ const MainContent: React.FC = () => {
         });
       }
     }
+
     return countries;
   };
 
   const countries = getCountries(data);
+  const handleCountrySelect = (countryKey: string) => {
+    setSelectedCountryKey(
+      countryKey === selectedCountryKey ? null : countryKey
+    );
+  };
 
-  return <CountriesList countries={countries} />;
+  return (
+    <div className={styles.container}>
+      <div className={styles.sidebar}>
+        <CountriesList
+          countries={countries}
+          onCountrySelect={handleCountrySelect}
+          selectedCountry={selectedCountryKey}
+          data={data}
+        />
+      </div>
+    </div>
+  );
 };
 
 export default MainContent;
