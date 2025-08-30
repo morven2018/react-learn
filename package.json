@@ -26,16 +26,11 @@
     "react-hook-form": "^7.62.0",
     "react-redux": "^9.2.0",
     "react-router-dom": "^7.7.0",
-    "serve-static": "^2.2.0",
-    "zod": "^4.0.17"
+    "serve-static": "^2.2.0"
   },
   "devDependencies": {
     "@cspell/dict-en_us": "^4.4.17",
     "@eslint/js": "^9.29.0",
-    "@testing-library/jest-dom": "^6.7.0",
-    "@testing-library/react": "^16.3.0",
-    "@testing-library/user-event": "^14.6.1",
-    "@types/jest": "^30.0.0",
     "@types/node": "^24.0.13",
     "@types/react": "^19.1.8",
     "@types/react-dom": "^19.1.6",
@@ -54,9 +49,6 @@
     "globals": "^16.2.0",
     "husky": "^9.1.7",
     "identity-obj-proxy": "^3.0.0",
-    "jest": "^30.0.5",
-    "jest-environment-jsdom": "^30.0.5",
-    "jsdom": "^26.1.0",
     "prettier": "3.6.2",
     "sass": "^1.89.2",
     "sass-embedded": "^1.89.2",
