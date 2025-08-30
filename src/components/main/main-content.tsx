@@ -63,7 +63,6 @@ const MainContent: React.FC = () => {
           onCountrySelect={handleCountrySelect}
           selectedCountry={selectedCountry}
           data={data}
-          selectedYear={selectedYear}
         />
       </div>
 

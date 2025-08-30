@@ -1,12 +1,11 @@
 import CountryTable from '../table/table';
 import formatValue from '../../shared/utils/format-value';
-import getAvailableColumns from '../../shared/utils/get-columns';
 import getColumnLabel from '../../shared/utils/column-labels';
 import styles from './countries-list.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux/hooks';
 import { selectSelectedColumns } from '../../redux/selectors/column-selectors';
-import { getChangedFields } from '../../shared/utils/compare-data';
+import { getPreviousValue, hasChanged } from '../../shared/utils/compare-data';
 
 import {
   CO2Data,
@@ -20,14 +19,14 @@ import {
   selectSelectedYear,
 } from '../../redux/selectors/year-selectors';
 
-const TIMEOUT = 100 * 15;
+const TIMEOUT = 3000;
+const OPEN_CLOSE_TIMEOUT = 100;
 
 interface CountriesListProps {
   countries: Country[];
   onCountrySelect: (countryName: string) => void;
   selectedCountry: string | null;
   data: CO2Data;
-  selectedYear: number;
 }
 
 const CountriesList: React.FC<CountriesListProps> = ({
@@ -35,45 +34,61 @@ const CountriesList: React.FC<CountriesListProps> = ({
   onCountrySelect,
   selectedCountry,
   data,
-  selectedYear,
 }) => {
   const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const shouldHighlight = useAppSelector(selectShouldHighlight);
   const previousYear = useAppSelector(selectPreviousYear);
   const currentYear = useAppSelector(selectSelectedYear);
   const selectedColumns = useAppSelector(selectSelectedColumns);
-  const [changedFields, setChangedFields] = useState<
-    Map<string, Set<DataColumn>>
-  >(new Map());
+
+  const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
+  const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    if (shouldHighlight && previousYear) {
-      const changedMap = new Map<string, Set<DataColumn>>();
-      const fieldsToCheck = getAvailableColumns();
-
-      countries.forEach((country) => {
-        const countryData = data[country.name]?.data || [];
-        const changed = getChangedFields(
-          countryData,
-          currentYear,
-          previousYear,
-          fieldsToCheck
-        );
-
-        if (changed.size > 0) {
-          changedMap.set(country.name, changed);
-        }
-      });
-
-      setChangedFields(changedMap);
-
-      const timer = setTimeout(() => {
-        setChangedFields(new Map());
-      }, TIMEOUT);
-
-      return () => clearTimeout(timer);
+    if (!shouldHighlight || !previousYear) {
+      setChangedFields(new Set());
+      return;
     }
+
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+    }
+
+    const newChangedFields = new Set<string>();
+
+    countries.forEach((country) => {
+      const countryData = data[country.name]?.data || [];
+      const displayColumns = getDisplayColumns();
+
+      const hasAnyChange = displayColumns.some((column) =>
+        hasChanged(countryData, currentYear, previousYear, column)
+      );
+
+      if (hasAnyChange) {
+        newChangedFields.add(country.name);
+      }
+    });
+
+    setChangedFields(newChangedFields);
+
+    highlightTimerRef.current = setTimeout(() => {
+      setChangedFields(new Set());
+    }, TIMEOUT);
+
+    return () => {
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+      }
+    };
   }, [shouldHighlight, previousYear, currentYear, countries, data]);
+
+  useEffect(() => {
+    setChangedFields(new Set());
+    if (highlightTimerRef.current) {
+      clearTimeout(highlightTimerRef.current);
+      highlightTimerRef.current = null;
+    }
+  }, [selectedCountry]);
 
   const handleCountrySelect = (countryName: string) => {
     const isOpening = selectedCountry !== countryName;
@@ -85,7 +100,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
           behavior: 'smooth',
           block: 'start',
         });
-      }, TIMEOUT);
+      }, OPEN_CLOSE_TIMEOUT);
     }
   };
 
@@ -96,7 +111,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
         behavior: 'smooth',
         block: 'start',
       });
-    }, TIMEOUT);
+    }, OPEN_CLOSE_TIMEOUT);
   };
 
   const setCountryRef =
@@ -104,21 +119,32 @@ const CountriesList: React.FC<CountriesListProps> = ({
       countryRefs.current[countryName] = el;
     };
 
-  const getYearData = (countryName: string): YearlyData[] => {
-    const countryData = data[countryName]?.data || [];
-    return countryData.filter((d) => d.year === selectedYear);
+  const getCountryData = (countryName: string): YearlyData[] => {
+    return data[countryName]?.data || [];
   };
 
   const getFieldValue = (
     countryName: string,
     field: DataColumn
   ): string | number => {
-    const yearData = getYearData(countryName)[0];
-    return yearData?.[field] ?? 'N/A';
+    const countryData = getCountryData(countryName);
+    const currentData = countryData.find((d) => d.year === currentYear);
+    return currentData?.[field] ?? 'N/A';
+  };
+
+  const getPreviousFieldValue = (
+    countryName: string,
+    field: DataColumn
+  ): string | number => {
+    const countryData = getCountryData(countryName);
+    return getPreviousValue(countryData, previousYear!, field);
   };
 
   const isFieldChanged = (countryName: string, field: DataColumn): boolean => {
-    return changedFields.get(countryName)?.has(field) || false;
+    if (!previousYear || !changedFields.has(countryName)) return false;
+
+    const countryData = getCountryData(countryName);
+    return hasChanged(countryData, currentYear, previousYear, field);
   };
 
   const getDisplayColumns = (): DataColumn[] => {
@@ -138,6 +164,11 @@ const CountriesList: React.FC<CountriesListProps> = ({
   return (
     <div className={styles.list}>
       {countries.map((country) => {
+        const countryData = getCountryData(country.name);
+        const sortedData = [...countryData].sort((a, b) => b.year - a.year);
+        const previewData = sortedData.slice(0, 5);
+        const hasMoreData = countryData.length > 5;
+        const hasData = countryData.length > 0;
         const displayColumns = getDisplayColumns();
 
         return (
@@ -149,7 +180,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
             <div
               className={`${styles.accordionHeader} ${
                 selectedCountry === country.name ? styles.selected : ''
-              }`}
+              } ${changedFields.has(country.name) ? styles.countryChanged : ''}`}
               onClick={() => handleCountrySelect(country.name)}
             >
               <div className={styles.countryInfo}>
@@ -161,6 +192,10 @@ const CountriesList: React.FC<CountriesListProps> = ({
                 {displayColumns.map((column) => {
                   const value = getFieldValue(country.name, column);
                   const changed = isFieldChanged(country.name, column);
+                  const previousValue = getPreviousFieldValue(
+                    country.name,
+                    column
+                  );
 
                   return (
                     <div
@@ -168,6 +203,11 @@ const CountriesList: React.FC<CountriesListProps> = ({
                       className={`${styles.countryDetail} ${changed ? styles.changed : ''}`}
                     >
                       {`${getColumnLabel(column)}: ${formatValue(value)}`}
+                      {changed && (
+                        <span className={styles.previousValue}>
+                          {` (was ${formatValue(previousValue)})`}
+                        </span>
+                      )}
                       {changed && (
                         <span className={styles.changeIndicator}>*</span>
                       )}
@@ -180,12 +220,24 @@ const CountriesList: React.FC<CountriesListProps> = ({
               </span>
             </div>
 
-            {selectedCountry === country.name && (
+            {selectedCountry !== country.name && hasData && (
+              <div className={styles.previewContent}>
+                <CountryTable data={previewData} columns={selectedColumns} />
+
+                {hasMoreData && (
+                  <div className={styles.moreButton}>
+                    <button onClick={() => handleCountrySelect(country.name)}>
+                      More
+                    </button>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {selectedCountry === country.name && hasData && (
               <div className={styles.fullContent}>
-                <CountryTable
-                  data={data[country.name]?.data || []}
-                  columns={selectedColumns}
-                />
+                <CountryTable data={sortedData} columns={selectedColumns} />
+
                 <div className={styles.hideButton}>
                   <button onClick={() => handleHideTable(country.name)}>
                     Hide
