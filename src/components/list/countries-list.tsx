@@ -1,4 +1,5 @@
 import CountryTable from '../table/table';
+import formatValue from '../../shared/utils/format-value';
 import styles from './countries-list.module.scss';
 import { useRef } from 'react';
 import { CO2Data, Country, DataColumn } from '../../shared/types/types';
@@ -8,6 +9,7 @@ interface CountriesListProps {
   onCountrySelect: (countryName: string) => void;
   selectedCountry: string | null;
   data: CO2Data;
+  selectedColumns: DataColumn[];
 }
 
 const CountriesList: React.FC<CountriesListProps> = ({
@@ -15,6 +17,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
   onCountrySelect,
   selectedCountry,
   data,
+  selectedColumns,
 }) => {
   const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
 
@@ -74,7 +77,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
                   {`ISO: ${country.iso_code}`}
                 </div>
                 <div className={styles.countryDetails}>
-                  {`Population: ${country.population}`}
+                  {`Population: ${formatValue(country.population)}`}
                 </div>
               </div>
               <span className={styles.accordionIcon}>
@@ -84,15 +87,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
             {selectedCountry !== country.name && hasData && (
               <div className={styles.previewContent}>
-                <CountryTable
-                  data={previewData}
-                  columns={[
-                    DataColumn.YEAR,
-                    DataColumn.POPULATION,
-                    DataColumn.CO2,
-                    DataColumn.CO2_PER_CAPITA,
-                  ]}
-                />
+                <CountryTable data={previewData} columns={selectedColumns} />
 
                 {hasMoreData && (
                   <div className={styles.moreButton}>
@@ -106,15 +101,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
             {selectedCountry === country.name && hasData && (
               <div className={styles.fullContent}>
-                <CountryTable
-                  data={sortedData}
-                  columns={[
-                    DataColumn.YEAR,
-                    DataColumn.POPULATION,
-                    DataColumn.CO2,
-                    DataColumn.CO2_PER_CAPITA,
-                  ]}
-                />
+                <CountryTable data={sortedData} columns={selectedColumns} />
 
                 <div className={styles.hideButton}>
                   <button onClick={() => handleHideTable(country.name)}>

@@ -1,36 +1,67 @@
 import formatValue from '../../shared/utils/format-value';
 import styles from './table.module.scss';
-import { YearlyData } from '../../shared/types/types';
+import { DataColumn, YearlyData } from '../../shared/types/types';
+
+// components/main/country-table.tsx
 
 interface CountryTableProps {
   data: YearlyData[];
+  columns: DataColumn[];
 }
 
-const CountryTable: React.FC<CountryTableProps> = ({ data }) => {
+const CountryTable: React.FC<CountryTableProps> = ({ data, columns }) => {
   const sortedData = [...data].sort((a, b) => b.year - a.year);
+
+  const getColumnHeader = (column: DataColumn): string => {
+    const headers: Record<DataColumn, string> = {
+      [DataColumn.YEAR]: 'Year',
+      [DataColumn.POPULATION]: 'Population',
+      [DataColumn.CO2]: 'CO2 (Mt)',
+      [DataColumn.CO2_PER_CAPITA]: 'CO2 per Capita (t)',
+      [DataColumn.METHANE]: 'Methane (Mt)',
+      [DataColumn.OIL_CO2]: 'Oil CO2 (Mt)',
+      [DataColumn.TEMPERATURE_CHANGE_FROM_CO2]: 'Temp Change from CO2 (°C)',
+      [DataColumn.CEMENT_CO2]: 'Cement CO2 (Mt)',
+      [DataColumn.COAL_CO2]: 'Coal CO2 (Mt)',
+      [DataColumn.GAS_CO2]: 'Gas CO2 (Mt)',
+      [DataColumn.FLARING_CO2]: 'Flaring CO2 (Mt)',
+      [DataColumn.LAND_USE_CHANGE_CO2]: 'Land Use CO2 (Mt)',
+      [DataColumn.NITROUS_OXIDE]: 'Nitrous Oxide (Mt)',
+      [DataColumn.TOTAL_GHG]: 'Total GHG (Mt)',
+    };
+    return headers[column] || column;
+  };
+
+  const shouldRightAlign = (column: DataColumn): boolean => {
+    return column !== DataColumn.YEAR;
+  };
 
   return (
     <div className={styles.tableContainer}>
       <table className={styles.table}>
         <thead>
           <tr>
-            <th>Year</th>
-            <th className={styles.rightAlign}>Population</th>
-            <th className={styles.rightAlign}>CO2 (Mt)</th>
-            <th className={styles.rightAlign}>CO2 per Capita (t)</th>
+            {columns.map((column, index) => (
+              <th
+                key={column}
+                className={shouldRightAlign(column) ? styles.rightAlign : ''}
+              >
+                {index === 0 ? column : getColumnHeader(column)}
+              </th>
+            ))}
           </tr>
         </thead>
         <tbody>
           {sortedData.map((yearData, index) => (
             <tr key={`${yearData.year}-${index}`}>
-              <td>{yearData.year}</td>
-              <td className={styles.rightAlign}>
-                {formatValue(yearData.population)}
-              </td>
-              <td className={styles.rightAlign}>{formatValue(yearData.co2)}</td>
-              <td className={styles.rightAlign}>
-                {formatValue(yearData.co2_per_capita)}
-              </td>
+              {columns.map((column) => (
+                <td
+                  key={column}
+                  className={shouldRightAlign(column) ? styles.rightAlign : ''}
+                >
+                  {formatValue(yearData[column], column === DataColumn.YEAR)}
+                </td>
+              ))}
             </tr>
           ))}
         </tbody>
