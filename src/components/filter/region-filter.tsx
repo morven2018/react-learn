@@ -1,4 +1,4 @@
-import styles from './countries-list.module.scss';
+import styles from './region-filter.module.scss';
 import { getAllRegions } from '../../shared/utils/get-region';
 
 interface RegionFilterProps {
