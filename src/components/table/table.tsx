@@ -2,8 +2,6 @@ import formatValue from '../../shared/utils/format-value';
 import styles from './table.module.scss';
 import { DataColumn, YearlyData } from '../../shared/types/types';
 
-// components/main/country-table.tsx
-
 interface CountryTableProps {
   data: YearlyData[];
   columns: DataColumn[];
@@ -66,8 +64,6 @@ const CountryTable: React.FC<CountryTableProps> = ({ data, columns }) => {
           ))}
         </tbody>
       </table>
-
-      {!!data.length && <div className={styles.noData}>No data available</div>}
     </div>
   );
 };
