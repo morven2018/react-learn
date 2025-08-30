@@ -13,7 +13,8 @@ const isCountry = (value: string): boolean => {
     value === 'World' ||
     value.includes('countries') ||
     value.includes('International') ||
-    value.includes('Fires')
+    value.includes('Fires') ||
+    value === 'Antarctica'
   );
 };
 
