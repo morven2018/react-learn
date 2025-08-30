@@ -212,7 +212,7 @@ export const getAllRegions = (): string[] => {
 
 export const getCountriesByRegion = (region: string): string[] => {
   return Object.entries(regionMap)
-    .filter(([_, countryRegion]) => countryRegion === region)
+    .filter(({ 1: countryRegion }) => countryRegion === region)
     .map(([country]) => country);
 };
 

@@ -9,7 +9,7 @@ interface RegionFilterProps {
 const RegionFilter: React.FC<RegionFilterProps> = ({
   selectedRegion,
   onRegionChange,
-}) => {
+}: RegionFilterProps) => {
   const regions = ['All', ...getAllRegions()];
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {

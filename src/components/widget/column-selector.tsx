@@ -51,10 +51,6 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({
 
   return (
     <div className={styles.widget}>
-      <div className={styles.header}>
-        <h3>Select Columns to Display</h3>
-      </div>
-
       <div className={styles.content}>
         <div className={styles.actions}>
           <button onClick={handleReset} className={styles.resetButton}>
