@@ -6,7 +6,7 @@ interface YearState {
 }
 
 const initialState: YearState = {
-  selectedYear: new Date().getFullYear() - 1,
+  selectedYear: 2023,
   previousYear: null,
 };
 
