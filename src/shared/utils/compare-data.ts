@@ -9,7 +9,6 @@ export const hasChanged = (
   const current = countryData.find((d) => d.year === currentYear)?.[field];
   const previous = countryData.find((d) => d.year === previousYear)?.[field];
 
-  if (current === undefined || previous === undefined) return false;
   return current !== previous;
 };
 
@@ -28,4 +27,13 @@ export const getChangedFields = (
   });
 
   return changed;
+};
+
+export const getPreviousValue = (
+  countryData: YearlyData[],
+  previousYear: number,
+  field: DataColumn
+): string | number => {
+  const previous = countryData.find((d) => d.year === previousYear)?.[field];
+  return previous ?? 'N/A';
 };
