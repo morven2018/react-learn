@@ -1,4 +1,5 @@
 import CountryTable from '../table/table';
+import SortControls from '../sort/sort-controls';
 import formatValue from '../../shared/utils/format-value';
 import getColumnLabel from '../../shared/utils/column-labels';
 import styles from './countries-list.module.scss';
@@ -6,6 +7,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux/hooks';
 import { selectSelectedColumns } from '../../redux/selectors/column-selectors';
 import { getPreviousValue, hasChanged } from '../../shared/utils/compare-data';
+import { sortCountries } from '../sort/sort-utils';
+
+import {
+  selectSortBy,
+  selectSortDirection,
+} from '../../redux/selectors/sort-selectors';
 
 import {
   CO2Data,
@@ -40,9 +47,19 @@ const CountriesList: React.FC<CountriesListProps> = ({
   const previousYear = useAppSelector(selectPreviousYear);
   const currentYear = useAppSelector(selectSelectedYear);
   const selectedColumns = useAppSelector(selectSelectedColumns);
+  const sortBy = useAppSelector(selectSortBy);
+  const sortDirection = useAppSelector(selectSortDirection);
 
   const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
   const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  const sortedCountries = sortCountries(
+    countries,
+    data,
+    currentYear,
+    sortBy,
+    sortDirection
+  );
 
   useEffect(() => {
     if (!shouldHighlight || !previousYear) {
@@ -163,7 +180,8 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
   return (
     <div className={styles.list}>
-      {countries.map((country) => {
+      <SortControls />
+      {sortedCountries.map((country) => {
         const countryData = getCountryData(country.name);
         const sortedData = [...countryData].sort((a, b) => b.year - a.year);
         const previewData = sortedData.slice(0, 5);
