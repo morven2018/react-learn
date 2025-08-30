@@ -1,7 +1,9 @@
 import CountryTable from '../table/table';
+import RegionFilter from '../filter/region-filter';
 import SortControls from '../sort/sort-controls';
 import formatValue from '../../shared/utils/format-value';
 import getColumnLabel from '../../shared/utils/column-labels';
+import getRegion from '../../shared/utils/get-region';
 import styles from './countries-list.module.scss';
 import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux/hooks';
@@ -52,10 +54,18 @@ const CountriesList: React.FC<CountriesListProps> = ({
   const sortDirection = useAppSelector(selectSortDirection);
 
   const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
+  const [selectedRegion, setSelectedRegion] = useState<string>('All');
   const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const filteredCountries =
+    selectedRegion === 'All'
+      ? countries
+      : countries.filter(
+          (country) => getRegion(country.name) === selectedRegion
+        );
+
   const sortedCountries = sortCountries(
-    countries,
+    filteredCountries,
     data,
     currentYear,
     sortBy,
@@ -74,7 +84,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
     const newChangedFields = new Set<string>();
 
-    countries.forEach((country) => {
+    filteredCountries.forEach((country) => {
       const countryData = data[country.name]?.data || [];
       const displayColumns = getDisplayColumns();
 
@@ -98,7 +108,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
         clearTimeout(highlightTimerRef.current);
       }
     };
-  }, [shouldHighlight, previousYear, currentYear, countries, data]);
+  }, [shouldHighlight, previousYear, currentYear, filteredCountries, data]);
 
   useEffect(() => {
     setChangedFields(new Set());
@@ -106,7 +116,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
       clearTimeout(highlightTimerRef.current);
       highlightTimerRef.current = null;
     }
-  }, [selectedCountry]);
+  }, [selectedCountry, selectedRegion]);
 
   const handleCountrySelect = (countryName: string) => {
     const isOpening = selectedCountry !== countryName;
@@ -181,6 +191,10 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
   return (
     <div className={styles.list}>
+      <RegionFilter
+        selectedRegion={selectedRegion}
+        onRegionChange={(region) => setSelectedRegion(region)}
+      />
       <SortControls />
       {sortedCountries.map((country) => {
         const countryData = getCountryData(country.name);
