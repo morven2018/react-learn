@@ -12,7 +12,7 @@ import {
   selectSelectedYear,
 } from '../../redux/selectors/year-selectors';
 
-const TIMEOUT = 100 * 60;
+const TIMEOUT = 100 * 30;
 
 interface CountriesListProps {
   countries: Country[];
