@@ -4,9 +4,8 @@ import CountryTable from '../table/table';
 import isCountry from '../../shared/utils/is-country';
 import styles from './main-content.module.scss';
 import { useState } from 'react';
-import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { useAppSelector } from '../../redux/hooks';
 import { selectSelectedColumns } from '../../redux/selectors/column-selectors';
-import { openColumnSelector } from '../../redux/slice/column-slice';
 import { fetchCO2Data } from '../../shared/api/api';
 import { CO2Data, Country, DataColumn } from '../../shared/types/types';
 
@@ -15,8 +14,6 @@ const NO_DATA = 'N/A';
 const MainContent: React.FC = () => {
   const data = fetchCO2Data();
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-
-  const dispatch = useAppDispatch();
   const selectedColumns = useAppSelector(selectSelectedColumns);
 
   const getCountries = (data: CO2Data): Country[] => {
@@ -64,10 +61,6 @@ const MainContent: React.FC = () => {
     setSelectedCountry(countryName === selectedCountry ? null : countryName);
   };
 
-  const handleOpenColumnSelector = () => {
-    dispatch(openColumnSelector());
-  };
-
   return (
     <div className={styles.container}>
       <div className={styles.sidebar}>
@@ -81,20 +74,9 @@ const MainContent: React.FC = () => {
         />
       </div>
 
-      <div className={styles.content}>
-        <div>
-          <div className={styles.tableHeader}>
-            <button
-              onClick={handleOpenColumnSelector}
-              className={styles.columnButton}
-            >
-              Select Columns
-            </button>
-          </div>
-        </div>
+      <div className={styles.columnSelectorWidget}>
+        <ColumnSelector availableColumns={availableColumns} />
       </div>
-
-      <ColumnSelector availableColumns={availableColumns} />
     </div>
   );
 };

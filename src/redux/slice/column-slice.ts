@@ -3,7 +3,6 @@ import { DataColumn } from '../../shared/types/types';
 
 interface ColumnState {
   selectedColumns: DataColumn[];
-  isColumnSelectorOpen: boolean;
 }
 
 const mandatoryColumns: DataColumn[] = [
@@ -17,7 +16,6 @@ const initialColumns: DataColumn[] = [...mandatoryColumns];
 
 const initialState: ColumnState = {
   selectedColumns: initialColumns,
-  isColumnSelectorOpen: false,
 };
 
 const columnSlice = createSlice({
@@ -59,24 +57,10 @@ const columnSlice = createSlice({
     resetColumns: (state) => {
       state.selectedColumns = initialColumns;
     },
-
-    openColumnSelector: (state) => {
-      state.isColumnSelectorOpen = true;
-    },
-
-    closeColumnSelector: (state) => {
-      state.isColumnSelectorOpen = false;
-    },
   },
 });
 
-export const {
-  toggleColumn,
-  setColumns,
-  resetColumns,
-  openColumnSelector,
-  closeColumnSelector,
-} = columnSlice.actions;
+export const { toggleColumn, setColumns, resetColumns } = columnSlice.actions;
 
 export const isColumnMandatory = (column: DataColumn): boolean => {
   return mandatoryColumns.includes(column);

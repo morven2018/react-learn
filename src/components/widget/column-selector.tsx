@@ -1,15 +1,12 @@
 import styles from './column-selector.module.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
+import { selectSelectedColumns } from '../../redux/selectors/column-selectors';
 import { DataColumn } from '../../shared/types/types';
 
 import {
-  selectIsColumnSelectorOpen,
-  selectSelectedColumns,
-} from '../../redux/selectors/column-selectors';
-import {
-  closeColumnSelector,
   resetColumns,
   toggleColumn,
+  isColumnMandatory,
 } from '../../redux/slice/column-slice';
 
 interface ColumnSelectorProps {
@@ -20,10 +17,7 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({
   availableColumns,
 }) => {
   const dispatch = useAppDispatch();
-  const isColumnSelectorOpen = useAppSelector(selectIsColumnSelectorOpen);
   const selectedColumns = useAppSelector(selectSelectedColumns);
-
-  if (!isColumnSelectorOpen) return null;
 
   const getColumnLabel = (column: DataColumn): string => {
     const labels: Record<DataColumn, string> = {
@@ -45,12 +39,10 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({
     return labels[column] || column;
   };
 
-  const handleClose = () => {
-    dispatch(closeColumnSelector());
-  };
-
   const handleColumnToggle = (column: DataColumn) => {
-    dispatch(toggleColumn(column));
+    if (!isColumnMandatory(column)) {
+      dispatch(toggleColumn(column));
+    }
   };
 
   const handleReset = () => {
@@ -58,47 +50,45 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({
   };
 
   return (
-    <div className={styles.overlay} onClick={handleClose}>
-      <div className={styles.modal} onClick={(e) => e.stopPropagation()}>
-        <div className={styles.header}>
-          <h3>Select Columns to Display</h3>
-          <button
-            onClick={handleClose}
-            className={styles.closeButton}
-            aria-label="Close column selector"
-          >
-            ×
+    <div className={styles.widget}>
+      <div className={styles.header}>
+        <h3>Select Columns to Display</h3>
+      </div>
+
+      <div className={styles.content}>
+        <div className={styles.actions}>
+          <button onClick={handleReset} className={styles.resetButton}>
+            Reset to Default
           </button>
         </div>
 
-        <div className={styles.content}>
-          <div className={styles.actions}>
-            <button onClick={handleReset} className={styles.resetButton}>
-              Reset to Default
-            </button>
-          </div>
+        <div className={styles.columnsList}>
+          {availableColumns.map((column) => {
+            const mandatory = isColumnMandatory(column);
+            const checked = selectedColumns.includes(column);
 
-          <div className={styles.columnsList}>
-            {availableColumns.map((column) => (
-              <label key={column} className={styles.checkboxLabel}>
+            return (
+              <label
+                key={column}
+                className={`${styles.checkboxLabel} ${mandatory ? styles.mandatory : ''}`}
+                title={mandatory ? 'This column is required' : ''}
+              >
                 <input
                   type="checkbox"
-                  checked={selectedColumns.includes(column)}
+                  checked={checked}
                   onChange={() => handleColumnToggle(column)}
                   className={styles.checkbox}
                   aria-label={`Toggle ${getColumnLabel(column)} column`}
+                  disabled={mandatory}
                 />
                 <span className={styles.checkmark}></span>
                 {getColumnLabel(column)}
+                {mandatory && (
+                  <span className={styles.requiredBadge}>Required</span>
+                )}
               </label>
-            ))}
-          </div>
-        </div>
-
-        <div className={styles.footer}>
-          <button onClick={handleClose} className={styles.doneButton}>
-            Done
-          </button>
+            );
+          })}
         </div>
       </div>
     </div>
