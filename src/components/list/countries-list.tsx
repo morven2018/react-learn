@@ -1,5 +1,6 @@
 import CountryTable from '../table/table';
 import RegionFilter from '../filter/region-filter';
+import SearchBar from '../search/search-bar';
 import SortControls from '../sort/sort-controls';
 import formatValue from '../../shared/utils/format-value';
 import getColumnLabel from '../../shared/utils/column-labels';
@@ -55,14 +56,19 @@ const CountriesList: React.FC<CountriesListProps> = ({
 
   const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
   const [selectedRegion, setSelectedRegion] = useState<string>('All');
+  const [searchTerm, setSearchTerm] = useState<string>('');
   const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const filteredCountries =
+  const regionFilteredCountries =
     selectedRegion === 'All'
       ? countries
       : countries.filter(
           (country) => getRegion(country.name) === selectedRegion
         );
+
+  const filteredCountries = regionFilteredCountries.filter((country) =>
+    country.name.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const sortedCountries = sortCountries(
     filteredCountries,
@@ -142,6 +148,10 @@ const CountriesList: React.FC<CountriesListProps> = ({
     }, OPEN_CLOSE_TIMEOUT);
   };
 
+  const handleSearchChange = (term: string) => {
+    setSearchTerm(term);
+  };
+
   const setCountryRef =
     (countryName: string) => (el: HTMLDivElement | null) => {
       countryRefs.current[countryName] = el;
@@ -195,7 +205,11 @@ const CountriesList: React.FC<CountriesListProps> = ({
         selectedRegion={selectedRegion}
         onRegionChange={(region) => setSelectedRegion(region)}
       />
+      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
       <SortControls />
+      {!sortedCountries.length && (
+        <p>{`No countries found. Please change region selection and/or searching term`}</p>
+      )}
       {sortedCountries.map((country) => {
         const countryData = getCountryData(country.name);
         const sortedData = [...countryData].sort((a, b) => b.year - a.year);
