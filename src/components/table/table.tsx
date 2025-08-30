@@ -8,7 +8,10 @@ interface CountryTableProps {
   columns: DataColumn[];
 }
 
-const CountryTable: React.FC<CountryTableProps> = ({ data, columns }) => {
+const CountryTable: React.FC<CountryTableProps> = ({
+  data,
+  columns,
+}: CountryTableProps) => {
   const sortedData = [...data].sort((a, b) => b.year - a.year);
 
   const shouldRightAlign = (column: DataColumn): boolean => {

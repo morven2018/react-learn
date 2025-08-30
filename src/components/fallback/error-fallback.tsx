@@ -5,7 +5,10 @@ interface ErrorFallbackProps {
   onRetry?: () => void;
 }
 
-const ErrorFallback: React.FC<ErrorFallbackProps> = ({ error, onRetry }) => {
+const ErrorFallback: React.FC<ErrorFallbackProps> = ({
+  error,
+  onRetry,
+}: ErrorFallbackProps) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.error}>

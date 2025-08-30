@@ -15,7 +15,7 @@ interface ColumnSelectorProps {
 
 const ColumnSelector: React.FC<ColumnSelectorProps> = ({
   availableColumns,
-}) => {
+}: ColumnSelectorProps) => {
   const dispatch = useAppDispatch();
   const selectedColumns = useAppSelector(selectSelectedColumns);
 

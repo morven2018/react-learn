@@ -28,6 +28,7 @@ import {
 
 const TIMEOUT = 3000;
 const OPEN_CLOSE_TIMEOUT = 100;
+const INITIAL_YEAR = 2023;
 
 interface CountriesListProps {
   countries: Country[];
@@ -41,7 +42,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
   onCountrySelect,
   selectedCountry,
   data,
-}) => {
+}: CountriesListProps) => {
   const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
   const shouldHighlight = useAppSelector(selectShouldHighlight);
   const previousYear = useAppSelector(selectPreviousYear);
@@ -154,7 +155,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
     field: DataColumn
   ): string | number => {
     const countryData = getCountryData(countryName);
-    return getPreviousValue(countryData, previousYear!, field);
+    return getPreviousValue(countryData, previousYear ?? INITIAL_YEAR, field);
   };
 
   const isFieldChanged = (countryName: string, field: DataColumn): boolean => {
