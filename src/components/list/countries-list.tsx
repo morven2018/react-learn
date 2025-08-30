@@ -1,8 +1,18 @@
 import CountryTable from '../table/table';
 import formatValue from '../../shared/utils/format-value';
 import styles from './countries-list.module.scss';
-import { useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { useAppSelector } from '../../redux/hooks';
 import { CO2Data, Country, DataColumn } from '../../shared/types/types';
+import { hasChanged } from '../../shared/utils/compare-data';
+
+import {
+  selectShouldHighlight,
+  selectPreviousYear,
+  selectSelectedYear,
+} from '../../redux/selectors/year-selectors';
+
+const TIMEOUT = 100 * 60;
 
 interface CountriesListProps {
   countries: Country[];
@@ -10,6 +20,7 @@ interface CountriesListProps {
   selectedCountry: string | null;
   data: CO2Data;
   selectedColumns: DataColumn[];
+  selectedYear: number;
 }
 
 const CountriesList: React.FC<CountriesListProps> = ({
@@ -20,6 +31,33 @@ const CountriesList: React.FC<CountriesListProps> = ({
   selectedColumns,
 }) => {
   const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+  const shouldHighlight = useAppSelector(selectShouldHighlight);
+  const previousYear = useAppSelector(selectPreviousYear);
+  const currentYear = useAppSelector(selectSelectedYear);
+  const [changedCountries, setChangedCountries] = useState<Set<string>>(
+    new Set()
+  );
+
+  useEffect(() => {
+    if (shouldHighlight && previousYear) {
+      const changed = new Set<string>();
+
+      countries.forEach((country) => {
+        const countryData = data[country.name]?.data || [];
+        if (hasChanged(countryData, currentYear, previousYear)) {
+          changed.add(country.name);
+        }
+      });
+
+      setChangedCountries(changed);
+
+      const timer = setTimeout(() => {
+        setChangedCountries(new Set());
+      }, TIMEOUT);
+
+      return () => clearTimeout(timer);
+    }
+  }, [shouldHighlight, previousYear, currentYear, countries, data]);
 
   const handleCountrySelect = (countryName: string) => {
     const isOpening = selectedCountry !== countryName;
@@ -31,7 +69,7 @@ const CountriesList: React.FC<CountriesListProps> = ({
           behavior: 'smooth',
           block: 'start',
         });
-      }, 100);
+      }, TIMEOUT);
     }
   };
 
@@ -42,13 +80,23 @@ const CountriesList: React.FC<CountriesListProps> = ({
         behavior: 'smooth',
         block: 'start',
       });
-    }, 100);
+    }, 10000);
   };
 
   const setCountryRef =
     (countryName: string) => (el: HTMLDivElement | null) => {
       countryRefs.current[countryName] = el;
     };
+
+  const getPopulationForYear = (countryName: string, year: number): string => {
+    const countryData = data[countryName]?.data || [];
+    const yearData = countryData.find((d) => d.year === year);
+    return formatValue(yearData?.population ?? 'N/A');
+  };
+
+  const isCountryDataChanged = (countryName: string): boolean => {
+    return changedCountries.has(countryName);
+  };
 
   return (
     <div className={styles.list}>
@@ -58,11 +106,22 @@ const CountriesList: React.FC<CountriesListProps> = ({
         const previewData = sortedData.slice(0, 5);
         const hasMoreData = countryData.length > 5;
         const hasData = countryData.length > 0;
+        const dataChanged = isCountryDataChanged(country.name);
+
+        const currentPopulation = getPopulationForYear(
+          country.name,
+          currentYear
+        );
+        const previousPopulation = previousYear
+          ? getPopulationForYear(country.name, previousYear)
+          : null;
 
         return (
           <div
             key={country.name}
-            className={styles.countryItem}
+            className={`${styles.countryItem} ${
+              dataChanged ? styles.highlight : ''
+            }`}
             ref={setCountryRef(country.name)}
           >
             <div
@@ -76,8 +135,15 @@ const CountriesList: React.FC<CountriesListProps> = ({
                 <div className={styles.countryDetails}>
                   {`ISO: ${country.iso_code}`}
                 </div>
-                <div className={styles.countryDetails}>
-                  {`Population: ${formatValue(country.population)}`}
+                <div
+                  className={`${styles.countryDetails} ${dataChanged && styles.changed}`}
+                >
+                  {`Population: ${currentPopulation}`}
+                  {dataChanged && previousPopulation && (
+                    <span className={styles.populationChange}>
+                      {` (was ${previousPopulation})`}
+                    </span>
+                  )}
                 </div>
               </div>
               <span className={styles.accordionIcon}>
