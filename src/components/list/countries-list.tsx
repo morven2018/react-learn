@@ -263,35 +263,36 @@ const CountriesList: React.FC<CountriesListProps> = React.memo(
               >
                 <div className={styles.countryInfo}>
                   <div className={styles.countryName}>{country.name}</div>
-                  <div className={styles.countryDetails}>
-                    {`ISO: ${country.iso_code}`}
+                  <div className={styles.detailsWrapper}>
+                    <div className={styles.countryDetails}>
+                      {`ISO: ${country.iso_code}`}
+                    </div>
+                    {displayColumns.map((column) => {
+                      const value = getFieldValue(country.name, column);
+                      const changed = isFieldChanged(country.name, column);
+                      const previousValue = getPreviousFieldValue(
+                        country.name,
+                        column
+                      );
+
+                      return (
+                        <div
+                          key={column}
+                          className={`${styles.countryDetails} ${changed ? styles.changed : ''}`}
+                        >
+                          {`${getColumnLabel(column)}: ${formatValue(value)}`}
+                          {changed && (
+                            <span className={styles.previousValue}>
+                              {` (was ${formatValue(previousValue)})`}
+                            </span>
+                          )}
+                          {changed && (
+                            <span className={styles.changeIndicator}>*</span>
+                          )}
+                        </div>
+                      );
+                    })}
                   </div>
-
-                  {displayColumns.map((column) => {
-                    const value = getFieldValue(country.name, column);
-                    const changed = isFieldChanged(country.name, column);
-                    const previousValue = getPreviousFieldValue(
-                      country.name,
-                      column
-                    );
-
-                    return (
-                      <div
-                        key={column}
-                        className={`${styles.countryDetail} ${changed ? styles.changed : ''}`}
-                      >
-                        {`${getColumnLabel(column)}: ${formatValue(value)}`}
-                        {changed && (
-                          <span className={styles.previousValue}>
-                            {` (was ${formatValue(previousValue)})`}
-                          </span>
-                        )}
-                        {changed && (
-                          <span className={styles.changeIndicator}>*</span>
-                        )}
-                      </div>
-                    );
-                  })}
                 </div>
                 <span className={styles.accordionIcon}>
                   {selectedCountry === country.name ? '-' : '+'}
@@ -342,14 +343,16 @@ const CountriesList: React.FC<CountriesListProps> = React.memo(
 
     return (
       <div className={styles.list}>
-        <RegionFilter
-          selectedRegion={selectedRegion}
-          onRegionChange={handleRegionChange}
-        />
-        <SearchBar
-          searchTerm={searchTerm}
-          onSearchChange={handleSearchChange}
-        />
+        <div className={styles.controlsWrapper}>
+          <RegionFilter
+            selectedRegion={selectedRegion}
+            onRegionChange={handleRegionChange}
+          />
+          <SearchBar
+            searchTerm={searchTerm}
+            onSearchChange={handleSearchChange}
+          />
+        </div>
         <SortControls />
         {!sortedCountries.length && (
           <p>{`No countries found. Please change region selection and/or searching term`}</p>

@@ -1,19 +1,29 @@
+@use '../../assets/globals.scss' as *;
+
 .list {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
+.controlsWrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 30px;
+  flex-wrap: wrap;
+}
+
 .countryItem {
-  border: 1px solid #e0e0e0;
+  border: 1px solid $secondary-light;
   border-radius: 8px;
   overflow: hidden;
   transition: all 0.3s ease;
+  background: $primary-light;
 
   &.highlight {
     animation: countryHighlight 1s ease-in-out;
-    border-color: #007bff;
-    box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+    border-color: $accent;
+    box-shadow: 0 0 0 2px rgba($accent, 0.2);
   }
 }
 
@@ -22,20 +32,23 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  background-color: #f8f9fa;
+  background-color: $primary;
   cursor: pointer;
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #e9ecef;
+    background-color: darken($primary, 10%);
   }
 
   &.selected {
-    background-color: #007bff;
-    color: white;
+    background-color: $accent-dark;
+    color: $text-light;
+    position: sticky;
+    top: 0;
+    z-index: 200;
 
     .countryDetails {
-      color: rgba(255, 255, 255, 0.9);
+      color: rgba($text-light, 0.9);
     }
   }
 }
@@ -46,32 +59,50 @@
 
 .countryName {
   font-weight: 600;
-  font-size: 16px;
+  font-size: 20px;
   margin-bottom: 5px;
+  color: $text-primary;
+}
+
+.detailsWrapper {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+
+  @media (max-width: 1000px) {
+    grid-template-columns: 1fr 1fr;
+  }
+  @media (max-width: 800px) {
+    grid-template-columns: 1fr;
+  }
 }
 
 .countryDetails {
-  font-size: 12px;
-  color: #6c757d;
+  width: 240px;
+  font-size: 14px;
+  font-weight: 600;
+  color: $accent-bright;
   margin-bottom: 3px;
 }
 
 .changed {
-  color: #007bff;
+  color: $accent-bright;
+  font-weight: 600;
 }
+
 .yearIndicator {
   font-size: 11px;
-  color: #28a745;
+  color: $accent-bright;
   font-weight: 500;
   margin-top: 5px;
   padding: 2px 6px;
-  background-color: rgba(40, 167, 69, 0.1);
+  background-color: rgba($accent-bright, 0.1);
   border-radius: 4px;
   display: inline-block;
 }
 
 .accordionIcon {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: bold;
   margin-left: 10px;
 }
@@ -79,7 +110,7 @@
 .previewContent,
 .fullContent {
   padding: 15px;
-  background-color: white;
+  background-color: $text-light;
 }
 
 .moreButton,
@@ -89,51 +120,46 @@
 
   button {
     padding: 8px 16px;
-    background-color: #007bff;
-    color: white;
+    background-color: $accent;
+    color: $text-primary;
     border: none;
     border-radius: 4px;
     cursor: pointer;
     font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
 
     &:hover {
-      background-color: #0056b3;
+      background-color: $accent;
+      transform: scale(1.1);
     }
   }
 }
 
+.previousValue {
+  font-size: 11px;
+  color: $text-secondary;
+  margin-left: 5px;
+  font-style: italic;
+}
+
+.changeIndicator {
+  color: $accent-bright;
+  font-weight: bold;
+  margin-left: 3px;
+}
+
 @keyframes countryHighlight {
   0% {
-    background-color: rgba(0, 123, 255, 0.1);
+    background-color: rgba($accent, 0.1);
     transform: translateY(-2px);
   }
   50% {
-    background-color: rgba(0, 123, 255, 0.2);
+    background-color: rgba($accent, 0.2);
     transform: translateY(0);
   }
   100% {
     background-color: transparent;
     transform: translateY(0);
-  }
-}
-
-@media (max-width: 768px) {
-  .accordionHeader {
-    padding: 12px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 10px;
-  }
-
-  .accordionIcon {
-    align-self: flex-end;
-  }
-
-  .countryName {
-    font-size: 14px;
-  }
-
-  .countryDetails {
-    font-size: 11px;
   }
 }
