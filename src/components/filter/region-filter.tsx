@@ -1,5 +1,5 @@
 import React, { useCallback, useMemo } from 'react';
-import styles from './region-filter.module.scss';
+import styles from '../list/controls.module.scss';
 import { getAllRegions } from '../../shared/utils/get-region';
 
 interface RegionFilterProps {
@@ -20,7 +20,9 @@ const RegionFilter: React.FC<RegionFilterProps> = React.memo(
 
     return (
       <div className={styles.regionFilter}>
-        <label htmlFor="region-select">Filter by Region:</label>
+        <label htmlFor="region-select" className={styles.label}>
+          Filter by Region:
+        </label>
         <select
           id="region-select"
           value={selectedRegion}

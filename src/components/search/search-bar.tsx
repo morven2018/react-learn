@@ -1,4 +1,4 @@
-import styles from './search-bar.module.scss';
+import styles from '../list/controls.module.scss';
 import { useCallback } from 'react';
 
 interface SearchBarProps {
@@ -20,7 +20,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
   );
   return (
     <div className={styles.searchBar}>
-      <label htmlFor="search-input" className={styles.searchLabel}>
+      <label htmlFor="search-input" className={styles.label}>
         Search:
       </label>
       <input
@@ -29,7 +29,7 @@ const SearchBar: React.FC<SearchBarProps> = ({
         value={searchTerm}
         onChange={handleChange}
         placeholder={placeholder}
-        className={styles.searchInput}
+        className={styles.input}
       />
     </div>
   );

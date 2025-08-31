@@ -1,5 +1,5 @@
 import React, { useCallback } from 'react';
-import styles from './year-selector.module.scss';
+import styles from '../list/controls.module.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { selectSelectedYear } from '../../redux/selectors/year-selectors';
 import { setYear } from '../../redux/slice/year-slice';
