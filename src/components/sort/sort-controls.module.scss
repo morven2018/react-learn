@@ -1,0 +1,29 @@
+@use '../../assets/globals.scss' as *;
+
+.sortControls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.label {
+  font-weight: 600;
+  color: $text-primary;
+  font-size: 14px;
+}
+
+.sortButton {
+  padding: 8px 12px;
+  border-radius: 5px;
+  font-size: 14px;
+  background: $secondary-light;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:hover {
+    transform: scale(1.1);
+  }
+}
+.active {
+  background-color: $accent-bright;
+}

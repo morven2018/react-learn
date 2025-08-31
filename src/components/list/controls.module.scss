@@ -1,0 +1,36 @@
+@use '../../assets/globals.scss' as *;
+
+.yearSelector,
+.regionFilter,
+.searchBar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.label {
+  font-weight: 600;
+  color: $text-primary;
+  font-size: 14px;
+}
+.input,
+.regionSelect,
+.select {
+  padding: 8px 12px;
+  border: 2px solid $text-secondary;
+  border-radius: 5px;
+  font-size: 14px;
+  background: $primary-light;
+  cursor: pointer;
+  transition: border-color 0.2s ease;
+
+  &:focus,
+  &:hover {
+    border-color: $accent-dark;
+  }
+}
+
+.select {
+  max-height: 50px;
+  overflow-y: auto;
+}

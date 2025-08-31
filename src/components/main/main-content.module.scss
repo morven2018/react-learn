@@ -1,0 +1,23 @@
+@use '../../assets/globals.scss' as *;
+
+.container {
+  max-width: 1280px;
+  padding: 30px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  width: calc(100vw - 60px);
+}
+
+.header {
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 20px;
+}
+
+.widgetWrapper {
+  position: -webkit-sticky;
+  position: sticky;
+  bottom: 20px;
+  z-index: 1000;
+}

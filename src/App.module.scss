@@ -1,0 +1,19 @@
+@use './assets/globals.scss' as *;
+
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  background-color: $primary;
+}
+
+.header {
+  margin: 20px auto;
+  font-size: 18px;
+  color: $text-primary;
+  text-align: center;
+}
+
+.content {
+  min-height: calc(100vh - 100px);
+}
