@@ -9,7 +9,7 @@ Shown difference of such interaction:
 - Sorting +
   - by population
   - by country name
-- Change year selection +
+- Change year selection
 - Filtering by region +
 - Searching countries +
 - Opening whole table of county +
@@ -45,11 +45,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.1s
+0.8s
 
 #### Render Duration:
 
-12.7ms
+271.2ms
 
 #### Interactions:
 
@@ -208,3 +208,73 @@ Profiler not capture interactions so only Commit and Render analyzed
 ![alt text](./screen-to-report/image-15.png)
 
 ## After Optimization
+
+### Change year selection
+
+#### Commit Duration:
+
+1s
+
+#### Render Duration:
+
+15.3ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-16.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-17.png)
+
+---
+
+### Sorting by population
+
+#### Commit Duration:
+
+1s
+
+#### Render Duration:
+
+15.3ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-18.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-19.png)
+
+---
+
+### Sorting by country name
+
+#### Commit Duration:
+
+0.9s
+
+#### Render Duration:
+
+20.3ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-20.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-21.png)
