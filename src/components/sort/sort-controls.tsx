@@ -1,4 +1,5 @@
 import styles from './sort-controls.module.scss';
+import { useCallback } from 'react';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
 import { SortOption, toggleSort } from '../../redux/slice/sort-slice';
 
@@ -12,14 +13,20 @@ const SortControls: React.FC = () => {
   const sortBy = useAppSelector(selectSortBy);
   const sortDirection = useAppSelector(selectSortDirection);
 
-  const handleSortChange = (option: SortOption) => {
-    dispatch(toggleSort(option));
-  };
+  const handleSortChange = useCallback(
+    (option: SortOption) => {
+      dispatch(toggleSort(option));
+    },
+    [dispatch]
+  );
 
-  const getSortIcon = (option: SortOption) => {
-    if (sortBy !== option) return '↓';
-    return sortDirection === 'asc' ? '↑' : '↓';
-  };
+  const getSortIcon = useCallback(
+    (option: SortOption) => {
+      if (sortBy !== option) return '↓';
+      return sortDirection === 'asc' ? '↑' : '↓';
+    },
+    [sortBy, sortDirection]
+  );
 
   return (
     <div className={styles.sortControls}>

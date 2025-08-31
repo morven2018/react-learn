@@ -1,4 +1,5 @@
 import styles from './search-bar.module.scss';
+import { useCallback } from 'react';
 
 interface SearchBarProps {
   searchTerm: string;
@@ -11,10 +12,12 @@ const SearchBar: React.FC<SearchBarProps> = ({
   onSearchChange,
   placeholder = 'Search countries...',
 }: SearchBarProps) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    onSearchChange(event.target.value);
-  };
-
+  const handleChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      onSearchChange(event.target.value);
+    },
+    [onSearchChange]
+  );
   return (
     <div className={styles.searchBar}>
       <label htmlFor="search-input" className={styles.searchLabel}>
