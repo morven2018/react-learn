@@ -30,7 +30,7 @@ const SortControls: React.FC = () => {
 
   return (
     <div className={styles.sortControls}>
-      <span className={styles.sortLabel}>Sort by:</span>
+      <span className={styles.label}>Sort by:</span>
 
       <button
         className={`${styles.sortButton} ${sortBy === 'name' ? styles.active : ''}`}
