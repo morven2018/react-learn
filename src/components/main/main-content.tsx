@@ -57,7 +57,6 @@ const MainContent: React.FC = () => {
         <YearSelector availableYears={availableYears} />
       </div>
       <div className={styles.sidebar}>
-        <h2>Countries ({countries.length})</h2>
         <CountriesList
           countries={countries}
           onCountrySelect={handleCountrySelect}
@@ -66,7 +65,7 @@ const MainContent: React.FC = () => {
         />
       </div>
 
-      <div className={styles.columnSelectorWidget}>
+      <div className={styles.widget}>
         <ColumnSelector availableColumns={availableColumns} />
       </div>
     </div>
