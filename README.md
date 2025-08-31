@@ -6,12 +6,12 @@ Profiling done by using React DevTools Profiler.
 
 Shown difference of such interaction:
 
-- Sorting +
+- Sorting
   - by population
   - by country name
 - Change year selection
-- Filtering by region +
-- Searching countries +
+- Filtering by region
+- Searching countries
 - Opening whole table of county +
 - Add new column
 
@@ -165,11 +165,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.1s
+0.8s
 
 #### Render Duration:
 
-53.5ms
+420.3ms
 
 #### Interactions:
 
@@ -233,6 +233,30 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 ---
 
+### Filtering by region
+
+#### Commit Duration:
+
+1.7s
+
+#### Render Duration:
+
+20.3ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-22.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-23.png)
+
+---
+
 ### Sorting by population
 
 #### Commit Duration:
@@ -278,3 +302,29 @@ Profiler not capture interactions so only Commit and Render analyzed
 #### Ranked Chart:
 
 ![alt text](./screen-to-report/image-21.png)
+
+---
+
+### Searching countries
+
+#### Commit Duration:
+
+1.8s
+
+#### Render Duration:
+
+71.6ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-12.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-13.png)
+
+---
