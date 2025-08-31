@@ -36,10 +36,6 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
 
-  &:hover {
-    background-color: darken($primary, 10%);
-  }
-
   &.selected {
     background-color: $accent-dark;
     color: $text-light;
