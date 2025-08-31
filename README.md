@@ -63,11 +63,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.8s
+0.1s
 
 #### Render Duration:
 
-271.2ms
+91.9ms
 
 #### Interactions:
 
@@ -87,11 +87,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.2s
+1.9s
 
 #### Render Duration:
 
-110.4ms
+191.4ms
 
 #### Interactions:
 
@@ -99,11 +99,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Flame Graph:
 
-![alt text](./screen-to-report/image-4.png)
+![alt text](./screen-to-report/image-5.png)
 
 #### Ranked Chart:
 
-![alt text](./screen-to-report/image-5.png)
+![alt text](./screen-to-report/image-4.png)
 
 ---
 
@@ -111,11 +111,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.5s
+0.3s
 
 #### Render Duration:
 
-327.2ms
+223.3ms
 
 #### Interactions:
 
@@ -135,11 +135,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.9s
+0.7s
 
 #### Render Duration:
 
-320.7ms
+188.7ms
 
 #### Interactions:
 
@@ -159,11 +159,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.8s
+0.5s
 
 #### Render Duration:
 
-420.3ms
+90.3ms
 
 #### Interactions:
 
@@ -183,11 +183,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-2.2s
+0.5s
 
 #### Render Duration:
 
-65.5ms
+104.6ms
 
 #### Interactions:
 
@@ -207,11 +207,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-1s
+2.6s
 
 #### Render Duration:
 
-15.3ms
+84.5ms
 
 #### Interactions:
 
@@ -231,11 +231,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-1.7s
+2.1s
 
 #### Render Duration:
 
-20.3ms
+131.7ms
 
 #### Interactions:
 
@@ -255,11 +255,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-1s
+1.1s
 
 #### Render Duration:
 
-20.3ms
+154.4ms
 
 #### Interactions:
 
@@ -279,11 +279,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-0.9s
+1.2s
 
 #### Render Duration:
 
-20.3ms
+171.2ms
 
 #### Interactions:
 
@@ -307,7 +307,7 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Render Duration:
 
-71.6ms
+20.3ms
 
 #### Interactions:
 
@@ -327,11 +327,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-2.2s
+1.4s
 
 #### Render Duration:
 
-102.3ms
+51.7ms
 
 #### Interactions:
 
@@ -351,11 +351,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 | Interaction             | Commit Duration (before) | Commit Duration (after) | Render Duration (before) | Render Duration (after) |
 | ----------------------- | ------------------------ | ----------------------- | ------------------------ | ----------------------- |
-| Change year selection   | 0.8s                     | 1.0s                    | 271.2ms                  | 15.3ms                  |
-| Filtering by region     | 0.2s                     | 1.7s                    | 110.4ms                  | 20.3ms                  |
-| Sorting by population   | 0.5s                     | 1.0s                    | 327.2ms                  | 20.3ms                  |
-| Sorting by country name | 0.9s                     | 0.9s                    | 320.7ms                  | 20.3ms                  |
-| Searching countries     | 0.8s                     | 1.8s                    | 420.3ms                  | 187.9ms                 |
-| Add new column          | 2.2s                     | 2.2s                    | 65.5ms                   | 102.3ms                 |
+| Change year selection   | 0.1s                     | 2.6s                    | 91.9ms                   | 84.5ms                  |
+| Filtering by region     | 1.9s                     | 2.1s                    | 191.4ms                  | 131.7ms                 |
+| Sorting by population   | 0.3s                     | 1.1s                    | 223.3ms                  | 154.4ms                 |
+| Sorting by country name | 0.7s                     | 1.2s                    | 188.7ms                  | 171.2ms                 |
+| Searching countries     | 0.5s                     | 1.8s                    | 90.3ms                   | 20.3ms                  |
+| Add new column          | 0.5s                     | 1.4s                    | 104.6ms                  | 51.7ms                  |
 
-On screen photo you cuold se that the number of rerender was reduced
+On screen photo you could se that the number of rerender was reduced
