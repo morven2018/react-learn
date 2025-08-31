@@ -6,14 +6,14 @@ Profiling done by using React DevTools Profiler.
 
 Shown difference of such interaction:
 
-- Sorting
+- Sorting +
   - by population
   - by country name
-- Change year selection
-- Filtering by region
-- Searching countries
-- Opening whole table of county
-- Add new data in column
+- Change year selection +
+- Filtering by region +
+- Searching countries +
+- Opening whole table of county +
+- Add new column
 
 The initial loading(fetching) that could not be optimized by useMemo or useCallback shown once in this section.
 
@@ -111,4 +111,100 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 ![alt text](./screen-to-report/image-7.png)
 
-whol table## After Optimization
+---
+
+### Sorting by population
+
+#### Commit Duration:
+
+0.5s
+
+#### Render Duration:
+
+327.2ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-8.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-9.png)
+
+---
+
+### Sorting by country name
+
+#### Commit Duration:
+
+0.9s
+
+#### Render Duration:
+
+320.7ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-10.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-11.png)
+
+---
+
+### Searching countries
+
+#### Commit Duration:
+
+0.1s
+
+#### Render Duration:
+
+53.5ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-12.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-13.png)
+
+---
+
+### Add new column
+
+#### Commit Duration:
+
+2.2s
+
+#### Render Duration:
+
+65.5ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-14.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-15.png)
+
+## After Optimization
