@@ -9,7 +9,7 @@ interface YearSelectorProps {
 }
 
 const YearSelector: React.FC<YearSelectorProps> = React.memo(
-  ({ availableYears }) => {
+  ({ availableYears }: YearSelectorProps) => {
     const dispatch = useAppDispatch();
     const selectedYear = useAppSelector(selectSelectedYear);
 
