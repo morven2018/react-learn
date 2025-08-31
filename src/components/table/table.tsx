@@ -1,5 +1,5 @@
 import formatValue from '../../shared/utils/format-value';
-import getColumnLabel from '../../shared/utils/column-labels';
+import getLabel from '../../shared/utils/column-labels';
 import styles from './table.module.scss';
 import { DataColumn, YearlyData } from '../../shared/types/types';
 
@@ -28,7 +28,7 @@ const CountryTable: React.FC<CountryTableProps> = ({
                 key={column}
                 className={shouldRightAlign(column) ? styles.rightAlign : ''}
               >
-                {index === 0 ? column : getColumnLabel(column)}
+                {index === 0 ? column : getLabel(column)}
               </th>
             ))}
           </tr>

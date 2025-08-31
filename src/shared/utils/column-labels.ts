@@ -1,6 +1,6 @@
 import { DataColumn } from '../types/types';
 
-const getColumnLabel = (column: DataColumn): string => {
+const getLabel = (column: DataColumn): string => {
   const labels: Record<DataColumn, string> = {
     [DataColumn.YEAR]: 'Year',
     [DataColumn.POPULATION]: 'Population',
@@ -20,4 +20,4 @@ const getColumnLabel = (column: DataColumn): string => {
   return labels[column] || column;
 };
 
-export default getColumnLabel;
+export default getLabel;
