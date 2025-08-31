@@ -19,7 +19,6 @@
   - [Summary](#summary)
     - [Table](#table)
 
-
 Completed as part of React Performance [task](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/tasks/performance.md#performance-profiling-task)
 
 Profiling done by using React DevTools Profiler.
@@ -328,11 +327,11 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Commit Duration:
 
-3.7s
+2.2s
 
 #### Render Duration:
 
-75.9ms
+102.3ms
 
 #### Interactions:
 
@@ -356,5 +355,7 @@ Profiler not capture interactions so only Commit and Render analyzed
 | Filtering by region     | 0.2s                     | 1.7s                    | 110.4ms                  | 20.3ms                  |
 | Sorting by population   | 0.5s                     | 1.0s                    | 327.2ms                  | 20.3ms                  |
 | Sorting by country name | 0.9s                     | 0.9s                    | 320.7ms                  | 20.3ms                  |
-| Searching countries     | 0.8s                     | 1.8s                    | 420.3ms                  | 71.6ms                  |
-| Add new column          | 2.2s                     | 3.7s                    | 65.5ms                   | 75.9ms                  |
+| Searching countries     | 0.8s                     | 1.8s                    | 420.3ms                  | 187.9ms                 |
+| Add new column          | 2.2s                     | 2.2s                    | 65.5ms                   | 102.3ms                 |
+
+On screen photo you cuold se that the number of rerender was reduced
