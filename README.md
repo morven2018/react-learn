@@ -358,4 +358,4 @@ Profiler not capture interactions so only Commit and Render analyzed
 | Searching countries     | 0.5s                     | 1.8s                    | 90.3ms                   | 20.3ms                  |
 | Add new column          | 0.5s                     | 1.4s                    | 104.6ms                  | 51.7ms                  |
 
-On screen photo you could se that the number of rerender was reduced
+On screen photo you could see that the number of rerender was reduced
