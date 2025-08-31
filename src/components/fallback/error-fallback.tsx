@@ -10,16 +10,14 @@ const ErrorFallback: React.FC<ErrorFallbackProps> = ({
   onRetry,
 }: ErrorFallbackProps) => {
   return (
-    <div className={styles.wrapper}>
-      <div className={styles.error}>
-        <h2>Something went wrong</h2>
-        <p>{error?.message || 'Failed to load data'}</p>
-        {onRetry && (
-          <button onClick={onRetry} className={styles.retryButton}>
-            Try Again
-          </button>
-        )}
-      </div>
+    <div className={styles.error}>
+      <h2>Something went wrong</h2>
+      <p>{error?.message || 'Failed to load data'}</p>
+      {onRetry && (
+        <button onClick={onRetry} className={styles.retryButton}>
+          Try Again
+        </button>
+      )}
     </div>
   );
 };

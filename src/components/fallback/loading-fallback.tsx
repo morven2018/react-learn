@@ -8,7 +8,7 @@ const Loading: React.FC = () => {
         role="status"
         aria-label="Loading..."
       ></div>
-      <span className="visually-hidden">Loading...</span>
+      <span className={styles.title}>Loading...</span>
     </div>
   );
 };
