@@ -1,3 +1,5 @@
+# Performance Profiling Report
+
 - [Performance Profiling Report](#performance-profiling-report)
   - [Initial Loading](#initial-loading)
   - [Before Optimization](#before-optimization)
@@ -17,7 +19,6 @@
   - [Summary](#summary)
     - [Table](#table)
 
-# Performance Profiling Report
 
 Completed as part of React Performance [task](https://github.com/rolling-scopes-school/tasks/blob/master/react/modules/tasks/performance.md#performance-profiling-task)
 
