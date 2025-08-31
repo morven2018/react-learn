@@ -12,7 +12,6 @@ Shown difference of such interaction:
 - Change year selection
 - Filtering by region
 - Searching countries
-- Opening whole table of county +
 - Add new column
 
 The initial loading(fetching) that could not be optimized by useMemo or useCallback shown once in this section.
@@ -88,8 +87,6 @@ Profiler not capture interactions so only Commit and Render analyzed
 ![alt text](./screen-to-report/image-5.png)
 
 ---
-
-### Opening whole table of county
 
 #### Commit Duration:
 
@@ -265,7 +262,7 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Render Duration:
 
-15.3ms
+20.3ms
 
 #### Interactions:
 
@@ -321,10 +318,32 @@ Profiler not capture interactions so only Commit and Render analyzed
 
 #### Flame Graph:
 
-![alt text](./screen-to-report/image-12.png)
+![alt text](./screen-to-report/image-24.png)
 
 #### Ranked Chart:
 
-![alt text](./screen-to-report/image-13.png)
+![alt text](./screen-to-report/image-25.png)
 
 ---
+
+### Add new column
+
+#### Commit Duration:
+
+3.7s
+
+#### Render Duration:
+
+75.9ms
+
+#### Interactions:
+
+Profiler not capture interactions so only Commit and Render analyzed
+
+#### Flame Graph:
+
+![alt text](./screen-to-report/image-26.png)
+
+#### Ranked Chart:
+
+![alt text](./screen-to-report/image-27.png)
