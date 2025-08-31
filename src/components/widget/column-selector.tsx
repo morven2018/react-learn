@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo, useCallback, useState } from 'react';
 import getLabel from '../../shared/utils/column-labels';
 import styles from './column-selector.module.scss';
 import { useAppDispatch, useAppSelector } from '../../redux/hooks';
@@ -19,6 +19,7 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = memo(
   ({ availableColumns }: ColumnSelectorProps) => {
     const dispatch = useAppDispatch();
     const selectedColumns = useAppSelector(selectSelectedColumns);
+    const [isExpanded, setIsExpanded] = useState(false);
 
     const getColumnLabel = useCallback(
       (column: DataColumn): string => getLabel(column),
@@ -37,6 +38,10 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = memo(
     const handleReset = useCallback(() => {
       dispatch(resetColumns());
     }, [dispatch]);
+
+    const toggleExpanded = useCallback(() => {
+      setIsExpanded(!isExpanded);
+    }, [isExpanded]);
 
     const renderedColumns = useCallback(() => {
       return availableColumns.map((column) => {
@@ -68,16 +73,22 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = memo(
     }, [availableColumns, selectedColumns, handleColumnToggle, getColumnLabel]);
 
     return (
-      <div className={styles.widget}>
-        <div className={styles.content}>
-          <div className={styles.actions}>
+      <div
+        className={`${styles.widget} ${!isExpanded ? styles.collapsed : styles.open}`}
+      >
+        <div className={styles.controls}>
+          {isExpanded && (
             <button onClick={handleReset} className={styles.resetButton}>
-              Reset to Default
+              Reset
             </button>
-          </div>
-
-          <div className={styles.columnsList}>{renderedColumns()}</div>
+          )}
+          <button onClick={toggleExpanded} className={styles.toggleButton}>
+            {isExpanded ? 'Close' : 'Select Columns'}
+          </button>
         </div>
+        {isExpanded && (
+          <div className={styles.columnsList}>{renderedColumns()}</div>
+        )}
       </div>
     );
   }

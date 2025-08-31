@@ -65,7 +65,7 @@ const MainContent: React.FC = () => {
         />
       </div>
 
-      <div className={styles.widget}>
+      <div className={styles.widgetWrapper}>
         <ColumnSelector availableColumns={availableColumns} />
       </div>
     </div>
