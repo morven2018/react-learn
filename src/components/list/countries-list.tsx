@@ -6,11 +6,18 @@ import formatValue from '../../shared/utils/format-value';
 import getColumnLabel from '../../shared/utils/column-labels';
 import getRegion from '../../shared/utils/get-region';
 import styles from './countries-list.module.scss';
-import { useEffect, useRef, useState } from 'react';
 import { useAppSelector } from '../../redux/hooks';
 import { selectSelectedColumns } from '../../redux/selectors/column-selectors';
 import { getPreviousValue, hasChanged } from '../../shared/utils/compare-data';
 import { sortCountries } from '../sort/sort-utils';
+
+import React, {
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from 'react';
 
 import {
   selectSortBy,
@@ -40,263 +47,319 @@ interface CountriesListProps {
   data: CO2Data;
 }
 
-const CountriesList: React.FC<CountriesListProps> = ({
-  countries,
-  onCountrySelect,
-  selectedCountry,
-  data,
-}: CountriesListProps) => {
-  const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
-  const shouldHighlight = useAppSelector(selectShouldHighlight);
-  const previousYear = useAppSelector(selectPreviousYear);
-  const currentYear = useAppSelector(selectSelectedYear);
-  const selectedColumns = useAppSelector(selectSelectedColumns);
-  const sortBy = useAppSelector(selectSortBy);
-  const sortDirection = useAppSelector(selectSortDirection);
-
-  const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
-  const [selectedRegion, setSelectedRegion] = useState<string>('All');
-  const [searchTerm, setSearchTerm] = useState<string>('');
-  const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-  const regionFilteredCountries =
-    selectedRegion === 'All'
-      ? countries
-      : countries.filter(
-          (country) => getRegion(country.name) === selectedRegion
-        );
-
-  const filteredCountries = regionFilteredCountries.filter((country) =>
-    country.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  const sortedCountries = sortCountries(
-    filteredCountries,
+const CountriesList: React.FC<CountriesListProps> = React.memo(
+  ({
+    countries,
+    onCountrySelect,
+    selectedCountry,
     data,
-    currentYear,
-    sortBy,
-    sortDirection
-  );
+  }: CountriesListProps) => {
+    const countryRefs = useRef<{ [key: string]: HTMLDivElement | null }>({});
+    const shouldHighlight = useAppSelector(selectShouldHighlight);
+    const previousYear = useAppSelector(selectPreviousYear);
+    const currentYear = useAppSelector(selectSelectedYear);
+    const selectedColumns = useAppSelector(selectSelectedColumns);
+    const sortBy = useAppSelector(selectSortBy);
+    const sortDirection = useAppSelector(selectSortDirection);
 
-  useEffect(() => {
-    if (!shouldHighlight || !previousYear) {
-      setChangedFields(new Set());
-      return;
-    }
+    const [changedFields, setChangedFields] = useState<Set<string>>(new Set());
+    const [selectedRegion, setSelectedRegion] = useState<string>('All');
+    const [searchTerm, setSearchTerm] = useState<string>('');
+    const highlightTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-    if (highlightTimerRef.current) {
-      clearTimeout(highlightTimerRef.current);
-    }
+    const displayColumns = useMemo(() => {
+      const baseColumns = [
+        DataColumn.POPULATION,
+        DataColumn.CO2,
+        DataColumn.CO2_PER_CAPITA,
+      ];
 
-    const newChangedFields = new Set<string>();
-
-    filteredCountries.forEach((country) => {
-      const countryData = data[country.name]?.data || [];
-      const displayColumns = getDisplayColumns();
-
-      const hasAnyChange = displayColumns.some((column) =>
-        hasChanged(countryData, currentYear, previousYear, column)
+      const additionalColumns = selectedColumns.filter(
+        (col) => !baseColumns.includes(col) && col !== DataColumn.YEAR
       );
 
-      if (hasAnyChange) {
-        newChangedFields.add(country.name);
+      return [...baseColumns, ...additionalColumns];
+    }, [selectedColumns]);
+
+    const filteredCountries = useMemo(() => {
+      const regionFiltered =
+        selectedRegion === 'All'
+          ? countries
+          : countries.filter(
+              (country) => getRegion(country.name) === selectedRegion
+            );
+
+      return regionFiltered.filter((country) =>
+        country.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }, [countries, selectedRegion, searchTerm]);
+
+    const sortedCountries = useMemo(
+      () =>
+        sortCountries(
+          filteredCountries,
+          data,
+          currentYear,
+          sortBy,
+          sortDirection
+        ),
+      [filteredCountries, data, currentYear, sortBy, sortDirection]
+    );
+
+    const handleRegionChange = useCallback((region: string) => {
+      setSelectedRegion(region);
+    }, []);
+
+    const handleSearchChange = useCallback((term: string) => {
+      setSearchTerm(term);
+    }, []);
+
+    const handleCountrySelect = useCallback(
+      (countryName: string) => {
+        const isOpening = selectedCountry !== countryName;
+        onCountrySelect(isOpening ? countryName : '');
+
+        if (isOpening && countryRefs.current[countryName]) {
+          setTimeout(() => {
+            countryRefs.current[countryName]?.scrollIntoView({
+              behavior: 'smooth',
+              block: 'start',
+            });
+          }, OPEN_CLOSE_TIMEOUT);
+        }
+      },
+      [selectedCountry, onCountrySelect]
+    );
+
+    const handleHideTable = useCallback(
+      (countryName: string) => {
+        onCountrySelect('');
+        setTimeout(() => {
+          countryRefs.current[countryName]?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start',
+          });
+        }, OPEN_CLOSE_TIMEOUT);
+      },
+      [onCountrySelect]
+    );
+
+    const getCountryData = useCallback(
+      (countryName: string): YearlyData[] => {
+        return data[countryName]?.data || [];
+      },
+      [data]
+    );
+
+    const getFieldValue = useCallback(
+      (countryName: string, field: DataColumn): string | number => {
+        const countryData = getCountryData(countryName);
+        const currentData = countryData.find((d) => d.year === currentYear);
+        return currentData?.[field] ?? 'N/A';
+      },
+      [getCountryData, currentYear]
+    );
+
+    const getPreviousFieldValue = useCallback(
+      (countryName: string, field: DataColumn): string | number => {
+        const countryData = getCountryData(countryName);
+        return getPreviousValue(
+          countryData,
+          previousYear ?? INITIAL_YEAR,
+          field
+        );
+      },
+      [getCountryData, previousYear]
+    );
+
+    const isFieldChanged = useCallback(
+      (countryName: string, field: DataColumn): boolean => {
+        if (!previousYear || !changedFields.has(countryName)) return false;
+        const countryData = getCountryData(countryName);
+        return hasChanged(countryData, currentYear, previousYear, field);
+      },
+      [previousYear, changedFields, getCountryData, currentYear]
+    );
+
+    const setCountryRef = useCallback(
+      (countryName: string) => (el: HTMLDivElement | null) => {
+        countryRefs.current[countryName] = el;
+      },
+      []
+    );
+
+    useEffect(() => {
+      if (!shouldHighlight || !previousYear) {
+        setChangedFields(new Set());
+        return;
       }
-    });
 
-    setChangedFields(newChangedFields);
-
-    highlightTimerRef.current = setTimeout(() => {
-      setChangedFields(new Set());
-    }, TIMEOUT);
-
-    return () => {
       if (highlightTimerRef.current) {
         clearTimeout(highlightTimerRef.current);
       }
-    };
-  }, [shouldHighlight, previousYear, currentYear, filteredCountries, data]);
 
-  useEffect(() => {
-    setChangedFields(new Set());
-    if (highlightTimerRef.current) {
-      clearTimeout(highlightTimerRef.current);
-      highlightTimerRef.current = null;
-    }
-  }, [selectedCountry, selectedRegion]);
+      const newChangedFields = new Set<string>();
 
-  const handleCountrySelect = (countryName: string) => {
-    const isOpening = selectedCountry !== countryName;
-    onCountrySelect(isOpening ? countryName : '');
+      filteredCountries.forEach((country) => {
+        const countryData = data[country.name]?.data || [];
 
-    if (isOpening && countryRefs.current[countryName]) {
-      setTimeout(() => {
-        countryRefs.current[countryName]?.scrollIntoView({
-          behavior: 'smooth',
-          block: 'start',
-        });
-      }, OPEN_CLOSE_TIMEOUT);
-    }
-  };
+        const hasAnyChange = displayColumns.some((column) =>
+          hasChanged(countryData, currentYear, previousYear, column)
+        );
 
-  const handleHideTable = (countryName: string) => {
-    onCountrySelect('');
-    setTimeout(() => {
-      countryRefs.current[countryName]?.scrollIntoView({
-        behavior: 'smooth',
-        block: 'start',
+        if (hasAnyChange) {
+          newChangedFields.add(country.name);
+        }
       });
-    }, OPEN_CLOSE_TIMEOUT);
-  };
 
-  const handleSearchChange = (term: string) => {
-    setSearchTerm(term);
-  };
+      setChangedFields(newChangedFields);
 
-  const setCountryRef =
-    (countryName: string) => (el: HTMLDivElement | null) => {
-      countryRefs.current[countryName] = el;
-    };
+      highlightTimerRef.current = setTimeout(() => {
+        setChangedFields(new Set());
+      }, TIMEOUT);
 
-  const getCountryData = (countryName: string): YearlyData[] => {
-    return data[countryName]?.data || [];
-  };
+      return () => {
+        if (highlightTimerRef.current) {
+          clearTimeout(highlightTimerRef.current);
+        }
+      };
+    }, [
+      shouldHighlight,
+      previousYear,
+      currentYear,
+      filteredCountries,
+      data,
+      displayColumns,
+    ]);
 
-  const getFieldValue = (
-    countryName: string,
-    field: DataColumn
-  ): string | number => {
-    const countryData = getCountryData(countryName);
-    const currentData = countryData.find((d) => d.year === currentYear);
-    return currentData?.[field] ?? 'N/A';
-  };
+    useEffect(() => {
+      setChangedFields(new Set());
+      if (highlightTimerRef.current) {
+        clearTimeout(highlightTimerRef.current);
+        highlightTimerRef.current = null;
+      }
+    }, [selectedCountry, selectedRegion]);
 
-  const getPreviousFieldValue = (
-    countryName: string,
-    field: DataColumn
-  ): string | number => {
-    const countryData = getCountryData(countryName);
-    return getPreviousValue(countryData, previousYear ?? INITIAL_YEAR, field);
-  };
+    const renderedCountries = useMemo(
+      () =>
+        sortedCountries.map((country) => {
+          const countryData = getCountryData(country.name);
+          const sortedData = [...countryData].sort((a, b) => b.year - a.year);
+          const previewData = sortedData.slice(0, 5);
+          const hasMoreData = countryData.length > 5;
+          const hasData = countryData.length > 0;
 
-  const isFieldChanged = (countryName: string, field: DataColumn): boolean => {
-    if (!previousYear || !changedFields.has(countryName)) return false;
-
-    const countryData = getCountryData(countryName);
-    return hasChanged(countryData, currentYear, previousYear, field);
-  };
-
-  const getDisplayColumns = (): DataColumn[] => {
-    const baseColumns = [
-      DataColumn.POPULATION,
-      DataColumn.CO2,
-      DataColumn.CO2_PER_CAPITA,
-    ];
-
-    const additionalColumns = selectedColumns.filter(
-      (col) => !baseColumns.includes(col) && col !== DataColumn.YEAR
-    );
-
-    return [...baseColumns, ...additionalColumns];
-  };
-
-  return (
-    <div className={styles.list}>
-      <RegionFilter
-        selectedRegion={selectedRegion}
-        onRegionChange={(region) => setSelectedRegion(region)}
-      />
-      <SearchBar searchTerm={searchTerm} onSearchChange={handleSearchChange} />
-      <SortControls />
-      {!sortedCountries.length && (
-        <p>{`No countries found. Please change region selection and/or searching term`}</p>
-      )}
-      {sortedCountries.map((country) => {
-        const countryData = getCountryData(country.name);
-        const sortedData = [...countryData].sort((a, b) => b.year - a.year);
-        const previewData = sortedData.slice(0, 5);
-        const hasMoreData = countryData.length > 5;
-        const hasData = countryData.length > 0;
-        const displayColumns = getDisplayColumns();
-
-        return (
-          <div
-            key={country.name}
-            className={styles.countryItem}
-            ref={setCountryRef(country.name)}
-          >
+          return (
             <div
-              className={`${styles.accordionHeader} ${
-                selectedCountry === country.name ? styles.selected : ''
-              } ${changedFields.has(country.name) ? styles.countryChanged : ''}`}
-              onClick={() => handleCountrySelect(country.name)}
+              key={country.name}
+              className={styles.countryItem}
+              ref={setCountryRef(country.name)}
             >
-              <div className={styles.countryInfo}>
-                <div className={styles.countryName}>{country.name}</div>
-                <div className={styles.countryDetails}>
-                  {`ISO: ${country.iso_code}`}
+              <div
+                className={`${styles.accordionHeader} ${
+                  selectedCountry === country.name ? styles.selected : ''
+                } ${changedFields.has(country.name) ? styles.countryChanged : ''}`}
+                onClick={() => handleCountrySelect(country.name)}
+              >
+                <div className={styles.countryInfo}>
+                  <div className={styles.countryName}>{country.name}</div>
+                  <div className={styles.countryDetails}>
+                    {`ISO: ${country.iso_code}`}
+                  </div>
+
+                  {displayColumns.map((column) => {
+                    const value = getFieldValue(country.name, column);
+                    const changed = isFieldChanged(country.name, column);
+                    const previousValue = getPreviousFieldValue(
+                      country.name,
+                      column
+                    );
+
+                    return (
+                      <div
+                        key={column}
+                        className={`${styles.countryDetail} ${changed ? styles.changed : ''}`}
+                      >
+                        {`${getColumnLabel(column)}: ${formatValue(value)}`}
+                        {changed && (
+                          <span className={styles.previousValue}>
+                            {` (was ${formatValue(previousValue)})`}
+                          </span>
+                        )}
+                        {changed && (
+                          <span className={styles.changeIndicator}>*</span>
+                        )}
+                      </div>
+                    );
+                  })}
                 </div>
-
-                {displayColumns.map((column) => {
-                  const value = getFieldValue(country.name, column);
-                  const changed = isFieldChanged(country.name, column);
-                  const previousValue = getPreviousFieldValue(
-                    country.name,
-                    column
-                  );
-
-                  return (
-                    <div
-                      key={column}
-                      className={`${styles.countryDetail} ${changed ? styles.changed : ''}`}
-                    >
-                      {`${getColumnLabel(column)}: ${formatValue(value)}`}
-                      {changed && (
-                        <span className={styles.previousValue}>
-                          {` (was ${formatValue(previousValue)})`}
-                        </span>
-                      )}
-                      {changed && (
-                        <span className={styles.changeIndicator}>*</span>
-                      )}
-                    </div>
-                  );
-                })}
+                <span className={styles.accordionIcon}>
+                  {selectedCountry === country.name ? '-' : '+'}
+                </span>
               </div>
-              <span className={styles.accordionIcon}>
-                {selectedCountry === country.name ? '-' : '+'}
-              </span>
-            </div>
 
-            {selectedCountry !== country.name && hasData && (
-              <div className={styles.previewContent}>
-                <CountryTable data={previewData} columns={selectedColumns} />
+              {selectedCountry !== country.name && hasData && (
+                <div className={styles.previewContent}>
+                  <CountryTable data={previewData} columns={selectedColumns} />
+                  {hasMoreData && (
+                    <div className={styles.moreButton}>
+                      <button onClick={() => handleCountrySelect(country.name)}>
+                        More
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
 
-                {hasMoreData && (
-                  <div className={styles.moreButton}>
-                    <button onClick={() => handleCountrySelect(country.name)}>
-                      More
+              {selectedCountry === country.name && hasData && (
+                <div className={styles.fullContent}>
+                  <CountryTable data={sortedData} columns={selectedColumns} />
+                  <div className={styles.hideButton}>
+                    <button onClick={() => handleHideTable(country.name)}>
+                      Hide
                     </button>
                   </div>
-                )}
-              </div>
-            )}
-
-            {selectedCountry === country.name && hasData && (
-              <div className={styles.fullContent}>
-                <CountryTable data={sortedData} columns={selectedColumns} />
-
-                <div className={styles.hideButton}>
-                  <button onClick={() => handleHideTable(country.name)}>
-                    Hide
-                  </button>
                 </div>
-              </div>
-            )}
-          </div>
-        );
-      })}
-    </div>
-  );
-};
+              )}
+            </div>
+          );
+        }),
+      [
+        sortedCountries,
+        selectedCountry,
+        changedFields,
+        displayColumns,
+        getCountryData,
+        getFieldValue,
+        isFieldChanged,
+        getPreviousFieldValue,
+        handleCountrySelect,
+        handleHideTable,
+        selectedColumns,
+        setCountryRef,
+      ]
+    );
+
+    return (
+      <div className={styles.list}>
+        <RegionFilter
+          selectedRegion={selectedRegion}
+          onRegionChange={handleRegionChange}
+        />
+        <SearchBar
+          searchTerm={searchTerm}
+          onSearchChange={handleSearchChange}
+        />
+        <SortControls />
+        {!sortedCountries.length && (
+          <p>{`No countries found. Please change region selection and/or searching term`}</p>
+        )}
+        {renderedCountries}
+      </div>
+    );
+  }
+);
+
+CountriesList.displayName = 'CountriesList';
 
 export default CountriesList;
